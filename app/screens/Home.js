@@ -54,7 +54,7 @@ class Home extends React.Component {
     let location = await Location.getCurrentPositionAsync({});
     this.setState({ location });
 
-    const apiKey = 'AIzaSyAtOqdR0mFwseeMd9LJb7nBJQIBJYfhTZ4!!';
+    const apiKey = '---NULL---';
     //const url = `https://maps.googleapis.com/maps/api/place/autocomplete/json?key=${apiKey}&input=store&inputtype=textquery&fields=formatted_address,name&locationbias=circle:10000@${this.state.location.coords.latitude},${this.state.location.coords.longitude}&key=${apiKey}` 
     const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${this.state.location.coords.latitude},${this.state.location.coords.longitude}&radius=1500&type=retail&key=${apiKey}`
 
