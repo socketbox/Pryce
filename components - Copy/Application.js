@@ -1,34 +1,35 @@
-import * as React from 'react';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-
-import Home from '../screens/Home.js';
-import Camera from '../screens/Camera.js';
-import Search from '../screens/Search.js';
-
-
+import React from 'react';
 import { createAppContainer } from 'react-navigation';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const TabNavigator = createBottomTabNavigator({
-    Home: { screen: Home },
-    Camera: { screen: Camera,
-      navigationOptions: ({ navigation }) => ({
-        tabBarVisible: false,
-      }), 
-    },
-    Search: { screen: Search },
-    },
-    {
+import stackDEBUG from './stackDEBUG';
+import MapScreen from './map/index';
+import SearchScreen from './search/index';
+import ListScreen from './lists/index';
+import ScannerScreen from './scanner/index';
+
+const Application = createBottomTabNavigator(
+  {
+    //Landing: { screen: stackDEBUG, },
+    Map: { screen: MapScreen, },
+    Scanner: { screen: ScannerScreen, },
+    Lists: { screen: ListScreen },
+    Search: { screen: SearchScreen, },
+  },
+  {
     defaultNavigationOptions: ({ navigation }) => ({
       tabBarIcon: ({ focused, tintColor }) => {
         const { routeName } = navigation.state;
         let IconComponent = Ionicons;
         let iconName;
-        if (routeName === 'Home') {
+        if (routeName === 'Map') {
           iconName = focused ? 'ios-home' : 'ios-home';
-            } else if (routeName === 'Camera') {
+          } else if (routeName === 'Scanner') {
           iconName = focused ? 'ios-camera' : 'ios-camera';
-            } else if (routeName === 'Search') {
+          } else if (routeName === 'Lists') {
+          iconName = focused ? 'ios-list' : 'ios-list';
+          } else if (routeName === 'Search') {
           iconName = focused ? 'ios-search' : 'ios-search';
         }
         
@@ -47,4 +48,4 @@ const TabNavigator = createBottomTabNavigator({
   }
 );
 
-export default createAppContainer(TabNavigator);
+export default createAppContainer(Application);
