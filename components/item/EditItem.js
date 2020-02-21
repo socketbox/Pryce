@@ -16,11 +16,15 @@ function EditItem(props) {
         <View style={styles.signInButton}>
 
           <TouchableOpacity
+<<<<<<< Updated upstream
 <<<<<<< HEAD
             onPress={() => props.navigation.navigate("Login")}
 =======
             onPress={() => props.navigation.goBack()}
 >>>>>>> 5010556b30df0cdb63844785c952560c5feb080e
+=======
+            onPress={() => props.navigation.goBack()}
+>>>>>>> Stashed changes
             style={styles.signInContainer}
           >
             <Text style={styles.signIn2}>GO BACK</Text>

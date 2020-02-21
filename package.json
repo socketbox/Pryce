@@ -21,10 +21,14 @@
     "react-dom": "^16.9.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-36.0.0.tar.gz",
     "react-native-camera": "^3.18.0",
+<<<<<<< Updated upstream
 <<<<<<< HEAD
 =======
     "react-native-elements": "^1.2.7",
 >>>>>>> 5010556b30df0cdb63844785c952560c5feb080e
+=======
+    "react-native-elements": "^1.2.7",
+>>>>>>> Stashed changes
     "react-native-gesture-handler": "^1.6.0",
     "react-native-maps": "^0.26.1",
     "react-native-paper": "^3.6.0",
