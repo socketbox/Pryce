@@ -27,27 +27,16 @@ export default class Search extends Component {
 		}
 
 		handleSubmit = async () => {
-			const url = `https://pryce-cs467.appspot.com/items?name=`;
-			await fetch(url, {
+			console.log(this.state.itemName);
+			const url = `https://pryce-cs467.appspot.com/items?name=${this.state.itemName}`;
+			const response = await fetch(url, {
 				method: 'GET',
 			})
-			.then(response => {
-				console.log(response.json())
-				response.json()
+			.then(response => response.json())
+			.then((responseJson) => {
+				console.log(responseJson);
 			})
-			.then((res) => {
-				this.props.navigator.push({
-					title: res.name || 'No Title',
-					passProps: {itemInfo: res},
-					component: Item
-				});
-				this.setState({
-					error: false,
-					itemName: ''
-				})
-				// }
-		});
-
+			.catch(error => console.error(error));
 	}
 
 	render() {
@@ -69,8 +58,8 @@ export default class Search extends Component {
 					SEARCH
 				</Text>
 				</TouchableHighlight>
-				{/* {showErr} */}
 		</View>
+		/**RETURN LIST OF ITEMS HERE */
 		)
 	}
 }
