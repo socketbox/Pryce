@@ -5,25 +5,27 @@ import stackDEBUG from '../stackDEBUG';
 import NewItem from './NewItem';
 import EditItem from './EditItem'
 
+
 const ScannerScreen = createStackNavigator({
     Landing: {
         screen: stackDEBUG,
         navigationOptions: {
-        headerShown: false
+            headerShown: false
         } 
     },
     NewItem: {
         screen: NewItem,
         navigationOptions: {
-        headerShown: false
+            headerShown: false
         }
     },
     EditItem: {
         screen: EditItem,
         navigationOptions: {
-        headerShown: false
+            headerShown: false
         }
     },
+
 });
 
 export default createAppContainer(ScannerScreen);
