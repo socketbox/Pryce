@@ -22,9 +22,6 @@ function Scanner(props) {
     // Handle scanned item - need to review
     const handleBarCodeScanned = ({ data }) => {
         setScanned(true);
-        //this.state.scannedInfo = data;
-        //console.log("DATA: " + this.state.scannedInfo);
-        console.log("DATA: " + data);
 
         // TODO: Handle request separate function
         const url = `https://pryce-cs467.appspot.com/items/${data}`;
@@ -46,7 +43,7 @@ function Scanner(props) {
                     `ADD OPTIONS TO ADD HERE`
                 );
                 }
-            console.log(JSON.stringify(response.ok));
+            // console.log(JSON.stringify(response.ok));
         })
         .catch(error => {
             console.log(error);
@@ -93,7 +90,7 @@ function Scanner(props) {
   }
 
 }
-    // TODO: NEED TO REROUTE AND RESTACK NAVIGATION
+
 
 const styles = StyleSheet.create({
     container: {
