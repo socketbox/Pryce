@@ -13,7 +13,7 @@ import {
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import SimpleLineIconsIcon from 'react-native-vector-icons/SimpleLineIcons';
 
-export default class Login extends React.Component {
+class Login extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {}
@@ -157,126 +157,128 @@ export default class Login extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  pryce: {
-    flex: 1,
-    fontSize: 70,
-    textAlign: 'center',
-    paddingTop: 120,
-  },
-  loginInfo: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 2
-  },
-  username: {
-    width: 220,
-    height: 23,
-  },
-  unIcon: {
-    fontSize: 20,
-    opacity: 0.5,
-    alignSelf: 'flex-end',
-    marginBottom: 1,
-  },
-  unInput: {
-    width: 193,
-    height: 15,
-    color: '#121212',
-    textAlign: 'left',
-    marginLeft: 6,
-    marginTop: 6,
-  },
-  unIconRow: {
-    height: 21,
-    flexDirection: 'row',
-    marginRight: 1,
-  },
-  unLine: {
-    width: 218,
-    height: 1,
-    backgroundColor: '#060606',
-    opacity: 0.25,
-    marginTop: 1,
-    marginLeft: 2,
-  },
-  password: {
-    width: 220,
-    height: 23,
-    marginTop: 19,
-  },
-  pwIcon: {
-    fontSize: 20,
-    opacity: 0.5,
-    alignSelf: 'flex-end',
-    marginBottom: 1,
-  },
-  pwInput: {
-    width: 193,
-    height: 15,
-    color: '#121212',
-    textAlign: 'left',
-    marginLeft: 6,
-    marginTop: 6,
-  },
-  pwIconRow: {
-    height: 21,
-    flexDirection: 'row',
-    marginRight: 1,
-  },
-  pwLine: {
-    width: 218,
-    height: 1,
-    backgroundColor: '#060606',
-    opacity: 0.25,
-    marginTop: 1,
-    marginLeft: 2,
-  },
-  loginButton: {
-    width: 161,
-    height: 32,
-    flex: 2,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  loginContainer: {
-    width: 161,
-    height: 32,
-    borderRadius: 6,
-    borderWidth: 1,
-    borderStyle: 'solid',
-  },
-  login2: {
-    color: '#121212',
-    textAlign: 'center',
-    paddingTop: 7,
-  },
-  createAccount: {
-    width: 168,
-    height: 16,
-    flexDirection: 'row',
-    flex: 1,
-    alignSelf: 'center',
-  },
-  newText: {
-    color: '#121212',
-    fontSize: 14,
-    marginTop: 2,
-  },
-  createAccountHere: {
-    top: 2,
-    left: 0,
-    color: '#126ef7',
-    fontSize: 14,
-  },
-  continueAsGuest: {
-    width: 125,
-    height: 18,
-    color: '#126ef7',
-    fontSize: 14,
-    alignSelf: 'center',
-    marginBottom: 57,
-   },
+	container: {
+		flex: 1,
+	},
+	pryce: {
+		flex: 1,
+		fontSize: 70,
+		textAlign: 'center',
+		paddingTop: 120,
+	},
+	loginInfo: {
+		alignItems: 'center',
+		justifyContent: 'center',
+		flex: 2
+	},
+	username: {
+		width: 220,
+		height: 23,
+	},
+	unIcon: {
+		fontSize: 20,
+		opacity: 0.5,
+		alignSelf: 'flex-end',
+		marginBottom: 1,
+	},
+	unInput: {
+		width: 193,
+		height: 15,
+		color: '#121212',
+		textAlign: 'left',
+		marginLeft: 6,
+		marginTop: 6,
+	},
+	unIconRow: {
+		height: 21,
+		flexDirection: 'row',
+		marginRight: 1,
+	},
+	unLine: {
+		width: 218,
+		height: 1,
+		backgroundColor: '#060606',
+		opacity: 0.25,
+		marginTop: 1,
+		marginLeft: 2,
+	},
+	password: {
+		width: 220,
+		height: 23,
+		marginTop: 19,
+	},
+	pwIcon: {
+		fontSize: 20,
+		opacity: 0.5,
+		alignSelf: 'flex-end',
+		marginBottom: 1,
+	},
+	pwInput: {
+		width: 193,
+		height: 15,
+		color: '#121212',
+		textAlign: 'left',
+		marginLeft: 6,
+		marginTop: 6,
+	},
+	pwIconRow: {
+		height: 21,
+		flexDirection: 'row',
+		marginRight: 1,
+	},
+	pwLine: {
+		width: 218,
+		height: 1,
+		backgroundColor: '#060606',
+		opacity: 0.25,
+		marginTop: 1,
+		marginLeft: 2,
+	},
+	loginButton: {
+		width: 161,
+		height: 32,
+		flex: 2,
+		alignItems: 'center',
+		justifyContent: 'center',
+	},
+	loginContainer: {
+		width: 161,
+		height: 32,
+		borderRadius: 6,
+		borderWidth: 1,
+		borderStyle: 'solid',
+	},
+	login2: {
+		color: '#121212',
+		textAlign: 'center',
+		paddingTop: 7,
+	},
+	createAccount: {
+		width: 168,
+		height: 16,
+		flexDirection: 'row',
+		flex: 1,
+		alignSelf: 'center',
+	},
+	newText: {
+		color: '#121212',
+		fontSize: 14,
+		marginTop: 2,
+	},
+	createAccountHere: {
+		top: 2,
+		left: 0,
+		color: '#126ef7',
+		fontSize: 14,
+	},
+	continueAsGuest: {
+		width: 125,
+		height: 18,
+		color: '#126ef7',
+		fontSize: 14,
+		alignSelf: 'center',
+		marginBottom: 57,
+	},
 });
+
+export default Login;
