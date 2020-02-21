@@ -1,73 +1,118 @@
-import React from 'react'
-import { View, StyleSheet, Text } from 'react-native'
-import Constants from 'expo-constants';
-import { Card } from 'react-native-paper'
-import { SearchBar } from 'react-native-elements'
+import React, { Component } from 'react';
+import {
+	View,
+	Text,
+	StyleSheet,
+	TextInput,
+	TouchableHighlight
+} from 'react-native';
+import Item from '../item/Item';
 
-
-function Item({title}) {
-	return (
-		<View style={styles.item}>
-		<Text style={styles.title}>{title}</Text>
-		</View>
-	)
-}
-
-export default class Search extends React.Component {
+export default class Search extends Component {
 	constructor(props) {
 		super(props);
-
 		this.state = {
-		search: '',
-		data: [],
-		};
+			itemName: '',
+			error: false
+		}
+
+		this.handleChange = this.handleChange.bind(this);
+		this.handleSubmit = this.handleSubmit.bind(this);
+		}
+
+		handleChange(e) {
+			this.setState({
+				itemName: e.nativeEvent.text
+			});
+		}
+
+		handleSubmit = async () => {
+			const url = `https://pryce-cs467.appspot.com/items?name=`;
+			await fetch(url, {
+				method: 'GET',
+			})
+			.then(response => {
+				console.log(response.json())
+				response.json()
+			})
+			.then((res) => {
+				this.props.navigator.push({
+					title: res.name || 'No Title',
+					passProps: {itemInfo: res},
+					component: Item
+				});
+				this.setState({
+					error: false,
+					itemName: ''
+				})
+				// }
+		});
+
 	}
 
-	componentDidMount(){
-		this.getData();
-	}
-
-	getData(){
-		
-	}
-
-	updateSearch = search => {
-		console.log(search);
-		this.setState({search});
-	}
-
-  //TODO: need to have three columns here fix me por favor
 	render() {
-		//console.log(this.state.data);
-		const {search} = this.state;
 
 		return (
 		<View style={styles.container}>
-			<SearchBar
-			placeholder="Enter search here..."
-			onChangeText={this.updateSearch}
-			value={search}
-			/>
-			<Card>
-	
-			</Card>
+			<Text style={styles.title}>Search for Item</Text>
+			<TextInput
+				style={styles.searchInput}
+				onChange={this.handleChange}
+				/>
+			<TouchableHighlight
+					style = {styles.button}
+					underlayColor= "white"
+					onPress = {this.handleSubmit}
+				>
+				<Text
+					style={styles.buttonText}>
+					SEARCH
+				</Text>
+				</TouchableHighlight>
+				{/* {showErr} */}
 		</View>
-		);
+		)
 	}
 }
 
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		marginTop: Constants.statusBarHeight,
-	},
-	item: {
-		backgroundColor: 'white',
-		padding: 20,
-		marginVertical: 8,
-		marginHorizontal: 16,
+		padding: 30,
+		marginTop: 65,
+		flexDirection: 'column',
+		justifyContent: 'center',
 	},
 	title: {
-		fontSize: 12,
+		marginBottom: 20,
+		fontSize: 25,
+		textAlign: 'center'
 	},
+	searchInput: {
+		height: 50,
+		padding: 4,
+		marginRight: 5,
+		fontSize: 23,
+		borderWidth: 1,
+		borderColor: 'white',
+		borderRadius: 8,
+		color: 'white'
+	},
+	buttonText: {
+		fontSize: 18,
+		color: '#111',
+		alignSelf: 'center'
+	},
+	button: {
+		height: 45,
+		flexDirection: 'row',
+		backgroundColor:'white',
+		borderColor: 'white',
+		borderWidth: 1,
+		borderRadius: 8,
+		marginBottom: 10,
+		marginTop: 10,
+		alignSelf: 'stretch',
+		justifyContent: 'center'
+	}
 });

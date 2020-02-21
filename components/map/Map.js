@@ -17,9 +17,8 @@ class Map extends React.Component {
             } 
         },
         nearbyLocations: [],
-        apiResponse: [googleAPIsearch],
+        apiResponse: [],
     };
-
 
     componentDidMount() {
         this._getLocationAsync();
@@ -27,7 +26,6 @@ class Map extends React.Component {
 
     _handleMapRegionChange = mapRegion => {
         this.setState({ mapRegion });
-
     };
 
     _getLocationAsync = async () => {
@@ -41,18 +39,19 @@ class Map extends React.Component {
 
         let location = await Location.getCurrentPositionAsync({});
         this.setState({ location });
-
-        
         
         //const apiKey = 'AIzaSyAtOqdR0mFwseeMd9LJb7nBJQIBJYfhTZ4';
         //const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${this.state.location.coords.latitude},${this.state.location.coords.longitude}&radius=1500&type=retail&key=${apiKey}`
+                /**fetch data from server to retrieve location data for nearby stores */	
+        this._getData();
+    };
 
-
-    /**fetch data from server to retrieve location data for nearby stores */
-	getData = async () => {
-		// TODO: get this from location data ~ create map location service 
-		// const apiKey = AIzaSyAtOqdR0mFwseeMd9LJb7nBJQIBJYfhTZ4;
-		// let url = 'https://pryce-cs467.appspot.com/stores/find?lat=40.4464055&long=-80.183559'
+    _getData = async () => {
+	// TODO: get this from location data ~ create map location service 
+        //const apiKey = AIzaSyAtOqdR0mFwseeMd9LJb7nBJQIBJYfhTZ4;
+        let lat = this.state.location.coords.latitude;
+        let lng = this.state.location.coords.longitude;
+		let url = `https://pryce-cs467.appspot.com/stores/find?lat=${lat}&long=${lng}`
 		const response = await fetch(url, {
 		method: 'GET',
 		headers: {
@@ -61,16 +60,15 @@ class Map extends React.Component {
 		})
 		.then(response => response.json())
 		.then(responseJson => {
-			this.setState({
+            this.setState({
 			    apiResponse: responseJson
 			});
-		})
-		.catch(error => console.error(error));
-	};	
-};
+        })
+        .catch(error => console.error(error));
+	};
+
 
     render() {
-        console.log(this.state.apiResponse);
         return (
             <View style={styles.mapContainer}>
                 <MapView

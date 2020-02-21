@@ -5,18 +5,18 @@ class Review extends React.Component {
     render() {
         return (
             <View style={styles.container}>
-            <Text style={styles.itemName1}>&lt;Item Name&gt;</Text>
-            <Text style={styles.xXx3}>Original Price: {"\n"}$x.xx</Text>
-            <View style={styles.group1}>
-                <Text style={styles.reviews}>Reviews</Text>
-                <Text style={styles.description2}>
-                lorem ipsum kjash dfkjhas dlkjfh alksj dflorem ipsum kjash df
-                </Text>
-            </View>
-            <View style={styles.xXx7Row}>
-                <Text style={styles.xXx7}>$X.XX</Text>
-                <Text style={styles.store}>Store</Text>
-            </View>
+              <Text style={styles.itemName1}>&lt;Item Name&gt;</Text>
+              <Text style={styles.xXx3}>Original Price: {"\n"}$x.xx</Text>
+              <View style={styles.group1}>
+                  <Text style={styles.reviews}>Reviews</Text>
+                  <Text style={styles.description2}>
+                  lorem ipsum kjash dfkjhas dlkjfh alksj dflorem ipsum kjash df
+                  </Text>
+              </View>
+              <View style={styles.xXx7Row}>
+                  <Text style={styles.xXx7}>$X.XX</Text>
+                  <Text style={styles.store}>Store</Text>
+              </View>
             </View>
         );
     }
@@ -31,7 +31,6 @@ const styles = StyleSheet.create({
     height: 49,
     color: "#121212",
     fontSize: 40,
-    fontFamily: "roboto-regular",
     textAlign: "center",
     marginTop: 76,
     alignSelf: "center"
@@ -41,7 +40,6 @@ const styles = StyleSheet.create({
     height: 27,
     color: "rgba(113,113,113,1)",
     fontSize: 15,
-    fontFamily: "roboto-regular",
     textAlign: "center",
     marginTop: 46,
     marginLeft: 74
@@ -57,21 +55,18 @@ const styles = StyleSheet.create({
     height: 25,
     color: "#121212",
     fontSize: 20,
-    fontFamily: "roboto-700"
   },
   description2: {
     width: 297,
     height: 434,
     color: "#121212",
     fontSize: 20,
-    fontFamily: "roboto-regular"
   },
   xXx7: {
     width: 131,
     height: 29,
     color: "#121212",
     fontSize: 30,
-    fontFamily: "roboto-regular",
     textAlign: "center"
   },
   store: {
@@ -79,7 +74,6 @@ const styles = StyleSheet.create({
     height: 29,
     color: "#121212",
     fontSize: 30,
-    fontFamily: "roboto-regular",
     textAlign: "center"
   },
   xXx7Row: {

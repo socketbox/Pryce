@@ -9,12 +9,19 @@ import {
 } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import RNPickerSelect from 'react-native-picker-select';
+import * as Location from 'expo-location';
 import googleAPIsearch from '../../assets/find.json'
 
 class NewItem extends React.Component {
 
 	state = {
-		data: [googleAPIsearch],
+		location: { 
+            coords: { 
+                latitude: 0, 
+                longitude: 0 
+            } 
+        },
+		data: [],
 		stores: [],
 		selectedStore: null,
 		prices: null,
@@ -33,8 +40,7 @@ class NewItem extends React.Component {
 	};
 
 	componentDidMount() {
-		this.getData();
-		this.getStores();
+		this._getLocationAsync();
 	}
 
 
@@ -70,7 +76,7 @@ class NewItem extends React.Component {
 			}
 		}
 
-		fetch('http://pryce-cs467.appspot.com/price', {
+		fetch('http://pryce-cs467.appspot.com/prices', {
 			method: 'POST',
 			headers: {
 				Accept: 'application/json',
@@ -80,20 +86,25 @@ class NewItem extends React.Component {
 		})
 		.then((response) => response.json())
 		.then(responseData => {
+			/** HANDLE DATA HERE  */
 			Alert.alert("SERVER RESPONSE", JSON.stringify(responseData));
-			//console.log(JSON.stringify(responseData));
+			console.log(JSON.stringify(responseData));
 		})
 	} 
 
-	/**fetch data from server to retrieve location data for nearby stores */
-	getData = async () => {
-		// TODO: get this from location data ~ create map location service 
-		// let lat = this.state.user.lat;
-		// let lng = this.state.user.lng;
-		// const apiKey = AIzaSyAtOqdR0mFwseeMd9LJb7nBJQIBJYfhTZ4;
-		// let url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=1500&type=restaurant&keyword=stores&key=${apiKey}`
-		let url = 'https://pryce-cs467.appspot.com/stores/find?lat=40.4464055&long=-80.183559'
-		// let url = 'https://randomuser.me/api/?seed=23&page=1&results=4';
+
+	/**NEED TO REFACTOR THIS INTO FUNCTION SERVICE */
+	_getLocationAsync = async () => {
+        let location = await Location.getCurrentPositionAsync({});
+		this.setState({ location });
+        this._getData();
+    };
+
+	/**fetch data from server to retrieve location data for nearby stores */	
+    _getData = async () => {
+        let lat = this.state.location.coords.latitude;
+        let lng = this.state.location.coords.longitude;
+		let url = `https://pryce-cs467.appspot.com/stores/find?lat=${lat}&long=${lng}`
 		const response = await fetch(url, {
 		method: 'GET',
 		headers: {
@@ -102,15 +113,18 @@ class NewItem extends React.Component {
 		})
 		.then(response => response.json())
 		.then(responseJson => {
-			this.setState({
-			data: responseJson
+            this.setState({
+			    data: responseJson
 			});
-		})
+        })
 		.catch(error => console.error(error));
-	};	
+		this._getStores();
+	};
+
+
 
 	/**Function to retrieve and store store name and place_id */
-	getStores() {
+	_getStores() {
 	let i = 0;
 	let tempName = '';
 	let tempPlaceID = '';
@@ -118,11 +132,11 @@ class NewItem extends React.Component {
 	let tempLat = '';
 	let tempLng = '';
 
-	for (i = 0; i < this.state.data[0].results.length; i++) {
-		tempName = this.state.data[0].results[i].name;
-		tempPlaceID = this.state.data[0].results[i].place_id;
-		tempLat = this.state.data[0].results[i].geometry.location.lat;
-		tempLng = this.state.data[0].results[i].geometry.location.lng;
+	for (i = 0; i < this.state.data.results.length; i++) {
+		tempName = this.state.data.results[i].name;
+		tempPlaceID = this.state.data.results[i].place_id;
+		tempLat = this.state.data.results[i].geometry.location.lat;
+		tempLng = this.state.data.results[i].geometry.location.lng;
 		// console.log(tempName + " " + tempPlaceID)
 		tempArr.push({
 		name: tempName,
@@ -274,8 +288,7 @@ class NewItem extends React.Component {
 				
 				<TouchableOpacity onPress={
 					this.state.currentTime = new Date(),
-					this.submitInfo,
-					() => this.props.navigation.navigate("Scanner")
+					this.submitInfo
 					}>
 					<Text style={styles.submit}>Submit!</Text>
 				</TouchableOpacity>

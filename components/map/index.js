@@ -7,12 +7,12 @@ import Map from './Map';
 import Scanner from '../scanner/index';
 
 const MapScreen = createStackNavigator({
-    Landing: {
-        screen: stackDEBUG,
-        navigationOptions: {
-            headerShown: false
-        } 
-    },
+    // Landing: {
+    //     screen: stackDEBUG,
+    //     navigationOptions: {
+    //         headerShown: false
+    //     } 
+    // },
     Map: {
         screen: Map,
         navigationOptions: {
