@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import Login from '../Login';
-
+import AppNavigator from '../../AppNavigator';
 
 const mapStateToProps = state => (state)
 
@@ -9,4 +9,4 @@ const mapDispatchToProps = (dispatch) => ({
 	log_out: () => { dispatch({ type: 'LOG_OUT' }) },
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login)
+export default connect(mapStateToProps, mapDispatchToProps)(AppNavigator)

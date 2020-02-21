@@ -4,8 +4,6 @@ import {
 	StyleSheet,
 	Text,
 	View,
-	StatusBar,
-	Button,
 	TextInput,
 	TouchableOpacity,
 	Alert,
@@ -38,7 +36,8 @@ class Login extends React.Component {
 	}
 
 	render () {
-		let isLoggedIn = this.props.user.isLoggedIn;
+		//let isLoggedIn = this.props.user.isLoggedIn;
+		console.log(this.props);
 		return (
 			<View style={styles.container}>
 				<Text style={styles.pryce}>PRYCE</Text>
@@ -121,7 +120,7 @@ class Login extends React.Component {
 				headers: { Authorization: 'Bearer ' + access_token },
 			})
 			.then(response => {
-				// console.log(JSON.stringify(response));
+				//  console.log(JSON.stringify(response));
 				// console.log("access token: " + access_token);
 				if (response.ok === true) {
 					this.props.navigation.navigate(

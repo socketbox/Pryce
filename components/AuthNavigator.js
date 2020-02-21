@@ -1,11 +1,13 @@
-import { createStackNavigator } from 'react-navigation-stack';
+import { createStackNavigator, createAppContainer } from 'react-navigation-stack';
 import Login from './account/Login';
-import Signup from './account/Signup';
+import Register from './account/Register';
+import Application from './Application'
 
 const AuthNavigation = createStackNavigator(
   {
     Login: { screen: Login },
-    Signup: { screen: Signup},
+    Register: { screen: Register},
+    Application: { screen: Application },
   },
   {
     initialRouteName: 'Login',
@@ -13,4 +15,4 @@ const AuthNavigation = createStackNavigator(
   }
 )
 
-export default AuthNavigation
+export default AuthNavigation;

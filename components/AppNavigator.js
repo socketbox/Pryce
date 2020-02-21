@@ -1,12 +1,25 @@
 import { createStackNavigator } from 'react-navigation-stack';
 import Authentication from './AuthNavigator';
 import Application from './Application';
+import { createAppContainer } from 'react-navigation';
+
+
 
 const AppNavigator = createStackNavigator(
     {
-        Login: { screen: Authentication },
-        Signup: { screen: Application},
+        AuthNavigator: { 
+            screen: Authentication,
+            navigationOptions: {
+                headerShown: false
+            }
+        },
+        Application: { screen: Application,
+            navigationOptions: {
+                headerShown: false
+            }},
     },
 )
 
-export default AppNavigator
+const AppNav = createAppContainer(AppNavigator)
+
+export default AppNav
