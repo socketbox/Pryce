@@ -7,17 +7,11 @@ import Search from './Search';
 
 const SearchScreen = createStackNavigator({
     Landing: {
-        screen: stackDEBUG,
+        screen: Search,
         navigationOptions: {
             headerShown: false
         } 
     },
-    Search: {
-        screen: Search,
-        navigationOptions: {
-            headerShown: false
-        }
-    },
-    });
+});
 
 export default createAppContainer(SearchScreen);

@@ -4,6 +4,7 @@ import MapView from 'react-native-maps';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 import { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import googleAPIsearch from '../../assets/find.json'
 
 
 class Map extends React.Component {
@@ -16,8 +17,7 @@ class Map extends React.Component {
             } 
         },
         nearbyLocations: [],
-
-        apiResponse: null,
+        apiResponse: [googleAPIsearch],
     };
 
 
@@ -44,57 +44,33 @@ class Map extends React.Component {
 
         
         
-        const apiKey = '';
-        const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${this.state.location.coords.latitude},${this.state.location.coords.longitude}&radius=1500&type=retail&key=${apiKey}`
+        //const apiKey = 'AIzaSyAtOqdR0mFwseeMd9LJb7nBJQIBJYfhTZ4';
+        //const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${this.state.location.coords.latitude},${this.state.location.coords.longitude}&radius=1500&type=retail&key=${apiKey}`
 
-        await fetch(url)
-            .then(response => {
-                return response.json();
-            })
-            .then(responseJson => {
-                let i = 0;
-                for(i; i < responseJson.results.length; i++) {
-                    console.log("-----------------------------");
-                    this.setState({
-                        // nearbyLocations: { name: responseJson.results[i].name },
-                        // nearbyLocations: { place_id: responseJson.results[i].place_id },
-                        // nearbyLocations: { lat: responseJson.results[i].geometry.location.lat },
-                        // nearbyLocations: { lng: responseJson.results[i].geometry.location.lng },
-                        apiResponse: responseJson.results
-                    })
-                }
-            })
-            //     let myItems = [];
-            //     let result = Object.entries(responseJson.results).map(([k, v] ) => ({ [k]: v }));
-            //     result.forEach((item) => {
-            //         var key = Object.keys(item)[0];
-            //         item[key].forEach((sub) => {
-            //             console.log("test")
-            //         // //     myItems.push( {
-            //         // //         name: sub.name,
-            //         // //         place_id: sub.place_id,
-            //         // //         lat: sub.geometry.lat,
-            //         // //         lng: sub.geometry.lng,
-            //         // //     })
-            //         })
-            //     })
-            // })
-            //     let i = 0;
-            //     for(i; i < responseJson.results.length; i++) {
-            //         console.log("-----------------------------");
-            //         // console.log(responseJson.results[i]);
-            //         // console.log(responseJson.results[i].name);
-            //         // console.log(responseJson.results[i].place_id);
-            //         // console.log(responseJson.results[i].geometry.location.lat);
-            //         // console.log(responseJson.results[i].geometry.location.lng);               
-            //     }
-            // })
 
-            console.log(this.state.nearbyLocations);
-            
-    };
+    /**fetch data from server to retrieve location data for nearby stores */
+	getData = async () => {
+		// TODO: get this from location data ~ create map location service 
+		// const apiKey = AIzaSyAtOqdR0mFwseeMd9LJb7nBJQIBJYfhTZ4;
+		// let url = 'https://pryce-cs467.appspot.com/stores/find?lat=40.4464055&long=-80.183559'
+		const response = await fetch(url, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		})
+		.then(response => response.json())
+		.then(responseJson => {
+			this.setState({
+			    apiResponse: responseJson
+			});
+		})
+		.catch(error => console.error(error));
+	};	
+};
 
     render() {
+        console.log(this.state.apiResponse);
         return (
             <View style={styles.mapContainer}>
                 <MapView
@@ -117,13 +93,13 @@ class Map extends React.Component {
     }
 }
 
-    const styles = StyleSheet.create({
+const styles = StyleSheet.create({
     mapContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height - 40,
-    },
+        flex: 1,
+        justifyContent: 'center',
+        width: Dimensions.get('window').width,
+        height: Dimensions.get('window').height - 40,
+        },
     });
 
-    export default Map;
+export default Map;

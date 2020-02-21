@@ -7,12 +7,6 @@ import Scanner from './Scanner';
 
 const ScannerScreen = createStackNavigator({
 	Landing: {
-		screen: stackDEBUG,
-		navigationOptions: {
-			headerShown: false
-		} 
-	},
-	Scanner: {
 		screen: Scanner,
 		navigationOptions: {
 			headerShown: false

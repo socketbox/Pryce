@@ -16,7 +16,7 @@ function EditItem(props) {
         <View style={styles.signInButton}>
 
           <TouchableOpacity
-            onPress={() => props.navigation.navigate("Login")}
+            onPress={() => props.navigation.goBack()}
             style={styles.signInContainer}
           >
             <Text style={styles.signIn2}>GO BACK</Text>

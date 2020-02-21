@@ -8,12 +8,6 @@ import Scanner from '../scanner/index';
 
 const MapScreen = createStackNavigator({
     Landing: {
-        screen: stackDEBUG,
-        navigationOptions: {
-            headerShown: false
-        } 
-    },
-    Map: {
         screen: Map,
         navigationOptions: {
             headerShown: false

@@ -1,31 +1,42 @@
 import React from 'react';
 import {
-  StyleSheet,
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  Picker,
-  Alert
+	StyleSheet,
+	View,
+	Text,
+	TextInput,
+	TouchableOpacity,
+	Alert
 } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
+import RNPickerSelect from 'react-native-picker-select';
+import googleAPIsearch from '../../assets/find.json'
 
 class NewItem extends React.Component {
+
 	state = {
+		data: [googleAPIsearch],
+		stores: [],
+		selectedStore: null,
 		prices: null,
 		currency: 'USD',
 		currentTime: null,
 		storeName: null,
-		storelat: null,
+		storeLat: null,
 		storeLng: null,
 		storePID: null,
 		itemName: null,
-		itemCode: null, //this.props.navigation.getParam(data, defaultValue), //`${props.navigation.state.params.state.itemCode}`,
+		itemCode: null, 
 		itemBrand: null,
 		itemQuantity: null,
 		itemQuantUnit: null,
 		itemDescription: null,
 	};
+
+	componentDidMount() {
+		this.getData();
+		this.getStores();
+	}
+
 
 	/**POST info to server for verification */
 	/**--------------------------------------------------------------*/
@@ -36,10 +47,10 @@ class NewItem extends React.Component {
 			currency: this.state.currency,
 			reported: this.state.currentTime, 
 			store: {
-				place_id: "zChIJ34Pec1lZNIgRC9XDhWPZlnc",
-				lat: 40.4464055,
-				lng: -80.183559,
-				name: "Target",
+				place_id: this.state.storePID,
+				lat: this.state.storeLat,
+				lng: this.state.storeLng,
+				name: this.state.storeName,
 			},
 			item: {
 				code: this.props.navigation.state.params.data,
@@ -59,8 +70,6 @@ class NewItem extends React.Component {
 			}
 		}
 
-		console.log(data);
-
 		fetch('http://pryce-cs467.appspot.com/price', {
 			method: 'POST',
 			headers: {
@@ -72,12 +81,80 @@ class NewItem extends React.Component {
 		.then((response) => response.json())
 		.then(responseData => {
 			Alert.alert("SERVER RESPONSE", JSON.stringify(responseData));
-			console.log(JSON.stringify(responseData));
+			//console.log(JSON.stringify(responseData));
 		})
 	} 
+
+	/**fetch data from server to retrieve location data for nearby stores */
+	getData = async () => {
+		// TODO: get this from location data ~ create map location service 
+		// let lat = this.state.user.lat;
+		// let lng = this.state.user.lng;
+		// const apiKey = AIzaSyAtOqdR0mFwseeMd9LJb7nBJQIBJYfhTZ4;
+		// let url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=1500&type=restaurant&keyword=stores&key=${apiKey}`
+		let url = 'https://pryce-cs467.appspot.com/stores/find?lat=40.4464055&long=-80.183559'
+		// let url = 'https://randomuser.me/api/?seed=23&page=1&results=4';
+		const response = await fetch(url, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		})
+		.then(response => response.json())
+		.then(responseJson => {
+			this.setState({
+			data: responseJson
+			});
+		})
+		.catch(error => console.error(error));
+	};	
+
+	/**Function to retrieve and store store name and place_id */
+	getStores() {
+	let i = 0;
+	let tempName = '';
+	let tempPlaceID = '';
+	let tempArr = [];
+	let tempLat = '';
+	let tempLng = '';
+
+	for (i = 0; i < this.state.data[0].results.length; i++) {
+		tempName = this.state.data[0].results[i].name;
+		tempPlaceID = this.state.data[0].results[i].place_id;
+		tempLat = this.state.data[0].results[i].geometry.location.lat;
+		tempLng = this.state.data[0].results[i].geometry.location.lng;
+		// console.log(tempName + " " + tempPlaceID)
+		tempArr.push({
+		name: tempName,
+		place_id: tempPlaceID,
+		lat: tempLat,
+		lng: tempLng,
+		});
+	}
+	this.setState({ stores: tempArr });
+	}
+
+	  /**set store info to be sent */
+	setStoreInfo(index) {
+		this.setState({ storeName: this.state.stores[index].name });
+		this.setState({ storePID: this.state.stores[index].place_id });
+		this.setState({ storeLat: this.state.stores[index].lat });
+		this.setState({ storeLng: this.state.stores[index].lng });
+	}
 	/**--------------------------------------------------------------*/
 
 	render() {
+		//console.log(this.state.data);
+		//console.log(this.state.stores);
+		// console.log(this.state.storeName)
+		// console.log(this.state.storePID)
+		// console.log(this.state.storeLat)
+		// console.log(this.state.storeLng)
+		const placeholder = {
+			label: 'Select a store...',
+			value: '',
+			color: '#9EA0A4',
+		};
 		return (
 		<View style={styles.container}>
 			<View style={styles.data}>
@@ -143,16 +220,25 @@ class NewItem extends React.Component {
 				<View style={styles.line} />
 
 				<View style={styles.iconRow}>
-					<FeatherIcon name="home" style={styles.icon} />
-					<TextInput
-						placeholderTextColor="#e6e6e6"
-						editable={true}
-						style={styles.input}
-						name="store"
-						value={this.state.itemQuantUnit}
-						placeholder="Store Location"
-						onChangeText={(storePID) => this.setState({ storePID })}
-					/>
+					<RNPickerSelect
+						placeholder={placeholder}
+						items={this.state.stores.map(obj => ({
+							label: obj.name,
+							value: obj.name,
+							color: 'rgba(77,38,22,1)',
+						}))}
+						onValueChange={(name, index) => {
+							this.setState({
+							selectedStore: name,
+							selectedStorePID: index,
+							}); 
+							this.setStoreInfo(index-1);
+						}}
+						style={styles.inputIOS}
+						value={this.state.selectedStore}
+						useNativeAndroidPickerStyle={false}
+						textInputProps={{ underlineColor: 'yellow' }}
+						/>
 				</View>
 				<View style={styles.line} />
 
@@ -188,7 +274,8 @@ class NewItem extends React.Component {
 				
 				<TouchableOpacity onPress={
 					this.state.currentTime = new Date(),
-					this.submitInfo
+					this.submitInfo,
+					() => this.props.navigation.navigate("Scanner")
 					}>
 					<Text style={styles.submit}>Submit!</Text>
 				</TouchableOpacity>
