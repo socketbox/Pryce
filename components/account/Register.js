@@ -9,7 +9,7 @@ import {
 import FeatherIcon from "react-native-vector-icons/Feather";
 import SimpleLineIconsIcon from "react-native-vector-icons/SimpleLineIcons";
 
-function Login(props) {
+function Register(props) {
   return (
     <View style={styles.container}>
       <View style={styles.pryceColumn}>
@@ -65,4 +65,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Login;
+export default Register;

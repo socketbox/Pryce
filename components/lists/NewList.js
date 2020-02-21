@@ -5,7 +5,7 @@ class Search extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text>Search!</Text>
+        <Text>NEW LIST!</Text>
       </View>
     );
   }
