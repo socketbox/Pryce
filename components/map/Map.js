@@ -5,7 +5,7 @@ import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 import { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import googleAPIsearch from '../../assets/find.json'
-
+import mapStyle from '../../assets/mapStyle.json'
 
 class Map extends React.Component {
 
@@ -16,8 +16,8 @@ class Map extends React.Component {
                 longitude: 0 
             } 
         },
-        nearbyLocations: [],
-        apiResponse: [],
+        stores: [],
+        data: [],
     };
 
     componentDidMount() {
@@ -61,30 +61,76 @@ class Map extends React.Component {
 		.then(response => response.json())
 		.then(responseJson => {
             this.setState({
-			    apiResponse: responseJson
-			});
+			    data: responseJson
+            });
         })
         .catch(error => console.error(error));
-	};
+        this._getStores();
+    };
+    
+    	/**Function to retrieve and store store name and place_id */
+	_getStores() {
+        let i = 0;
+        let tempName = '';
+        let tempArr = [];
+        let tempLat = '';
+        let tempLng = '';
+    
+        for (i = 0; i < this.state.data.results.length; i++) {
+            tempName = this.state.data.results[i].name;
+            tempLat = this.state.data.results[i].geometry.location.lat;
+            tempLng = this.state.data.results[i].geometry.location.lng;
+            // console.log(tempName + " " + tempPlaceID)
+            tempArr.push({
+            name: tempName,
+            coordinates: {
+                latitude: tempLat,
+                longitude: tempLng,
+            }
+            });
+        }
+        this.setState({ stores: tempArr });
+
+        //console.log(this.state.stores);
+        this._setMarkers();
+
+    }
+
+    _setMarkers() {
+        let i = 0;
+        for (i = 0; i < this.state.stores.length; i++) {
+            
+        }
+    }
+        /**--------------------------------------------------------------*/
 
 
     render() {
         return (
             <View style={styles.mapContainer}>
                 <MapView
-                provider={PROVIDER_GOOGLE}
-                style={styles.mapContainer}
-                showsUserLocation={true}
-                followUserLocation={true}
-                showsMyLocationButton={true}
-                zoomEnabled={true}
-                zoomControlEnabled={true}
-                region={{
-                    latitude: this.state.location.coords.latitude,
-                    longitude: this.state.location.coords.longitude,
-                    latitudeDelta: 0.02,
-                    longitudeDelta: 0.02,
-                }}>
+                    provider={PROVIDER_GOOGLE}
+                    customMapStyle={mapStyle}
+                    style={styles.mapContainer}
+                    showsUserLocation={true}
+                    followUserLocation={true}
+                    showsMyLocationButton={true}
+                    zoomEnabled={true}
+                    zoomControlEnabled={true}
+                    region={{
+                        latitude: this.state.location.coords.latitude,
+                        longitude: this.state.location.coords.longitude,
+                        latitudeDelta: 0.02,
+                        longitudeDelta: 0.02,
+                    }}>
+                    {this.state.stores.map((store, index) => (
+                        <Marker
+                            key={index}
+                            coordinate={store.coordinates}
+                            title={store.name}
+                            //image={require('../../assets/marker.png')}
+                        />
+                    ))}
                 </MapView>
             </View>
         );

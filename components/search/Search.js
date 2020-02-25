@@ -6,7 +6,7 @@ import {
 	TextInput,
 	TouchableHighlight
 } from 'react-native';
-import Item from '../item/Item';
+import ItemInfo from '../item/ItemInfo';
 
 export default class Search extends Component {
 	constructor(props) {

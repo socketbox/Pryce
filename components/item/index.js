@@ -4,8 +4,9 @@ import { createStackNavigator } from 'react-navigation-stack';
 import stackDEBUG from '../stackDEBUG';
 import NewItem from './NewItem';
 import EditItem from './EditItem'
-import Item from './Item'
+import ItemInfo from './ItemInfo'
 import Review from './Reviews'
+import NewPrice from './NewPrice'
 
 const ScannerScreen = createStackNavigator({
     Landing: {
@@ -26,8 +27,8 @@ const ScannerScreen = createStackNavigator({
             headerShown: false
         }
     },
-    Item: {
-        screen: Item,
+    ItemInfo: {
+        screen: ItemInfo,
         navigationOptions: {
             headerShown: false
         }
@@ -38,6 +39,12 @@ const ScannerScreen = createStackNavigator({
             headerShown: false
         }
     },
+    NewPrice: {
+        screen: NewPrice,
+        navigationOptions: {
+            headerShown: false
+        }
+    }
 });
 
 export default createAppContainer(ScannerScreen);

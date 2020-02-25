@@ -37,11 +37,14 @@ function Scanner(props) {
                 props.navigation.navigate(
                     "NewItem", { data } 
                 );
-                } else {
-                    Alert.alert(
-                    `TEST`,
-                    `ADD OPTIONS TO ADD HERE`
-                );
+                } else if (response.ok === true) {
+                    // Alert.alert(
+                    //     `TEST`,
+                    //     `ADD OPTIONS TO ADD HERE`
+                    // );
+                    props.navigation.navigate(
+                        "ItemInfo", { data } 
+                    );
                 }
             // console.log(JSON.stringify(response.ok));
         })
