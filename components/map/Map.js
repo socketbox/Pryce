@@ -39,16 +39,11 @@ class Map extends React.Component {
 
         let location = await Location.getCurrentPositionAsync({});
         this.setState({ location });
-        
-        //const apiKey = 'AIzaSyAtOqdR0mFwseeMd9LJb7nBJQIBJYfhTZ4';
-        //const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${this.state.location.coords.latitude},${this.state.location.coords.longitude}&radius=1500&type=retail&key=${apiKey}`
-                /**fetch data from server to retrieve location data for nearby stores */	
+      
         this._getData();
     };
 
     _getData = async () => {
-	// TODO: get this from location data ~ create map location service 
-        //const apiKey = AIzaSyAtOqdR0mFwseeMd9LJb7nBJQIBJYfhTZ4;
         let lat = this.state.location.coords.latitude;
         let lng = this.state.location.coords.longitude;
 		let url = `https://pryce-cs467.appspot.com/stores/find?lat=${lat}&long=${lng}`
