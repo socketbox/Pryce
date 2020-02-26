@@ -119,8 +119,8 @@ class Login extends React.Component {
 		let authToken = ""
 		//chb:debug
 		console.log("in doLogin, username: " + username + ", password: " + password);
-		//fetch('https://pryce-cs467.appspot.com/login', {
-		fetch('http://192.168.1.100:5000/login', {
+		fetch('https://pryce-cs467.appspot.com/login', {
+		//fetch('http://192.168.1.100:5000/login', {
 			method: 'POST',
 			headers: {
 				'Accept': 'application/json',

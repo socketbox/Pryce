@@ -1,31 +1,57 @@
 import React, { Component } from 'react';
 import { 
-	AsyncStorage,
+  Alert, 
+  AsyncStorage,
   StyleSheet, 
   SafeAreaView, 
   FlatList, 
+  Text, 
   TextInput, 
+  TouchableOpacity,
   View, 
   Button } from 'react-native';
 
 class ListItem extends Component {
-  plid = this.props.pryce_list_id;
-  render() {
+  plid = "";
+  constructor(props) {
+    super(props);
+    this.plid = JSON.stringify(props.pryce_list_id);
+    console.log("plid: " + this.plid);
+  }
+  render(){
 		return (
 			<View>
-			  <Button title={this.props.name} onPress={(plid) => {navigation.navigate('ListDetails', {plid} );}} />
+			  <Button title="foo" onPress={(plid) => {navigation.navigate('ListDetails', {plid});}} />
 			</View>
 		);
 	}
 }
+			  //<Button title={this.props.name} onPress={(plid) => {navigation.navigate('ListDetails', {plid});}} />
 
 export default class UserLists extends Component {
-	state = {pryceLists: []}
+
+  constructor(props){
+    super(props);
+    this.state = {pryceLists: []};
+    let authToken = "";
+    AsyncStorage.getItem('user')
+      .then( res => {
+         if(res){console.log("userobj not null; type: " + typeof(res) + "; " + res);}
+        })
+      .then(res => { 
+        parsed = JSON.parse(res); 
+        if(parsed){console.log("userobj not null; type: " + typeof(res)); }
+      })
+      .then((res) => { this.state.authToken = res.authToken;})
+      .catch(Alert.alert('Login Required', 'You must login before using lists.'));
+    
+    console.log("this.state.authToken: " + this.state.authToken);
+   }
 
   componentDidMount() {
     //TODO: see comment in componentWillUnmount 
     //_getStoredLists()
-    this._getPryceLists();
+    this._getPryceLists(this.state.authToken);
   }
 
   componentWillUnmount() {
@@ -33,16 +59,14 @@ export default class UserLists extends Component {
     console.log("Will Unmount.");
   }
 
-  _postNewList = async(listName) => {}
-
-  _getPryceLists = async () => {
+  _postNewList = async(listName, authToken) => {
 		let url = 'https://pryce-cs467.appspot.com/pryce_lists/';
 		const response = await fetch(url, {
-			method: 'GET',
+			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
 				'Accept': 'application/json',
-				'Authorization': "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1ODI2Njg0MTQsIm5iZiI6MTU4MjY2ODQxNCwianRpIjoiNThiODIyOTctZTA4Zi00NGVkLWI5YWEtMmFlZDlkNjkxM2I2IiwiaWRlbnRpdHkiOnsidXNlcm5hbWUiOiJ1c2VyMSIsImFwcHVzZXJfaWQiOjF9LCJmcmVzaCI6ZmFsc2UsInR5cGUiOiJhY2Nlc3MifQ.CccvE9Aanoji230yOX43kshYx7sHb6YcfrUsQsjK8cI" 
+        'Authorization': "Bearer " + authToken
 			} 
     })
     .then(response => response.json())
@@ -50,7 +74,23 @@ export default class UserLists extends Component {
     .catch(error => console.error(error));
 	};
 
-	render() {
+  _getPryceLists = async (authToken) => {
+		let url = 'https://pryce-cs467.appspot.com/pryce_lists/';
+		const response = await fetch(url, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				'Accept': 'application/json',
+        'Authorization': "Bearer " + authToken
+			} 
+    })
+    .then(response => response.json())
+    .then(responseJson => { this.setState({ pryceLists: responseJson }); })
+    .catch(error => console.error(error));
+	};
+
+
+	render(){
 	  const listData = Object.keys(this.state.pryceLists).map(key => ({key,...this.state.pryceLists[key] }));
     console.log(listData); 
     return (
@@ -58,22 +98,25 @@ export default class UserLists extends Component {
           <FlatList
             data={listData}
             renderItem={({ item }) => <ListItem name={item.name} />}
-            keyExtractor={item => item.key} />
+            keyExtractor={item => item.key} 
+          />
           <View style={styles.newList}>
              <TextInput style={styles.newListForm}
                  placeholderTextColor="#CCCCCC"
                  editable={true}
                  placeholder="New List Name"
                  autoCapitalize="none"
-                 onChangeText={(text) => this.setState({newListName:text})}
-               />
+                 onChangeText={(text) => this.setState({newListName:text})} 
+              />
             <Button title="New List" onPress={() => {_postNewList(state.newListName);}} />
           </View>
+          <TouchableOpacity onPress={() => props.navigation.goBack()} style={styles.buttonContainer} >
+            <Text>Back</Text>
+          </TouchableOpacity>
         </SafeAreaView>
-	);
+	  );
   }
 }
-
 
 const styles = StyleSheet.create({
     newList: {
@@ -95,4 +138,3 @@ const styles = StyleSheet.create({
     },
   }
 );
-
