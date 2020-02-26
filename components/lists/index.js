@@ -4,7 +4,8 @@ import { createStackNavigator } from 'react-navigation-stack';
 import stackDEBUG from '../stackDEBUG';
 
 import NewList from './NewList.js';
-import UserList from './UserList';
+import UserLists from './UserLists.js';
+import ListDetails from './ListDetails.js';
 
 const ListScreen = createStackNavigator({
     Landing: {
@@ -13,8 +14,8 @@ const ListScreen = createStackNavigator({
             headerShown: false
         } 
     },
-    UserList: {
-        screen: UserList,
+    UserLists: {
+        screen: UserLists,
         navigationOptions: {
             headerShown: false
         }
@@ -25,6 +26,13 @@ const ListScreen = createStackNavigator({
             headerShown: false
         }
     },
+    ListDetails: {
+        screen: ListDetails,
+        navigationOptions: {
+            headerShown: false
+        }
+    },
+
 });
 
 export default createAppContainer(ListScreen);
