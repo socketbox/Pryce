@@ -1,8 +1,12 @@
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from 'react-navigation-stack'
 import React, { Component } from 'react';
-import { StyleSheet, SafeAreaView, FlatList, Text, View, Image, Button } from 'react-native';
-//import NewList from './NewList';
+import { 
+	AsyncStorage,
+  StyleSheet, 
+  SafeAreaView, 
+  FlatList, 
+  TextInput, 
+  View, 
+  Button } from 'react-native';
 
 class ListItem extends Component {
   plid = this.props.pryce_list_id;
@@ -15,16 +19,18 @@ class ListItem extends Component {
 	}
 }
 
-
-export default class PryceLists extends Component {
+export default class UserLists extends Component {
 	state = {pryceLists: []}
 
   componentDidMount() {
+    //TODO: see comment in componentWillUnmount 
+    //_getStoredLists()
     this._getPryceLists();
   }
 
   componentWillUnmount() {
-		console.log("Will Unmount.");
+    //TODO: do we need to prevent superfluous calls by storing state, or is this somehow cached? 
+    console.log("Will Unmount.");
   }
 
   _postNewList = async(listName) => {}
@@ -38,7 +44,10 @@ export default class PryceLists extends Component {
 				'Accept': 'application/json',
 				'Authorization': "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1ODI2Njg0MTQsIm5iZiI6MTU4MjY2ODQxNCwianRpIjoiNThiODIyOTctZTA4Zi00NGVkLWI5YWEtMmFlZDlkNjkxM2I2IiwiaWRlbnRpdHkiOnsidXNlcm5hbWUiOiJ1c2VyMSIsImFwcHVzZXJfaWQiOjF9LCJmcmVzaCI6ZmFsc2UsInR5cGUiOiJhY2Nlc3MifQ.CccvE9Aanoji230yOX43kshYx7sHb6YcfrUsQsjK8cI" 
 			} 
-		}).then(response => response.json()).then(responseJson => { this.setState({ pryceLists: responseJson }); }).catch(error => console.error(error));
+    })
+    .then(response => response.json())
+    .then(responseJson => { this.setState({ pryceLists: responseJson }); })
+    .catch(error => console.error(error));
 	};
 
 	render() {
@@ -50,35 +59,39 @@ export default class PryceLists extends Component {
             data={listData}
             renderItem={({ item }) => <ListItem name={item.name} />}
             keyExtractor={item => item.key} />
-          <View style={styles.newListForm}>
-             <TextInput
-                 placeholderTextColor="#e6e6e6"
+          <View style={styles.newList}>
+             <TextInput style={styles.newListForm}
+                 placeholderTextColor="#CCCCCC"
                  editable={true}
                  placeholder="New List Name"
                  autoCapitalize="none"
                  onChangeText={(text) => this.setState({newListName:text})}
                />
-            <Button title="New List" onPress={ () => Alert.alert("call _postNewList")} />
+            <Button title="New List" onPress={() => {_postNewList(state.newListName);}} />
           </View>
         </SafeAreaView>
 	);
   }
 }
 
-            //<Button title="New List" onPress={ (this.getState('newListName')) => { _postNewList(navigation.navigate('NewList')}} />
 
 const styles = StyleSheet.create({
-    unLine: {
-      width: 218,
-      height: 1,
-      backgroundColor: '#060606',
-      opacity: 0.25,
+    newList: {
+      width: '65%',
+      borderWidth: 1,
       marginTop: 1,
-      marginLeft: 2,
+      alignSelf: 'center',
+      alignItems: 'center',
+      alignContent: 'center',
+      color: '#000000',
+      padding: 20
     },
     newListForm: {
       borderWidth: 1,
       borderColor: '#000000',
+      width: '80%', 
+      fontSize: 18,
+      textAlign: 'center',
     },
   }
 );

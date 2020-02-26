@@ -17,46 +17,35 @@ class Login extends React.Component {
 		this.state = {}
 	}
 
-	async componentDidMount() {
-		console.log("in cdMount");
-		/*
-		//TODO: why store the JS object in serialized form only to have to parse it here?
-		await AsyncStorage.getItem('user')
-			.then(req => JSON.parse(req))
-			.then((data) => {
-				if(data) {
-					this.props.log_in(data);
-					console.log("data in cDMount: " + data);
-				}
+	async isUserLoggedIn(){
+		return await AsyncStorage.getItem('user').then(req => JSON.parse(req))
+			.then((userObj) => {
+				return userObj.isLoggedIn; 
 			});
-			console.log("this.props.log_in in cDMount: "+this.props.log_in);*/
+	}
+
+	async componentDidMount() {
+		if(this.isUserLoggedIn())
+			this.props.navigation.navigate('Application');
 	}
 
 	async componentWillUnmount() {
-		console.log("in cWUnMount");
+		//console.log("in cWUnmount");
 	}
 
 	async componentDidUpdate() {
-		console.log("in cDUpdate");
+		//console.log("in cDUpdate");
 	}
 
 	onLogin = async () => {
-		//chb: debug
-		console.log("state in init: " + this.state);
-		if (!this.state) {	return;
-		} else {
-			//chb:debug	
-			console.log("this.state.username: " + this.state.username);
+		if (!this.state) {	
+			return;
+		} 
+		else {
+			//console.log("this.state.username: " + this.state.username);
 			await this.doLogin(this.state.username, this.state.password);
-			if( AsyncStorage.getItem('user').isLoggedIn)
-			{
-				console.log("user logged in");
-			}
-			else
-			{
-				console.log("user not logged in");
-			}
-
+			if(this.isUserLoggedIn())
+				this.props.navigation.navigate('Application');
 		}
 	}
 
@@ -152,6 +141,8 @@ class Login extends React.Component {
 			console.log("access_token from resp: " + responseJson.access_token)
 			//TODO: difference between authToken and access_token?	
 			this.authToken = responseJson.access_token;
+			this.props.user.authToken = this.authToken;
+			
 		});
 		
 		/*.then(access_token => {
@@ -194,11 +185,10 @@ class Login extends React.Component {
 
 		//chb: debug
 		//console.log("in doLogin: " + this.props.log_in(userCredentials));
-		//this.props.log_in(userCredentials)
-		await AsyncStorage.setItem('user', userCredentials);
+		await AsyncStorage.setItem('user', JSON.stringify(userCredentials));
 
 		//TODO: Fix authentication to store authToken to store correctly
-		console.log(this.props.user.authToken)
+		//console.log(this.props.user.authToken)
 	}
 }
 
