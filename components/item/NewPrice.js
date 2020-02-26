@@ -79,9 +79,9 @@ class NewPrice extends React.Component {
 		})
 		.then((response) => response.json())
 		.then(responseData => {
-			/** HANDLE DATA HERE  */
-			Alert.alert("SERVER RESPONSE", JSON.stringify(responseData));
+			//Alert.alert("SERVER RESPONSE", JSON.stringify(responseData));
 			console.log(JSON.stringify(responseData));
+			this.props.navigation.navigate("Rating");
 		})
 	} 
 
@@ -227,6 +227,7 @@ class NewPrice extends React.Component {
 
 				<View style={styles.iconRow}>
 					<RNPickerSelect
+						required={true}
                         editable={false}
 						placeholder={placeholder}
 						items={this.state.stores.map(obj => ({

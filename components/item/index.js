@@ -7,8 +7,9 @@ import EditItem from './EditItem'
 import ItemInfo from './ItemInfo'
 import Review from './Reviews'
 import NewPrice from './NewPrice'
+import Rating from './Rating';
 
-const ScannerScreen = createStackNavigator({
+const ItemScreen = createStackNavigator({
     Landing: {
         screen: stackDEBUG,
         navigationOptions: {
@@ -44,7 +45,13 @@ const ScannerScreen = createStackNavigator({
         navigationOptions: {
             headerShown: false
         }
+    },
+    Rating: {
+        screen: Rating,
+        navigationOptions: {
+            headerShown: false
+        }
     }
 });
 
-export default createAppContainer(ScannerScreen);
+export default createAppContainer(ItemScreen);

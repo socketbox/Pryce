@@ -4,8 +4,10 @@ import {
 	Text,
 	StyleSheet,
 	TextInput,
-	TouchableHighlight
+	TouchableHighlight,
+	FlatList
 } from 'react-native';
+import { Card } from 'react-native-paper';
 import ItemInfo from '../item/ItemInfo';
 
 export default class Search extends Component {
@@ -13,7 +15,8 @@ export default class Search extends Component {
 		super(props);
 		this.state = {
 			itemName: '',
-			error: false
+			error: false,
+			data: []
 		}
 
 		this.handleChange = this.handleChange.bind(this);
@@ -35,12 +38,24 @@ export default class Search extends Component {
 			.then(response => response.json())
 			.then((responseJson) => {
 				console.log(responseJson);
+				this.setState({
+					data: responseJson
+				})
 			})
 			.catch(error => console.error(error));
 	}
 
-	render() {
+	/**NEED TO REFACTOR THIS INTO FUNCTION SERVICE */
+	/**NEED TO REFACTOR THIS INTO FUNCTION SERVICE */
+	/**NEED TO REFACTOR THIS INTO FUNCTION SERVICE */
+	FlatListItemSeparator = () => {
+        return (
+        <View style={{ height: 1, width: "100%", backgroundColor: "#607D8B" }} />
+        );
+    };
 
+
+	render() {
 		return (
 		<View style={styles.container}>
 			<Text style={styles.title}>Search for Item</Text>
@@ -57,9 +72,22 @@ export default class Search extends Component {
 					style={styles.buttonText}>
 					SEARCH
 				</Text>
-				</TouchableHighlight>
+			</TouchableHighlight>
+			<Card>
+			<FlatList
+			
+					initialNumToRender='20'
+					maxToRenderPerBatch='100'
+					data={ this.state.data }
+					ItemSeparatorComponent = {this.FlatListItemSeparator}
+					renderItem={({item}) => 
+					<Text style={styles.item}>{item.brand} - {item.name}           
+					</Text>}
+					keyExtractor={(item, index) => item.name}
+				/>
+			</Card>
+
 		</View>
-		/**RETURN LIST OF ITEMS HERE */
 		)
 	}
 }
