@@ -17,27 +17,41 @@ class Login extends React.Component {
 		this.state = {}
 	}
 
-	async componentDidMount() {
-		await AsyncStorage.getItem('user')
-			.then(req => JSON.parse(req))
-			.then((data) => {
-				if(data) {
-					this.props.log_in(data);
-					console.log(data);
-				}
+	async isUserLoggedIn(){
+		return await AsyncStorage.getItem('user').then(req => JSON.parse(req))
+			.then((userObj) => {
+				return userObj.isLoggedIn; 
 			});
 	}
 
+	async componentDidMount() {
+		if(this.isUserLoggedIn())
+			this.props.navigation.navigate('Application');
+	}
+
+	async componentWillUnmount() {
+		//console.log("in cWUnmount");
+	}
+
+	async componentDidUpdate() {
+		//console.log("in cDUpdate");
+	}
+
 	onLogin = async () => {
-		if (!this.state) {	return;
-		} else {
-			this.doLogin(this.state.username, this.state.password);
+		if (!this.state) {	
+			return;
+		} 
+		else {
+			//console.log("this.state.username: " + this.state.username);
+			await this.doLogin(this.state.username, this.state.password);
+			if(this.isUserLoggedIn())
+				this.props.navigation.navigate('Application');
 		}
 	}
 
 	render () {
 		//let isLoggedIn = this.props.user.isLoggedIn;
-		console.log(this.props);
+		console.log("props in render: " + this.props);
 		return (
 			<View style={styles.container}>
 				<Text style={styles.pryce}>PRYCE</Text>
@@ -49,6 +63,7 @@ class Login extends React.Component {
 						placeholderTextColor="#e6e6e6"
 						editable={true}
 						placeholder="Username"
+						defaultValue="user1"
 						autoCapitalize="none"
 						onChangeText={(text) => this.setState({username:text})}
 					/>
@@ -60,6 +75,7 @@ class Login extends React.Component {
 					<SimpleLineIconsIcon name="lock" style={styles.pwIcon} />
 					<TextInput
 						placeholder="Password"
+						defaultValue="Pa55word"
 						placeholderTextColor="#e6e6e6"
 						editable={true}
 						secureTextEntry={true}
@@ -100,28 +116,45 @@ class Login extends React.Component {
 	}
 
 	async doLogin(username, password) {
-		fetch('http://pryce-cs467.appspot.com/login', {
+		let authToken = ""
+		//chb:debug
+		console.log("in doLogin, username: " + username + ", password: " + password);
+		//fetch('https://pryce-cs467.appspot.com/login', {
+		fetch('http://192.168.1.100:5000/login', {
 			method: 'POST',
 			headers: {
-				Accept: 'application/json',
+				'Accept': 'application/json',
 				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify({
-				username: username,
-				password: password,
+				"username": username,
+				"password": password,
 			}),
 		})
-		.then(res => res.json())
-		.then(responseJson => responseJson.access_token)
-		.then(access_token => {
+		.then((res) => {if (!res.ok) {
+			throw new Error('Network response not ok.');
+			}
+			//return Promise wrapped js object 
+			return res.json();
+		})
+		.then( (responseJson) => {
+			console.log("access_token from resp: " + responseJson.access_token)
+			//TODO: difference between authToken and access_token?	
+			this.authToken = responseJson.access_token;
+			this.props.user.authToken = this.authToken;
+			
+		});
+		
+		/*.then(access_token => {
 			this.props.user.authToken = access_token;
+			console.log("user.authToken: " + this.props.user.authToken);
 			fetch('http://pryce-cs467.appspot.com/protected', {
 				method: 'GET',
 				headers: { Authorization: 'Bearer ' + access_token },
 			})
 			.then(response => {
-				//  console.log(JSON.stringify(response));
-				// console.log("access token: " + access_token);
+				console.log("stringify response: " + JSON.stringify(response));
+				console.log("access token: " + access_token);
 				if (response.ok === true) {
 					this.props.navigation.navigate(
 					'Application'
@@ -132,26 +165,30 @@ class Login extends React.Component {
 				`Please enter a valid username/password.`
 				);
 			}
-			//console.log(response.ok);
+			console.log("response.ok?: " + response.ok);
 			return response.json();
 			})
 			.catch(error => {
 				console.log(error);
 			});
-		});
+		})
+		.catch((error) => {
+			console.error('There has been a problem with your fetch operation:', error);
+		});*/
 
 		let userCredentials = {
 			isLoggedIn: true,
-			authToken: null,
+			authToken: this.authToken,
 			id: null,
 			name: username
 		}
 
-		this.props.log_in(userCredentials)
+		//chb: debug
+		//console.log("in doLogin: " + this.props.log_in(userCredentials));
 		await AsyncStorage.setItem('user', JSON.stringify(userCredentials));
 
 		//TODO: Fix authentication to store authToken to store correctly
-		console.log(this.props.user.authToken)
+		//console.log(this.props.user.authToken)
 	}
 }
 
