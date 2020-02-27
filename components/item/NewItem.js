@@ -89,7 +89,7 @@ class NewItem extends React.Component {
 			/** HANDLE DATA HERE  */
 			//Alert.alert("SERVER RESPONSE", JSON.stringify(responseData));
 			console.log(JSON.stringify(responseData));
-			this.props.navigation.navigate("Rating");
+			this.props.navigation.navigate("Rating", {addedPrice: responseData});
 		})
 	} 
 

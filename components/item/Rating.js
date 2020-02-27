@@ -8,14 +8,13 @@ import {
     TouchableOpacity,
 } from 'react-native';
 
-export default class ItemRating extends Component {
-    constructor() {
-        super();
-        this.state = {
-            rating: 2,
-            maxRating: 5,
-        };
-    }
+export default class Rating extends Component {
+    state = {
+        rating: 2,
+        maxRating: 5,
+        addedPrice: this.props.navigation.state.params.addedPrice
+    };
+
     updateRating(key) {
         this.setState({ rating: key });
     }
@@ -42,7 +41,7 @@ export default class ItemRating extends Component {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.textStyleSmall}>Please Rate This Transaction</Text>
+            <Text style={styles.textStyleSmall}>How was your shopping experience at {this.state.addedPrice.store.name}?</Text>
 
             {/*View to hold our Stars*/}
             <View style={styles.childView}>{ratingBar}</View>
