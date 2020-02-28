@@ -47,44 +47,37 @@ class Login extends React.Component {
 	render () {
 		const loginForm = (
 			<View style={styles.loginInfo}>
-				<View style={styles.username}>
-					<View style={styles.unIconRow}>
-						<FeatherIcon name="user" style={styles.unIcon} />
-						<TextInput
-							placeholderTextColor="#e6e6e6"
-							editable={true}
-							placeholder="Username"
-							defaultValue=""
-							autoCapitalize="none"
-							onChangeText={(text) => this.setState({username:text})}
-						/>
-					</View>
-					<View style={styles.unLine} />
+				<View style={styles.inputRow}>
+					<FeatherIcon name="user" style={styles.inputIcon} />
+					<TextInput
+						placeholderTextColor="#ccc"
+						editable={true}
+						placeholder="Username"
+						defaultValue=""
+						autoCapitalize="none"
+						style={styles.inputField}
+						onChangeText={(text) => this.setState({username:text})}
+					/>
 				</View>
 
-				<View style={styles.password}>
-					<View style={styles.pwIconRow}>
-						<SimpleLineIconsIcon name="lock" style={styles.pwIcon} />
-						<TextInput
-							placeholder="Password"
-							defaultValue=""
-							placeholderTextColor="#e6e6e6"
-							editable={true}
-							secureTextEntry={true}
-							style={styles.pwInput}
-							onChangeText={(text) => this.setState({password:text})}
-						/>
-					</View>
-					<View style={styles.pwLine} />
+				<View style={styles.inputRow}>
+					<SimpleLineIconsIcon name="lock" style={styles.inputIcon} />
+					<TextInput
+						placeholder="Password"
+						defaultValue=""
+						placeholderTextColor="#ccc"
+						editable={true}
+						secureTextEntry={true}
+						style={styles.inputField}
+						onChangeText={(text) => this.setState({password:text})}
+					/>
 				</View>
 
-				<View style={styles.loginButton}>
-					<TouchableOpacity
-						onPress={this.onLogin}
-						style={styles.loginContainer}>
-						<Text style={styles.login2}>Login</Text>
-					</TouchableOpacity>
-				</View>
+				<TouchableOpacity
+					onPress={this.onLogin}
+					style={styles.loginButton}>
+					<Text style={styles.login2}>Login</Text>
+				</TouchableOpacity>
 			
 				<View style={styles.createAccount}>
 					<Text style={styles.newText}>New? </Text>
@@ -102,9 +95,9 @@ class Login extends React.Component {
 
 		const logoutButton = (
 			<View style={styles.loginInfo}>
-				<Text>{this.state.loggedInUser ? 'Logged in as' + this.state.loggedInUser.name : '' }</Text>
+				<Text style={styles.inputRow}>{this.state.loggedInUser ? 'Logged in as ' + this.state.loggedInUser.name : '' }</Text>
 				
-				<TouchableOpacity onPress={this.doLogout} style={styles.loginContainer}>
+				<TouchableOpacity onPress={this.doLogout} style={styles.loginButton}>
 					<Text style={styles.login2}>Logout</Text>
 				</TouchableOpacity>
 			</View>
@@ -173,95 +166,48 @@ const styles = StyleSheet.create({
 	pryce: {
 		flex: 1,
 		fontSize: 70,
-		textAlign: 'center',
-		paddingTop: 120,
+		textAlign: 'center'
 	},
 	loginInfo: {
 		alignItems: 'center',
-		justifyContent: 'center',
-		flex: 2
+		justifyContent: 'flex-start',
+		flex: 4
 	},
-	username: {
+	inputRow: {
 		width: 220,
-		height: 23,
+		height: 30,
+		marginBottom: 30,
+		flexDirection: 'row'
 	},
-	unIcon: {
-		fontSize: 20,
-		opacity: 0.5,
+	inputIcon: {
+		fontSize: 30,
 		alignSelf: 'flex-end',
-		marginBottom: 1,
+		justifyContent: 'flex-end',
 	},
-	unInput: {
+	inputField: {
 		width: 193,
-		height: 15,
+		height: "100%",
 		color: '#121212',
 		textAlign: 'left',
-		marginLeft: 6,
-		marginTop: 6,
-	},
-	unIconRow: {
-		height: 21,
-		flexDirection: 'row',
-		marginRight: 1,
-	},
-	unLine: {
-		width: 218,
-		height: 1,
-		backgroundColor: '#060606',
-		opacity: 0.25,
-		marginTop: 1,
-		marginLeft: 2,
-	},
-	password: {
-		width: 220,
-		height: 23,
-		marginTop: 19,
-	},
-	pwIcon: {
 		fontSize: 20,
-		opacity: 0.5,
-		alignSelf: 'flex-end',
-		marginBottom: 1,
-	},
-	pwInput: {
-		width: 193,
-		height: 15,
-		color: '#121212',
-		textAlign: 'left',
 		marginLeft: 6,
-		marginTop: 6,
-	},
-	pwIconRow: {
-		height: 21,
-		flexDirection: 'row',
-		marginRight: 1,
-	},
-	pwLine: {
-		width: 218,
-		height: 1,
-		backgroundColor: '#060606',
-		opacity: 0.25,
-		marginTop: 1,
-		marginLeft: 2,
+		borderBottomWidth: 1,
+		borderBottomColor: '#060606'
 	},
 	loginButton: {
-		width: 161,
-		height: 32,
-		flex: 2,
+		width: 220,
+		height: 40,
 		alignItems: 'center',
 		justifyContent: 'center',
-	},
-	loginContainer: {
-		width: 161,
-		height: 32,
 		borderRadius: 6,
 		borderWidth: 1,
 		borderStyle: 'solid',
+		marginBottom: 30
 	},
 	login2: {
 		color: '#121212',
 		textAlign: 'center',
-		paddingTop: 7,
+		padding: 5,
 	},
 	createAccount: {
 		width: 168,
