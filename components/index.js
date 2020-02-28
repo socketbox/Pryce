@@ -3,13 +3,13 @@ import AuthNavigator from './AuthNavigator'
 import AppNavigator from './AppNavigator'
 
 const SwitchNavigator = createSwitchNavigator(
-  {
-    Auth: AuthNavigator,
-    App: AppNavigator
-  },
-  {
-    initialRouteName: 'Auth'
-  }
+	{
+		Auth: AuthNavigator,
+		App: AppNavigator,
+	},
+	{
+		initialRouteName: 'Auth'
+	}
 )
 
 const AppContainer = createAppContainer(SwitchNavigator)
