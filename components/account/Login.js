@@ -5,7 +5,9 @@ import {
 	Text,
 	View,
 	TextInput,
-	TouchableOpacity
+	TouchableOpacity,
+	Keyboard,
+	Animated
 	} from 'react-native'
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import SimpleLineIconsIcon from 'react-native-vector-icons/SimpleLineIcons';
@@ -14,6 +16,7 @@ class Login extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {}
+		this.keyboardHeight = new Animated.Value(0);
 	}
 
 	async getLoggedInUser(){
@@ -26,15 +29,34 @@ class Login extends React.Component {
 
 	async componentDidMount() {
 		await this.getLoggedInUser();
+		this.keyboardDidShowSub = Keyboard.addListener('keyboardDidShow', this.keyboardDidShow);
+		this.keyboardDidHideSub = Keyboard.addListener('keyboardDidHide', this.keyboardDidHide);
 	}
 
-	async componentWillUnmount() {
-		//console.log("in cWUnmount");
+	componentWillUnmount() {
+		this.keyboardDidShowSub.remove();
+		this.keyboardDidHideSub.remove();
 	}
 
-	async componentDidUpdate() {
-		//console.log("in cDUpdate");
-	}
+	// Code to get keyboard height on keyboard show/hide for ensuring the login form isn't hidden.
+	// https://www.freecodecamp.org/news/how-to-make-your-react-native-app-respond-gracefully-when-the-keyboard-pops-up-7442c1535580/
+	keyboardDidShow = (event) => {
+		Animated.parallel([
+			Animated.timing(this.keyboardHeight, {
+				duration: event.duration,
+				toValue: event.endCoordinates.height,
+			})
+		]).start();
+	};
+
+	keyboardDidHide = (event) => {
+		Animated.parallel([
+			Animated.timing(this.keyboardHeight, {
+				duration: event.duration,
+				toValue: 0,
+			})
+		]).start();
+	};
 
 	onLogin = async () => {
 		if (!this.state) {	
@@ -47,37 +69,39 @@ class Login extends React.Component {
 	render () {
 		const loginForm = (
 			<View style={styles.loginInfo}>
-				<View style={styles.inputRow}>
-					<FeatherIcon name="user" style={styles.inputIcon} />
-					<TextInput
-						placeholderTextColor="#ccc"
-						editable={true}
-						placeholder="Username"
-						defaultValue=""
-						autoCapitalize="none"
-						style={styles.inputField}
-						onChangeText={(text) => this.setState({username:text})}
-					/>
-				</View>
+				<Animated.View style={{ paddingBottom: this.keyboardHeight }}>
+					<View style={styles.inputRow}>
+						<FeatherIcon name="user" style={styles.inputIcon} />
+						<TextInput
+							placeholderTextColor="#ccc"
+							editable={true}
+							placeholder="Username"
+							defaultValue=""
+							autoCapitalize="none"
+							style={styles.inputField}
+							onChangeText={(text) => this.setState({username:text})}
+						/>
+					</View>
 
-				<View style={styles.inputRow}>
-					<SimpleLineIconsIcon name="lock" style={styles.inputIcon} />
-					<TextInput
-						placeholder="Password"
-						defaultValue=""
-						placeholderTextColor="#ccc"
-						editable={true}
-						secureTextEntry={true}
-						style={styles.inputField}
-						onChangeText={(text) => this.setState({password:text})}
-					/>
-				</View>
+					<View style={styles.inputRow}>
+						<SimpleLineIconsIcon name="lock" style={styles.inputIcon} />
+						<TextInput
+							placeholder="Password"
+							defaultValue=""
+							placeholderTextColor="#ccc"
+							editable={true}
+							secureTextEntry={true}
+							style={styles.inputField}
+							onChangeText={(text) => this.setState({password:text})}
+						/>
+					</View>
 
-				<TouchableOpacity
-					onPress={this.onLogin}
-					style={styles.loginButton}>
-					<Text style={styles.login2}>Login</Text>
-				</TouchableOpacity>
+					<TouchableOpacity
+						onPress={this.onLogin}
+						style={styles.loginButton}>
+						<Text style={styles.login2}>Login</Text>
+					</TouchableOpacity>
+				</Animated.View>
 			
 				<View style={styles.createAccount}>
 					<Text style={styles.newText}>New? </Text>
@@ -170,8 +194,8 @@ const styles = StyleSheet.create({
 	},
 	loginInfo: {
 		alignItems: 'center',
-		justifyContent: 'flex-start',
-		flex: 4
+		justifyContent: 'center',
+		flex: 2
 	},
 	inputRow: {
 		width: 220,
