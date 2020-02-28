@@ -190,7 +190,8 @@ const styles = StyleSheet.create({
 	pryce: {
 		flex: 1,
 		fontSize: 70,
-		textAlign: 'center'
+		textAlign: 'center',
+		paddingTop: 60
 	},
 	loginInfo: {
 		alignItems: 'center',
