@@ -1,19 +1,24 @@
 import { createStackNavigator } from 'react-navigation-stack';
-import Authentication from './AuthNavigator';
+import { createDrawerNavigator } from 'react-navigation-drawer';
+
 import Application from './Application';
 import { createAppContainer } from 'react-navigation';
+import User from './account/User';
+
+const AppDrawer = createDrawerNavigator({
+    Home: Application,
+    },
+    {
+        drawerWidth: "90%",
+        contentComponent: User,
+})
 
 const AppNavigator = createStackNavigator(
     {
-        AuthNavigator: { 
-            screen: Authentication,
+        Application: { 
+            screen: AppDrawer,
             navigationOptions: {
-                headerShown: false
-            }
-        },
-        Application: { screen: Application,
-            navigationOptions: {
-                headerShown: false
+                headerShown: false,
             }
         },
     },

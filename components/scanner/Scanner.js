@@ -37,15 +37,15 @@ function Scanner(props) {
                 props.navigation.navigate(
                     "NewItem", { data } 
                 );
-                } else if (response.ok === true) {
-                    // Alert.alert(
-                    //     `TEST`,
-                    //     `ADD OPTIONS TO ADD HERE`
-                    // );
-                    props.navigation.navigate(
-                        "ItemInfo", { data } 
-                    );
-                }
+            } else if (response.ok === true) {
+                // Alert.alert(
+                //     `TEST`,
+                //     `ADD OPTIONS TO ADD HERE`
+                // );
+                props.navigation.navigate(
+                    "ItemInfo", { data } 
+                );
+            }
             // console.log(JSON.stringify(response.ok));
         })
         .catch(error => {
@@ -87,11 +87,6 @@ function Scanner(props) {
 
     </View>
     );
-    
-  onPress1 = () => {
-    this.setState({ switchOn: !this.state.switchOn });
-  }
-
 }
 
 

@@ -6,7 +6,8 @@ import {
 	View,
 	TextInput,
 	TouchableOpacity,
-	Alert,
+	Keyboard,
+	Animated
 	} from 'react-native'
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import SimpleLineIconsIcon from 'react-native-vector-icons/SimpleLineIcons';
@@ -15,91 +16,98 @@ class Login extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {}
+		this.keyboardHeight = new Animated.Value(0);
 	}
 
-	async isUserLoggedIn(){
+	async getLoggedInUser(){
 		return await AsyncStorage.getItem('user').then(req => JSON.parse(req))
 			.then((userObj) => {
-				return userObj.isLoggedIn; 
-			});
+				this.setState({loggedInUser: userObj});
+				console.log(this.state.loggedInUser);
+		});
 	}
 
 	async componentDidMount() {
-		if(this.isUserLoggedIn())
-			this.props.navigation.navigate('Application');
+		await this.getLoggedInUser();
+		this.keyboardDidShowSub = Keyboard.addListener('keyboardDidShow', this.keyboardDidShow);
+		this.keyboardDidHideSub = Keyboard.addListener('keyboardDidHide', this.keyboardDidHide);
 	}
 
-	async componentWillUnmount() {
-		//console.log("in cWUnmount");
+	componentWillUnmount() {
+		this.keyboardDidShowSub.remove();
+		this.keyboardDidHideSub.remove();
 	}
 
-	async componentDidUpdate() {
-		//console.log("in cDUpdate");
-	}
+	// Code to get keyboard height on keyboard show/hide for ensuring the login form isn't hidden.
+	// https://www.freecodecamp.org/news/how-to-make-your-react-native-app-respond-gracefully-when-the-keyboard-pops-up-7442c1535580/
+	keyboardDidShow = (event) => {
+		Animated.parallel([
+			Animated.timing(this.keyboardHeight, {
+				duration: event.duration,
+				toValue: event.endCoordinates.height,
+			})
+		]).start();
+	};
+
+	keyboardDidHide = (event) => {
+		Animated.parallel([
+			Animated.timing(this.keyboardHeight, {
+				duration: event.duration,
+				toValue: 0,
+			})
+		]).start();
+	};
 
 	onLogin = async () => {
 		if (!this.state) {	
 			return;
-		} 
-		else {
-			//console.log("this.state.username: " + this.state.username);
+		} else {
 			await this.doLogin(this.state.username, this.state.password);
-			if(this.isUserLoggedIn())
-				this.props.navigation.navigate('Application');
 		}
 	}
 
 	render () {
-		//let isLoggedIn = this.props.user.isLoggedIn;
-		console.log("props in render: " + this.props);
-		return (
-			<View style={styles.container}>
-				<Text style={styles.pryce}>PRYCE</Text>
-				<View style={styles.loginInfo}>
-				<View style={styles.username}>
-					<View style={styles.unIconRow}>
-					<FeatherIcon name="user" style={styles.unIcon} />
-					<TextInput
-						placeholderTextColor="#e6e6e6"
-						editable={true}
-						placeholder="Username"
-						defaultValue="user1"
-						autoCapitalize="none"
-						onChangeText={(text) => this.setState({username:text})}
-					/>
+		const loginForm = (
+			<View style={styles.loginInfo}>
+				<Animated.View style={{ paddingBottom: this.keyboardHeight }}>
+					<View style={styles.inputRow}>
+						<FeatherIcon name="user" style={styles.inputIcon} />
+						<TextInput
+							placeholderTextColor="#ccc"
+							editable={true}
+							placeholder="Username"
+							defaultValue=""
+							autoCapitalize="none"
+							style={styles.inputField}
+							onChangeText={(text) => this.setState({username:text})}
+						/>
 					</View>
-					<View style={styles.unLine} />
-				</View>
-				<View style={styles.password}>
-					<View style={styles.pwIconRow}>
-					<SimpleLineIconsIcon name="lock" style={styles.pwIcon} />
-					<TextInput
-						placeholder="Password"
-						defaultValue="Pa55word"
-						placeholderTextColor="#e6e6e6"
-						editable={true}
-						secureTextEntry={true}
-						style={styles.pwInput}
-						onChangeText={(text) => this.setState({password:text})}
-					/>
-					</View>
-					<View style={styles.pwLine} />
-				</View>
 
-				<View style={styles.loginButton}>
+					<View style={styles.inputRow}>
+						<SimpleLineIconsIcon name="lock" style={styles.inputIcon} />
+						<TextInput
+							placeholder="Password"
+							defaultValue=""
+							placeholderTextColor="#ccc"
+							editable={true}
+							secureTextEntry={true}
+							style={styles.inputField}
+							onChangeText={(text) => this.setState({password:text})}
+						/>
+					</View>
+
 					<TouchableOpacity
 						onPress={this.onLogin}
-						style={styles.loginContainer}>
+						style={styles.loginButton}>
 						<Text style={styles.login2}>Login</Text>
 					</TouchableOpacity>
-				</View>
-
+				</Animated.View>
+			
 				<View style={styles.createAccount}>
 					<Text style={styles.newText}>New? </Text>
 					<TouchableOpacity onPress={() => this.props.navigation.navigate('Register')}>
 						<Text style={styles.createAccountHere}>Create account here!</Text>
 					</TouchableOpacity>
-				</View>
 				</View>
 
 				<View style={styles.createAccount} />
@@ -107,88 +115,32 @@ class Login extends React.Component {
 					<Text style={styles.continueAsGuest}>Continue as guest</Text>
 				</TouchableOpacity>
 			</View>
+		);	
+
+		const logoutButton = (
+			<View style={styles.loginInfo}>
+				<Text style={styles.inputRow}>{this.state.loggedInUser ? 'Logged in as ' + this.state.loggedInUser.name : '' }</Text>
+				
+				<TouchableOpacity onPress={this.doLogout} style={styles.loginButton}>
+					<Text style={styles.login2}>Logout</Text>
+				</TouchableOpacity>
+			</View>
+		);
+
+		return (
+			<View style={styles.container}>
+				<Text style={styles.pryce}>PRYCE</Text>
+
+				{ this.state.loggedInUser ? logoutButton : loginForm }
+
+			</View>
 		);
 	}
 
-	async doLogout() {
-		await AsyncStorage.removeItem('user');
-		this.props.log_out()
+	doLogout = async () => {
+		return await AsyncStorage.removeItem('user').then(this.setState({loggedInUser: null}));
 	}
 
-	async doLogin(username, password) {
-		let authToken = ""
-		//chb:debug
-		console.log("in doLogin, username: " + username + ", password: " + password);
-		fetch('https://pryce-cs467.appspot.com/login', {
-		//fetch('http://192.168.1.100:5000/login', {
-			method: 'POST',
-			headers: {
-				'Accept': 'application/json',
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({
-				"username": username,
-				"password": password,
-			}),
-		})
-		.then((res) => {if (!res.ok) {
-			throw new Error('Network response not ok.');
-			}
-			//return Promise wrapped js object 
-			return res.json();
-		})
-		.then( (responseJson) => {
-			console.log("access_token from resp: " + responseJson.access_token)
-			//TODO: difference between authToken and access_token?	
-			this.authToken = responseJson.access_token;
-			this.props.user.authToken = this.authToken;
-			
-		});
-		
-		/*.then(access_token => {
-			this.props.user.authToken = access_token;
-			console.log("user.authToken: " + this.props.user.authToken);
-			fetch('http://pryce-cs467.appspot.com/protected', {
-				method: 'GET',
-				headers: { Authorization: 'Bearer ' + access_token },
-			})
-			.then(response => {
-				console.log("stringify response: " + JSON.stringify(response));
-				console.log("access token: " + access_token);
-				if (response.ok === true) {
-					this.props.navigation.navigate(
-					'Application'
-				);
-			} else {
-				Alert.alert(
-				`Invalid login`,
-				`Please enter a valid username/password.`
-				);
-			}
-			console.log("response.ok?: " + response.ok);
-			return response.json();
-			})
-			.catch(error => {
-				console.log(error);
-			});
-		})
-		.catch((error) => {
-			console.error('There has been a problem with your fetch operation:', error);
-		});*/
-
-		let userCredentials = {
-			isLoggedIn: true,
-			authToken: this.authToken,
-			id: null,
-			name: username
-		}
-
-		//chb: debug
-		//console.log("in doLogin: " + this.props.log_in(userCredentials));
-		await AsyncStorage.setItem('user', JSON.stringify(userCredentials));
-
-		//TODO: Fix authentication to store authToken to store correctly
-		//console.log(this.props.user.authToken)
 	}
 }
 
@@ -199,95 +151,48 @@ const styles = StyleSheet.create({
 	pryce: {
 		flex: 1,
 		fontSize: 70,
-		textAlign: 'center',
-		paddingTop: 120,
+		textAlign: 'center'
 	},
 	loginInfo: {
 		alignItems: 'center',
 		justifyContent: 'center',
 		flex: 2
 	},
-	username: {
+	inputRow: {
 		width: 220,
-		height: 23,
+		height: 30,
+		marginBottom: 30,
+		flexDirection: 'row'
 	},
-	unIcon: {
-		fontSize: 20,
-		opacity: 0.5,
+	inputIcon: {
+		fontSize: 30,
 		alignSelf: 'flex-end',
-		marginBottom: 1,
+		justifyContent: 'flex-end',
 	},
-	unInput: {
+	inputField: {
 		width: 193,
-		height: 15,
+		height: "100%",
 		color: '#121212',
 		textAlign: 'left',
-		marginLeft: 6,
-		marginTop: 6,
-	},
-	unIconRow: {
-		height: 21,
-		flexDirection: 'row',
-		marginRight: 1,
-	},
-	unLine: {
-		width: 218,
-		height: 1,
-		backgroundColor: '#060606',
-		opacity: 0.25,
-		marginTop: 1,
-		marginLeft: 2,
-	},
-	password: {
-		width: 220,
-		height: 23,
-		marginTop: 19,
-	},
-	pwIcon: {
 		fontSize: 20,
-		opacity: 0.5,
-		alignSelf: 'flex-end',
-		marginBottom: 1,
-	},
-	pwInput: {
-		width: 193,
-		height: 15,
-		color: '#121212',
-		textAlign: 'left',
 		marginLeft: 6,
-		marginTop: 6,
-	},
-	pwIconRow: {
-		height: 21,
-		flexDirection: 'row',
-		marginRight: 1,
-	},
-	pwLine: {
-		width: 218,
-		height: 1,
-		backgroundColor: '#060606',
-		opacity: 0.25,
-		marginTop: 1,
-		marginLeft: 2,
+		borderBottomWidth: 1,
+		borderBottomColor: '#060606'
 	},
 	loginButton: {
-		width: 161,
-		height: 32,
-		flex: 2,
+		width: 220,
+		height: 40,
 		alignItems: 'center',
 		justifyContent: 'center',
-	},
-	loginContainer: {
-		width: 161,
-		height: 32,
 		borderRadius: 6,
 		borderWidth: 1,
 		borderStyle: 'solid',
+		marginBottom: 30
 	},
 	login2: {
 		color: '#121212',
 		textAlign: 'center',
-		paddingTop: 7,
+		padding: 5,
 	},
 	createAccount: {
 		width: 168,

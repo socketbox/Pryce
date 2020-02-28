@@ -84,11 +84,19 @@ class NewItem extends React.Component {
 			},
 			body: JSON.stringify(data),
 		})
-		.then((response) => response.json())
+		.then((response) => {
+            if (response.status == 200) {
+                return response.json();
+            } else {
+                // todo: handle other responses
+                return;
+            }
+        })
 		.then(responseData => {
 			/** HANDLE DATA HERE  */
-			Alert.alert("SERVER RESPONSE", JSON.stringify(responseData));
+			//Alert.alert("SERVER RESPONSE", JSON.stringify(responseData));
 			console.log(JSON.stringify(responseData));
+			this.props.navigation.navigate("Rating", {addedPrice: responseData});
 		})
 	} 
 
@@ -172,8 +180,6 @@ class NewItem extends React.Component {
 		return (
 		<View style={styles.container}>
 			<View style={styles.data}>
-
-				<Text>{this.props.navigation.state.params.data}</Text>
 
 				<View style={styles.iconRow}>
 					<FeatherIcon name="box" style={styles.icon} />

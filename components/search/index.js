@@ -6,12 +6,12 @@ import stackDEBUG from '../stackDEBUG';
 import Search from './Search';
 
 const SearchScreen = createStackNavigator({
-    Landing: {
-        screen: stackDEBUG,
-        navigationOptions: {
-            headerShown: false
-        } 
-    },
+    // Landing: {
+    //     screen: stackDEBUG,
+    //     navigationOptions: {
+    //         headerShown: false
+    //     } 
+    // },
     Search: {
         screen: Search,
         navigationOptions: {

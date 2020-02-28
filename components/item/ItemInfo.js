@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { Text, View, StyleSheet, FlatList, Alert, TouchableOpacity } from 'react-native';
 import Constants from 'expo-constants';
-import * as Location from 'expo-location';
 import { Card } from 'react-native-paper';
 
 export default class ItemInfo extends React.Component {
@@ -114,7 +113,9 @@ export default class ItemInfo extends React.Component {
 		this.setState({ priceList: tempArr });
 	}
 
-
+	/**NEED TO REFACTOR THIS INTO FUNCTION SERVICE */
+	/**NEED TO REFACTOR THIS INTO FUNCTION SERVICE */
+	/**NEED TO REFACTOR THIS INTO FUNCTION SERVICE */
     FlatListItemSeparator = () => {
         return (
         <View style={{ height: 1, width: "100%", backgroundColor: "#607D8B" }} />
@@ -129,8 +130,6 @@ export default class ItemInfo extends React.Component {
     }
 
     render() {
-		const sentData = JSON.stringify(this.state.itemData);
-
         return (
 			<View style={styles.container}>
 				<Text>{this.state.itemData.name}</Text>
@@ -142,7 +141,7 @@ export default class ItemInfo extends React.Component {
 					ItemSeparatorComponent = {this.FlatListItemSeparator}
 					renderItem={({item}) => 
 					<Text style={styles.item} 
-						onPress={this.GetItem.bind(this, item.price_id)}> ${item.price} {item.store}              
+						onPress={this.GetItem.bind(this, item.price_id)}> ${item.price} {item.store.name}              
 					</Text>}
 					keyExtractor={(item, index) => item.price_id.toString()}
 				/>
@@ -150,7 +149,7 @@ export default class ItemInfo extends React.Component {
 				<TouchableOpacity 
 					onPress={() => this.props.navigation.navigate(
 						"NewPrice", 
-						{item: sentData } 
+						{item: this.state.itemData } 
 						)}>
 					<Text style={styles.continueAsGuest}>Add New Price</Text>
 				</TouchableOpacity>
