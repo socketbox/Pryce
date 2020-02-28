@@ -84,7 +84,14 @@ class NewItem extends React.Component {
 			},
 			body: JSON.stringify(data),
 		})
-		.then((response) => response.json())
+		.then((response) => {
+            if (response.status == 200) {
+                return response.json();
+            } else {
+                // todo: handle other responses
+                return;
+            }
+        })
 		.then(responseData => {
 			/** HANDLE DATA HERE  */
 			//Alert.alert("SERVER RESPONSE", JSON.stringify(responseData));

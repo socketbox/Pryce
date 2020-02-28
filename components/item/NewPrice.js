@@ -76,7 +76,14 @@ class NewPrice extends React.Component {
 			},
 			body: JSON.stringify(data),
 		})
-		.then((response) => response.json())
+		.then((response) => {
+            if (response.status == 200) {
+                return response.json();
+            } else {
+                // todo: handle other responses
+                return;
+            }
+        })
 		.then(responseData => {
 			//Alert.alert("SERVER RESPONSE", JSON.stringify(responseData));
 			console.log(JSON.stringify(responseData));
@@ -244,7 +251,7 @@ class NewPrice extends React.Component {
 						style={styles.inputIOS}
 						value={this.state.selectedStore}
 						useNativeAndroidPickerStyle={false}
-						textInputProps={{ underlineColor: 'yellow' }}
+                        textInputProps={{ underlineColor: 'yellow' }}
 						/>
 				</View>
 				<View style={styles.line} />
