@@ -5,8 +5,7 @@ import {
 	Text,
 	View,
 	TextInput,
-	TouchableOpacity,
-	Alert,
+	TouchableOpacity
 	} from 'react-native'
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import SimpleLineIconsIcon from 'react-native-vector-icons/SimpleLineIcons';
@@ -17,16 +16,16 @@ class Login extends React.Component {
 		this.state = {}
 	}
 
-	async isUserLoggedIn(){
+	async getLoggedInUser(){
 		return await AsyncStorage.getItem('user').then(req => JSON.parse(req))
 			.then((userObj) => {
-				return userObj.isLoggedIn; 
-			});
+				this.setState({loggedInUser: userObj});
+				console.log(this.state.loggedInUser);
+		});
 	}
 
 	async componentDidMount() {
-		if(this.isUserLoggedIn())
-			this.props.navigation.navigate('Application');
+		await this.getLoggedInUser();
 	}
 
 	async componentWillUnmount() {
@@ -40,48 +39,41 @@ class Login extends React.Component {
 	onLogin = async () => {
 		if (!this.state) {	
 			return;
-		} 
-		else {
-			//console.log("this.state.username: " + this.state.username);
+		} else {
 			await this.doLogin(this.state.username, this.state.password);
-			if(this.isUserLoggedIn())
-				this.props.navigation.navigate('Application');
 		}
 	}
 
 	render () {
-		//let isLoggedIn = this.props.user.isLoggedIn;
-		console.log("props in render: " + this.props);
-		return (
-			<View style={styles.container}>
-				<Text style={styles.pryce}>PRYCE</Text>
-				<View style={styles.loginInfo}>
+		const loginForm = (
+			<View style={styles.loginInfo}>
 				<View style={styles.username}>
 					<View style={styles.unIconRow}>
-					<FeatherIcon name="user" style={styles.unIcon} />
-					<TextInput
-						placeholderTextColor="#e6e6e6"
-						editable={true}
-						placeholder="Username"
-						defaultValue="user1"
-						autoCapitalize="none"
-						onChangeText={(text) => this.setState({username:text})}
-					/>
+						<FeatherIcon name="user" style={styles.unIcon} />
+						<TextInput
+							placeholderTextColor="#e6e6e6"
+							editable={true}
+							placeholder="Username"
+							defaultValue=""
+							autoCapitalize="none"
+							onChangeText={(text) => this.setState({username:text})}
+						/>
 					</View>
 					<View style={styles.unLine} />
 				</View>
+
 				<View style={styles.password}>
 					<View style={styles.pwIconRow}>
-					<SimpleLineIconsIcon name="lock" style={styles.pwIcon} />
-					<TextInput
-						placeholder="Password"
-						defaultValue="Pa55word"
-						placeholderTextColor="#e6e6e6"
-						editable={true}
-						secureTextEntry={true}
-						style={styles.pwInput}
-						onChangeText={(text) => this.setState({password:text})}
-					/>
+						<SimpleLineIconsIcon name="lock" style={styles.pwIcon} />
+						<TextInput
+							placeholder="Password"
+							defaultValue=""
+							placeholderTextColor="#e6e6e6"
+							editable={true}
+							secureTextEntry={true}
+							style={styles.pwInput}
+							onChangeText={(text) => this.setState({password:text})}
+						/>
 					</View>
 					<View style={styles.pwLine} />
 				</View>
@@ -93,13 +85,12 @@ class Login extends React.Component {
 						<Text style={styles.login2}>Login</Text>
 					</TouchableOpacity>
 				</View>
-
+			
 				<View style={styles.createAccount}>
 					<Text style={styles.newText}>New? </Text>
 					<TouchableOpacity onPress={() => this.props.navigation.navigate('Register')}>
 						<Text style={styles.createAccountHere}>Create account here!</Text>
 					</TouchableOpacity>
-				</View>
 				</View>
 
 				<View style={styles.createAccount} />
@@ -107,20 +98,36 @@ class Login extends React.Component {
 					<Text style={styles.continueAsGuest}>Continue as guest</Text>
 				</TouchableOpacity>
 			</View>
+		);	
+
+		const logoutButton = (
+			<View style={styles.loginInfo}>
+				<Text>{this.state.loggedInUser ? 'Logged in as' + this.state.loggedInUser.name : '' }</Text>
+				
+				<TouchableOpacity onPress={this.doLogout} style={styles.loginContainer}>
+					<Text style={styles.login2}>Logout</Text>
+				</TouchableOpacity>
+			</View>
+		);
+
+		return (
+			<View style={styles.container}>
+				<Text style={styles.pryce}>PRYCE</Text>
+
+				{ this.state.loggedInUser ? logoutButton : loginForm }
+
+			</View>
 		);
 	}
 
-	async doLogout() {
-		await AsyncStorage.removeItem('user');
-		this.props.log_out()
+	doLogout = async () => {
+		return await AsyncStorage.removeItem('user').then(this.setState({loggedInUser: null}));
 	}
 
 	async doLogin(username, password) {
-		let authToken = ""
 		//chb:debug
 		console.log("in doLogin, username: " + username + ", password: " + password);
-		//fetch('https://pryce-cs467.appspot.com/login', {
-		fetch('http://192.168.1.100:5000/login', {
+		fetch('https://pryce-cs467.appspot.com/login', {
 			method: 'POST',
 			headers: {
 				'Accept': 'application/json',
@@ -131,64 +138,31 @@ class Login extends React.Component {
 				"password": password,
 			}),
 		})
-		.then((res) => {if (!res.ok) {
-			throw new Error('Network response not ok.');
+		.then(async (res) => {if (!res.ok) {
+				let json = await res.json();
+				if (json) {
+					alert(json.message);
+					return;
+				}
+				throw new Error('Network response not ok.');
 			}
 			//return Promise wrapped js object 
 			return res.json();
 		})
-		.then( (responseJson) => {
-			console.log("access_token from resp: " + responseJson.access_token)
-			//TODO: difference between authToken and access_token?	
-			this.authToken = responseJson.access_token;
-			this.props.user.authToken = this.authToken;
-			
-		});
-		
-		/*.then(access_token => {
-			this.props.user.authToken = access_token;
-			console.log("user.authToken: " + this.props.user.authToken);
-			fetch('http://pryce-cs467.appspot.com/protected', {
-				method: 'GET',
-				headers: { Authorization: 'Bearer ' + access_token },
-			})
-			.then(response => {
-				console.log("stringify response: " + JSON.stringify(response));
-				console.log("access token: " + access_token);
-				if (response.ok === true) {
-					this.props.navigation.navigate(
-					'Application'
-				);
-			} else {
-				Alert.alert(
-				`Invalid login`,
-				`Please enter a valid username/password.`
-				);
+		.then( async (responseJson) => {
+			if (responseJson) {
+				console.log("access_token from resp: " + responseJson.access_token)
+				let userCredentials = {
+					isLoggedIn: true,
+					authToken: responseJson.access_token,
+					id: null,
+					name: username
+				}
+				await AsyncStorage.setItem('user', JSON.stringify(userCredentials));
+				this.setState({loggedInUser: userCredentials});
+				this.props.navigation.navigate('Application');
 			}
-			console.log("response.ok?: " + response.ok);
-			return response.json();
-			})
-			.catch(error => {
-				console.log(error);
-			});
-		})
-		.catch((error) => {
-			console.error('There has been a problem with your fetch operation:', error);
-		});*/
-
-		let userCredentials = {
-			isLoggedIn: true,
-			authToken: this.authToken,
-			id: null,
-			name: username
-		}
-
-		//chb: debug
-		//console.log("in doLogin: " + this.props.log_in(userCredentials));
-		await AsyncStorage.setItem('user', JSON.stringify(userCredentials));
-
-		//TODO: Fix authentication to store authToken to store correctly
-		//console.log(this.props.user.authToken)
+		});
 	}
 }
 

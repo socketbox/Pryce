@@ -30,7 +30,7 @@ class NewPrice extends React.Component {
 		storeLat: null,
 		storeLng: null,
 		storePID: null,
-        propsData: JSON.parse(this.props.navigation.state.params.item),
+        item: this.props.navigation.state.params.item
     };
     
 	componentDidMount() {
@@ -59,15 +59,14 @@ class NewPrice extends React.Component {
 				name: this.state.storeName,
 			},
 			item: {
-				code: this.state.propsData.code,
-				brand: this.state.propsData.brand,
-				name: this.state.propsData.name,
-				quantity: this.state.propsData.quantity,
-				quant_unit: this.state.propsData.quant_unit,
-				description: this.state.propsData.description,
+				code: this.state.item.code,
+				brand: this.state.item.brand,
+				name: this.state.item.name,
+				quantity: this.state.item.quantity,
+				quant_unit: this.state.item.quant_unit,
+				description: this.state.item.description,
 			}
         }
-        console.log(this.state.propsData);
 
 		fetch('http://pryce-cs467.appspot.com/prices', {
 			method: 'POST',
@@ -77,11 +76,18 @@ class NewPrice extends React.Component {
 			},
 			body: JSON.stringify(data),
 		})
-		.then((response) => response.json())
+		.then((response) => {
+            if (response.status == 200) {
+                return response.json();
+            } else {
+                // todo: handle other responses
+                return;
+            }
+        })
 		.then(responseData => {
 			//Alert.alert("SERVER RESPONSE", JSON.stringify(responseData));
 			console.log(JSON.stringify(responseData));
-			this.props.navigation.navigate("Rating");
+			this.props.navigation.navigate("Rating", {addedPrice: responseData});
 		})
 	} 
 
@@ -177,8 +183,8 @@ class NewPrice extends React.Component {
                         editable={false}
 						style={styles.input}
 						name="name"
-						value={this.state.itemName}
-						placeholder={this.state.propsData.name}
+						value={this.state.item.name}
+						placeholder={this.state.item.name}
 						onChangeText={(itemName) => this.setState({ itemName })}
 					/>
 				</View>
@@ -204,8 +210,8 @@ class NewPrice extends React.Component {
                         editable={false}
 						style={styles.input}
 						name="brand"
-						value={this.state.itemBrand}
-						placeholder={this.state.propsData.brand}
+						value={this.state.item.brand}
+						placeholder={this.state.item.brand}
 						onChangeText={(itemBrand) => this.setState({ itemBrand })}
 					/>
 				</View>
@@ -217,8 +223,8 @@ class NewPrice extends React.Component {
                         editable={false}
 						style={styles.input}
 						name="quantity"
-						value={this.state.itemQuantity}
-						placeholder={this.state.propsData.quantity}
+						value={String(this.state.item.quantity)}
+						placeholder={String(this.state.item.quantity)}
 						keyboardType='number-pad'
 						onChangeText={(itemQuantity) => this.setState({ itemQuantity })}
 					/>
@@ -245,7 +251,7 @@ class NewPrice extends React.Component {
 						style={styles.inputIOS}
 						value={this.state.selectedStore}
 						useNativeAndroidPickerStyle={false}
-						textInputProps={{ underlineColor: 'yellow' }}
+                        textInputProps={{ underlineColor: 'yellow' }}
 						/>
 				</View>
 				<View style={styles.line} />
@@ -256,8 +262,8 @@ class NewPrice extends React.Component {
                         editable={false}
 						style={styles.input}
 						name="quant_unit"
-						value={this.state.itemQuantUnit}
-						placeholder={this.state.propsData.quant_unit}
+						value={this.state.item.quant_unit}
+						placeholder={this.state.item.quant_unit}
 						onChangeText={(itemQuantUnit) => this.setState({ itemQuantUnit })}
 					/>
 				</View>
@@ -269,8 +275,8 @@ class NewPrice extends React.Component {
                         editable={false}
 						style={styles.input}
 						name="itemDescription"
-						value={this.state.itemDescription}
-						placeholder={this.state.propsData.description}
+						value={this.state.item.description}
+						placeholder={this.state.item.description}
 						onChangeText={(itemDescription) => this.setState({ itemDescription })}
 						maxLength={50}
 					/>
