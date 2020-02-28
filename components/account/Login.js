@@ -102,6 +102,8 @@ class Login extends React.Component {
 
 		const logoutButton = (
 			<View style={styles.loginInfo}>
+				<Text>{this.state.loggedInUser ? 'Logged in as' + this.state.loggedInUser.name : '' }</Text>
+				
 				<TouchableOpacity onPress={this.doLogout} style={styles.loginContainer}>
 					<Text style={styles.login2}>Logout</Text>
 				</TouchableOpacity>
