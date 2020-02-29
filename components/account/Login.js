@@ -31,6 +31,8 @@ class Login extends React.Component {
 		await this.getLoggedInUser();
 		this.keyboardDidShowSub = Keyboard.addListener('keyboardDidShow', this.keyboardDidShow);
 		this.keyboardDidHideSub = Keyboard.addListener('keyboardDidHide', this.keyboardDidHide);
+		if(this.state.loggedInUser.isLoggedIn)
+			this.props.navigation.navigate('Application');
 	}
 
 	componentWillUnmount() {
@@ -141,6 +143,45 @@ class Login extends React.Component {
 		return await AsyncStorage.removeItem('user').then(this.setState({loggedInUser: null}));
 	}
 
+	async doLogin(username, password) {
+		//chb:debug
+		console.log("in doLogin, username: " + username + ", password: " + password);
+		fetch('https://pryce-cs467.appspot.com/login', {
+			method: 'POST',
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				"username": username,
+				"password": password,
+			}),
+		})
+		.then(async (res) => {if (!res.ok) {
+				let json = await res.json();
+				if (json) {
+					alert(json.message);
+					return;
+				}
+				throw new Error('Network response not ok.');
+			}
+			//return Promise wrapped js object 
+			return res.json();
+		})
+		.then( async (responseJson) => {
+			if (responseJson) {
+				console.log("access_token from resp: " + responseJson.access_token)
+				let userCredentials = {
+					isLoggedIn: true,
+					authToken: responseJson.access_token,
+					id: null,
+					name: username
+				}
+				await AsyncStorage.setItem('user', JSON.stringify(userCredentials));
+				this.setState({loggedInUser: userCredentials});
+				this.props.navigation.navigate('Application');
+			}
+		});
 	}
 }
 

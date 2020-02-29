@@ -15,43 +15,54 @@ class ListItem extends Component {
   plid = "";
   constructor(props) {
     super(props);
-    this.plid = JSON.stringify(props.pryce_list_id);
-    console.log("plid: " + this.plid);
+    //this.plid = JSON.stringify(props.pryce_list_id);
+    //this.plname = JSON.stringify(props.name);
+    //console.log("plid: " + this.plid);
   }
   render(){
 		return (
 			<View>
-			  <Button title="foo" onPress={(plid) => {navigation.navigate('ListDetails', {plid});}} />
+			  <Button title="my button"/>
 			</View>
 		);
 	}
 }
 			  //<Button title={this.props.name} onPress={(plid) => {navigation.navigate('ListDetails', {plid});}} />
+        //<Button title={this.props.name} onPress={function({this.props.pryce_list_id}){navigation.navigate('ListDetails', this.props.pryce_list_id)} />
 
 export default class UserLists extends Component {
 
   constructor(props){
     super(props);
     this.state = {pryceLists: []};
-    let authToken = "";
-    AsyncStorage.getItem('user')
-      .then( res => {
-         if(res){console.log("userobj not null; type: " + typeof(res) + "; " + res);}
-        })
-      .then(res => { 
-        parsed = JSON.parse(res); 
-        if(parsed){console.log("userobj not null; type: " + typeof(res)); }
-      })
-      .then((res) => { this.state.authToken = res.authToken;})
-      .catch(Alert.alert('Login Required', 'You must login before using lists.'));
-    
-    console.log("this.state.authToken: " + this.state.authToken);
-   }
+  }
 
   componentDidMount() {
+    //must call setState immediately (https://reactjs.org/docs/react-component.html#componentdidmount)
+    this.setState((state, props) => {
+      async (state) => {
+        try {
+          userobj = await AsyncStorage.getItem('user').then((res) => {
+            const parsed = JSON.parse(res);
+            console.log("parsed.authToken: " + parsed.authToken);
+            return {authToken: parsed.authToken};
+          });
+        }
+        catch (error) {
+          console.log(error); 
+          Alert.alert('Login Required', 'You must login before using lists.'); 
+        }  
+      }
+     }, this._getPryceLists);
+
     //TODO: see comment in componentWillUnmount 
     //_getStoredLists()
-    this._getPryceLists(this.state.authToken);
+    console.log("Getting pryce lists with " + this.state.authToken); 
+    //this._getPryceLists(this.state.authToken);
+    console.log("Mounted.");
+  }
+
+  componentDidUpdate() {
   }
 
   componentWillUnmount() {
@@ -66,7 +77,7 @@ export default class UserLists extends Component {
 			headers: {
 				'Content-Type': 'application/json',
 				'Accept': 'application/json',
-        'Authorization': "Bearer " + authToken
+        'Authorization': "Bearer " + this.state.authToken
 			} 
     })
     .then(response => response.json())
@@ -74,14 +85,15 @@ export default class UserLists extends Component {
     .catch(error => console.error(error));
 	};
 
-  _getPryceLists = async (authToken) => {
+  _getPryceLists = async () => {
+    console.log("authToken in getPryceLists: " + this.state.authToken);
 		let url = 'https://pryce-cs467.appspot.com/pryce_lists/';
 		const response = await fetch(url, {
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
 				'Accept': 'application/json',
-        'Authorization': "Bearer " + authToken
+        'Authorization': "Bearer " + this.state.authToken,
 			} 
     })
     .then(response => response.json())
