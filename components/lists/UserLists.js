@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { 
-  Alert, 
   AsyncStorage,
   StyleSheet, 
   SafeAreaView, 
@@ -11,63 +10,76 @@ import {
   View, 
   Button } from 'react-native';
 
-class ListItem extends Component {
-  plid = "";
-  constructor(props) {
-    super(props);
-    //this.plid = JSON.stringify(props.pryce_list_id);
-    //this.plname = JSON.stringify(props.name);
-    //console.log("plid: " + this.plid);
+class PryceList extends Component {
+  
+  onPress(plid){
+    this.props.pryceListDetails.push('ListDetails', {pryceListId: plid});
   }
+
   render(){
 		return (
 			<View>
-			  <Button title="my button"/>
+        <Button title={this.props.pryceListName} onPress={() => this.onPress(this.props.pryceListId)} /> 
 			</View>
 		);
 	}
 }
-			  //<Button title={this.props.name} onPress={(plid) => {navigation.navigate('ListDetails', {plid});}} />
-        //<Button title={this.props.name} onPress={function({this.props.pryce_list_id}){navigation.navigate('ListDetails', this.props.pryce_list_id)} />
+
 
 export default class UserLists extends Component {
-
   constructor(props){
     super(props);
-    this.state = {pryceLists: []};
+    this.state = {pryceLists: [], listStale: true};
+  }
+
+  _setToken = async () => {
+    const token = await AsyncStorage.getItem('user').then((res) => {
+        console.log("result of getItem: " + res);
+        const parsed = JSON.parse(res);
+        console.log("parsed.authToken: " + parsed.authToken);
+        return {authToken: parsed.authToken};
+      });
+
+    console.log("token value: " + token.authToken);
+    if( token.authToken )
+    {
+      this.setState(token); 
+      this.setState({readyToRender: true});
+    }
+    else
+    {
+        this.setState({readyToRender: false});
+    }
   }
 
   componentDidMount() {
-    //must call setState immediately (https://reactjs.org/docs/react-component.html#componentdidmount)
-    this.setState((state, props) => {
-      async (state) => {
-        try {
-          userobj = await AsyncStorage.getItem('user').then((res) => {
-            const parsed = JSON.parse(res);
-            console.log("parsed.authToken: " + parsed.authToken);
-            return {authToken: parsed.authToken};
-          });
-        }
-        catch (error) {
-          console.log(error); 
-          Alert.alert('Login Required', 'You must login before using lists.'); 
-        }  
-      }
-     }, this._getPryceLists);
-
-    //TODO: see comment in componentWillUnmount 
-    //_getStoredLists()
-    console.log("Getting pryce lists with " + this.state.authToken); 
-    //this._getPryceLists(this.state.authToken);
-    console.log("Mounted.");
+    console.log("Did Mount");
+    if(!this.state.readyToRender) { 
+      console.log("Calling setToken");
+      this._setToken();
+    }
   }
 
   componentDidUpdate() {
+    if(this.state.readyToRender && this.state.listStale)
+    { 
+      console.log("Calling _getPryceLists()");
+      if(this._getPryceLists())
+        this.setState({listStale: false});
+    }
+    else if (this.state.readyToRender &! this.state.listStale)
+    {
+      return;
+    }
+    else
+    {
+      console.log("calling set token");
+      this._setToken();
+    }
   }
 
   componentWillUnmount() {
-    //TODO: do we need to prevent superfluous calls by storing state, or is this somehow cached? 
-    console.log("Will Unmount.");
+    console.log("Will Unmount");
   }
 
   _postNewList = async(listName, authToken) => {
@@ -86,6 +98,7 @@ export default class UserLists extends Component {
 	};
 
   _getPryceLists = async () => {
+    result = false; 
     console.log("authToken in getPryceLists: " + this.state.authToken);
 		let url = 'https://pryce-cs467.appspot.com/pryce_lists/';
 		const response = await fetch(url, {
@@ -97,19 +110,28 @@ export default class UserLists extends Component {
 			} 
     })
     .then(response => response.json())
-    .then(responseJson => { this.setState({ pryceLists: responseJson }); })
+    .then(responseJson => { this.setState({ pryceLists: responseJson }); result=true })
     .catch(error => console.error(error));
+
+    return result;
 	};
 
+  goBackButton = () => {
+    this.props.navigation.goBack();
+  }
 
 	render(){
-	  const listData = Object.keys(this.state.pryceLists).map(key => ({key,...this.state.pryceLists[key] }));
+    if( !this.state.readyToRender )
+    {
+      return (<SafeAreaView><Text>Loading...</Text></SafeAreaView>);
+    } 
+    const listData = Object.keys(this.state.pryceLists).map(key => ({key,...this.state.pryceLists[key] }));
     console.log(listData); 
     return (
         <SafeAreaView>
           <FlatList
             data={listData}
-            renderItem={({ item }) => <ListItem name={item.name} />}
+            renderItem={({ item }) => <PryceList pryceListDetails={this.props.navigation} pryceListId={item.pryce_list_id} pryceListName={item.name} />}
             keyExtractor={item => item.key} 
           />
           <View style={styles.newList}>
@@ -122,7 +144,7 @@ export default class UserLists extends Component {
               />
             <Button title="New List" onPress={() => {_postNewList(state.newListName);}} />
           </View>
-          <TouchableOpacity onPress={() => props.navigation.goBack()} style={styles.buttonContainer} >
+          <TouchableOpacity onPress={this.goBackButton} style={styles.buttonContainer} >
             <Text>Back</Text>
           </TouchableOpacity>
         </SafeAreaView>
