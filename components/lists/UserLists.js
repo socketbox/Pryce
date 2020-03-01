@@ -11,11 +11,10 @@ import {
   Button } from 'react-native';
 
 class PryceList extends Component {
-  
   onPress(plid){
     this.props.pryceListDetails.push('ListDetails', {pryceListId: plid});
   }
-
+  
   render(){
 		return (
 			<View>
@@ -64,7 +63,8 @@ export default class UserLists extends Component {
     if(this.state.readyToRender && this.state.listStale)
     { 
       console.log("Calling _getPryceLists()");
-      if(this._getPryceLists())
+      this._getPryceLists();
+      if(this.state.pryceLists)
         this.setState({listStale: false});
     }
     else if (this.state.readyToRender &! this.state.listStale)
@@ -82,23 +82,29 @@ export default class UserLists extends Component {
     console.log("Will Unmount");
   }
 
-  _postNewList = async(listName, authToken) => {
-		let url = 'https://pryce-cs467.appspot.com/pryce_lists/';
+  _postNewList = async(listName) => {
+		//let url = 'https://pryce-cs467.appspot.com/pryce_lists/';
+    let url = 'http://192.168.1.100:5000/pryce_lists/';
 		const response = await fetch(url, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
 				'Accept': 'application/json',
         'Authorization': "Bearer " + this.state.authToken
-			} 
+      },
+      body: JSON.stringify(listName),
     })
     .then(response => response.json())
-    .then(responseJson => { this.setState({ pryceLists: responseJson }); })
+    .then(responseJson => { 
+      let pls = Array.from(this.state.pryceLists)
+      console.log("response: " + responseJson + ", pls arr: " + pls); 
+      pls.push(responseJson);
+      this.setState({ pryceLists: pls}); 
+    })
     .catch(error => console.error(error));
 	};
 
   _getPryceLists = async () => {
-    result = false; 
     console.log("authToken in getPryceLists: " + this.state.authToken);
 		let url = 'https://pryce-cs467.appspot.com/pryce_lists/';
 		const response = await fetch(url, {
@@ -110,10 +116,8 @@ export default class UserLists extends Component {
 			} 
     })
     .then(response => response.json())
-    .then(responseJson => { this.setState({ pryceLists: responseJson }); result=true })
+    .then(responseJson => { this.setState({ pryceLists: responseJson });})
     .catch(error => console.error(error));
-
-    return result;
 	};
 
   goBackButton = () => {
@@ -142,10 +146,13 @@ export default class UserLists extends Component {
                  autoCapitalize="none"
                  onChangeText={(text) => this.setState({newListName:text})} 
               />
-            <Button title="New List" onPress={() => {_postNewList(state.newListName);}} />
+            <Button title="New List" onPress={() => {this._postNewList(this.state.newListName);}} />
           </View>
-          <TouchableOpacity onPress={this.goBackButton} style={styles.buttonContainer} >
-            <Text>Back</Text>
+          <TouchableOpacity
+            onPress={() => this.props.navigation.goBack()}
+            style={styles.buttonContainer}
+            >
+            <Text style={styles.signIn2}>Back</Text>
           </TouchableOpacity>
         </SafeAreaView>
 	  );
@@ -169,6 +176,11 @@ const styles = StyleSheet.create({
       width: '80%', 
       fontSize: 18,
       textAlign: 'center',
+    },
+    signIn2: {
+		color: "#121212",
+		textAlign: "center",
+		paddingTop: 5,
     },
   }
 );

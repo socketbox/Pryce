@@ -13,6 +13,9 @@ import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-ta
 
 
 export default class ListDetails extends Component {
+  
+  _mounted = null;
+  
   constructor(props) {
     super(props);
     this.state = {
@@ -46,6 +49,7 @@ export default class ListDetails extends Component {
       console.log("Calling setToken");
       this._setToken();
     }
+    this._mounted = true;
   }
 
   componentDidUpdate() {
@@ -71,6 +75,7 @@ export default class ListDetails extends Component {
 
   componentWillUnmount() {
     console.log("Will Unmount");
+    this._mounted = false;
   }
 
   _getListItemDetails = async () => {
@@ -99,7 +104,7 @@ export default class ListDetails extends Component {
 	};
 
 	render(){
-    if( !this.state.tableData )
+    if( !this.state.tableData || !this._mounted )
     {
       return (<SafeAreaView><Text>Loading...</Text></SafeAreaView>);
     } 
@@ -111,6 +116,12 @@ export default class ListDetails extends Component {
             <Row data={this.state.tableHead} style={styles.head} textStyle={styles.text}/>
             <Rows data={this.state.tableData} textStyle={styles.text}/>
           </Table>
+          <TouchableOpacity
+            onPress={() => this.props.navigation.goBack()}
+            style={styles.buttonContainer}
+            >
+            <Text style={styles.signIn2}>Back</Text>
+          </TouchableOpacity>
         </SafeAreaView>
       );
     }
@@ -134,6 +145,11 @@ const styles = StyleSheet.create({
       width: '80%', 
       fontSize: 18,
       textAlign: 'center',
+    },
+    signIn2: {
+      color: "#121212",
+      textAlign: "center",
+      paddingTop: 5,
     },
   }
 );
