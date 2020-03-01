@@ -42,7 +42,7 @@ export default class ListDetails extends Component {
   }
 
   componentDidMount() {
-    this.storeNavigationParams();
+    //this.storeNavigationParams();
     console.log("Did Mount");
     if(!this.state.authToken) { 
       console.log("Calling setToken");
@@ -56,9 +56,15 @@ export default class ListDetails extends Component {
     { 
       console.log("Fetching...");
       (async ()=>{
-        result = await this._getListItemDetails();
-        if(result)
-          this.setState({listStale: false});
+        try{
+          result = await this._getListItemDetails();
+          if(result)
+            this.setState({listStale: false});
+        }
+        catch(err)
+        {
+          console.log("error in cDU: " + err);
+        }
       })();
     }
     else if (this.state.tableData &! this.state.listStale)
@@ -79,32 +85,44 @@ export default class ListDetails extends Component {
 
   /* necessary because Search is in a different stackNavigator */
   storeNavigationParams() {
-    let parms = {
+    /*let parms = {
       pryceListId: this.state.pryceListId,
       routeName: this.props.navigation.state.routeName,
       //addItemCallBack: this.addItemToList 
-    };
-    let serParms = JSON.stringify(parms)
-    AsyncStorage.setItem(serParms).then(res => console.log(res)).catch( (err) => {
+    };*/
+    let serPlid = JSON.stringify(this.state.pryceListId);
+    AsyncStorage.setItem(serPlid).then(res => console.log(res)).catch( (err) => {
       console.log("Failed to store parms: " + err);
     });
   }
   
-  addItemToList = async(itemJson, plid) => {
-		//let url = 'https://pryce-cs467.appspot.com/pryce_lists/' + plid;
-    let url = 'http://192.168.1.100:5000/pryce_lists/' + plid;
+  static addItemToList = async(itemJson, plid) => {
+    let token = null;
+    try{
+      let user = await AsyncStorage.getItem('user');
+      token = JSON.parse(user).authToken; 
+    }
+    catch(err)
+    {
+      console.log(err);
+    } 
+    setTimeout(()=>{},1000);
+    let url = 'https://pryce-cs467.appspot.com/pryce_lists/' + plid;
 		const response = await fetch(url, {
 			method: 'PUT',
 			headers: {
 				'Content-Type': 'application/json',
 				'Accept': 'application/json',
-        'Authorization': "Bearer " + this.state.authToken
+        'Authorization': "Bearer " + token
       },
       body: itemJson,
     })
     .then(response => response.json())
     .then(responseJson => { 
-      console.log("response: " + responseJson); 
+      console.log("response: " + JSON.stringify(responseJson));
+      //How to update the component? We have no access to 'this'
+      //if ('pryce_list' in responseJson.keys())  
+      //{}
     })
     .catch(error => console.error(error));
 	};

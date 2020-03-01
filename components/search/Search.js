@@ -9,30 +9,25 @@ import {
 	FlatList
 } from 'react-native';
 import { Card } from 'react-native-paper';
+import ListDetails from '../lists/ListDetails';
 import ItemInfo from '../item/ItemInfo';
 
 class ItemButton extends Component {
-	constructor(props)
-	{
-		super(props);
-		this._plid = this.props.buttonNavigation.state.params.pryceListId,
-		this._routeName = this.props.buttonNavigation.state.params.routeName,
-		this._addItemFunc = this.props.buttonNavigation.state.params.addItemCallBack
-	}
-
+	
 	onPress(itemInstance){
 		console.log("foo");	
-		if( this.props._routeName === 'ListDetails')
+		if( this.props.searchState.routeName === 'ListDetails')
 		{
 			(async () => { 
-				itemInstance.json().then(res => this._addItemFunc(res, this._plid));
+				let itemString = JSON.stringify(itemInstance);
+				ListDetails.addItemToList(itemString, this.props.searchState.listId);
 			})();
-			this.props.buttonNavigation.navigate(this._routeName);
+			this.props.searchNav.navigate(this.props.searchState.routeName);
 		}
 		else
 		{
 			//go to itemInfo and take the item 
-			this.props.buttonNavigation.navigate('ItemInfo', {item: itemInstance});
+			this.props.searchNav.navigate('ItemInfo', {item: itemInstance});
 		}
 	}
 	
@@ -49,15 +44,23 @@ class ItemButton extends Component {
 export default class Search extends Component {
 	constructor(props) {
 		super(props);
+		
+		//Parameters that would be passed in
+		/*this.listId = this.props.buttonNavigation.state.params.pryceListId,
+		this.routeName = this.props.buttonNavigation.state.params.routeName,
+		this.addItemFunc = this.props.buttonNavigation.state.params.addItemCallBack*/
 		this.state = {
 			itemName: '',
 			error: false,
-			data: []
+			data: [],
+			routeName: 'ListDetails',
+			listId: 1,
+			addItemFunc: ListDetails.addItemToList,
 		}
 
 		this.handleChange = this.handleChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
-		}
+	}
 
 		handleChange(e) {
 			this.setState({
@@ -117,10 +120,10 @@ export default class Search extends Component {
 					data={ this.state.data }
 					ItemSeparatorComponent = {this.FlatListItemSeparator}
 					renderItem={({item}) => 
-					<ItemButton instance={item} buttonNavigation={this.props.navigation} title={item.name} 
-						style={styles.item}>{item.brand} - {item.name}           
+					<ItemButton instance={item} searchState={this.state} searchNav={this.props.navigation}
+						title={item.name} style={styles.item}>{item.brand} - {item.name}           
 					</ItemButton>}
-					keyExtractor={(item, index) => item.name}
+					keyExtractor={item => item.code}
 				/>
 			</Card>
 
