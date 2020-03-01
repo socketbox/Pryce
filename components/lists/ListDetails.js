@@ -3,13 +3,11 @@ import {
   AsyncStorage,
   StyleSheet, 
   SafeAreaView, 
-  FlatList, 
   Text, 
-  TextInput, 
   TouchableOpacity,
-  View, 
-  Button } from 'react-native';
-import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component';
+  View 
+  } from 'react-native';
+import { Table, Row, Rows } from 'react-native-table-component';
 
 
 export default class ListDetails extends Component {
@@ -44,6 +42,7 @@ export default class ListDetails extends Component {
   }
 
   componentDidMount() {
+    this.storeNavigationParams();
     console.log("Did Mount");
     if(!this.state.authToken) { 
       console.log("Calling setToken");
@@ -78,7 +77,39 @@ export default class ListDetails extends Component {
     this._mounted = false;
   }
 
-  _getListItemDetails = async () => {
+  /* necessary because Search is in a different stackNavigator */
+  storeNavigationParams() {
+    let parms = {
+      pryceListId: this.state.pryceListId,
+      routeName: this.props.navigation.state.routeName,
+      //addItemCallBack: this.addItemToList 
+    };
+    let serParms = JSON.stringify(parms)
+    AsyncStorage.setItem(serParms).then(res => console.log(res)).catch( (err) => {
+      console.log("Failed to store parms: " + err);
+    });
+  }
+  
+  addItemToList = async(itemJson, plid) => {
+		//let url = 'https://pryce-cs467.appspot.com/pryce_lists/' + plid;
+    let url = 'http://192.168.1.100:5000/pryce_lists/' + plid;
+		const response = await fetch(url, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json',
+				'Accept': 'application/json',
+        'Authorization': "Bearer " + this.state.authToken
+      },
+      body: itemJson,
+    })
+    .then(response => response.json())
+    .then(responseJson => { 
+      console.log("response: " + responseJson); 
+    })
+    .catch(error => console.error(error));
+	};
+
+_getListItemDetails = async () => {
     let result = true; 
     let resJson = null;
     console.log("authToken in getPryceLists: " + this.state.authToken);
@@ -116,12 +147,18 @@ export default class ListDetails extends Component {
             <Row data={this.state.tableHead} style={styles.head} textStyle={styles.text}/>
             <Rows data={this.state.tableData} textStyle={styles.text}/>
           </Table>
-          <TouchableOpacity
-            onPress={() => this.props.navigation.goBack()}
-            style={styles.buttonContainer}
-            >
-            <Text style={styles.signIn2}>Back</Text>
-          </TouchableOpacity>
+          <View style={{alignContent: 'center'}}>
+            <TouchableOpacity onPress={() => this.props.navigation.navigate('Search')}
+                style={styles.buttonContainer} >
+              <Text style={styles.buttons}>Add Item</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => this.props.navigation.goBack()}
+              style={styles.buttonContainer}
+              >
+              <Text style={styles.buttons}>Back</Text>
+            </TouchableOpacity>
+          </View>
         </SafeAreaView>
       );
     }
@@ -146,10 +183,12 @@ const styles = StyleSheet.create({
       fontSize: 18,
       textAlign: 'center',
     },
-    signIn2: {
+    buttons: {
+      fontSize: 18,
       color: "#121212",
-      textAlign: "center",
-      paddingTop: 5,
+      width: '35%', 
+      padding: 15,
+      borderWidth: 1,
     },
   }
 );

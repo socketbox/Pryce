@@ -83,8 +83,7 @@ export default class UserLists extends Component {
   }
 
   _postNewList = async(listName) => {
-		//let url = 'https://pryce-cs467.appspot.com/pryce_lists/';
-    let url = 'http://192.168.1.100:5000/pryce_lists/';
+		let url = 'https://pryce-cs467.appspot.com/pryce_lists/';
 		const response = await fetch(url, {
 			method: 'POST',
 			headers: {
