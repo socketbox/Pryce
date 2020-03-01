@@ -1,64 +1,70 @@
-import { NavigationContainer } from 'react-navigation';
-import { createStackNavigator } from 'react-navigation-stack'
 import React, { Component } from 'react';
-import { TextInput, StyleSheet, AsyncStorage, SafeAreaView, FlatList, Text, View, Image, Button } from 'react-native';
+import { 
+  AsyncStorage,
+  StyleSheet, 
+  SafeAreaView, 
+  FlatList, 
+  Text, 
+  TextInput, 
+  TouchableOpacity,
+  View, 
+  Button } from 'react-native';
+import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component';
+
 
 export default class ListDetails extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      listDetails: [],
-      pryceListId: this.props.navigation.state.params.pryceListId, 
+      tableData: null,
       listStale: true,
-      readyToFetch: false,
-      authToken: ''
+      pryceListId: this.props.navigation.state.params.pryceListId,
     };
-    this.setState = this.setState.bind(this);
   }
- 
+
   _setToken = async () => {
     const token = await AsyncStorage.getItem('user').then((res) => {
-        console.log("result of getItem: " + res);
         const parsed = JSON.parse(res);
-        console.log("parsed.authToken: " + parsed.authToken);
         return {authToken: parsed.authToken};
       });
 
     console.log("token value: " + token.authToken);
     if( token.authToken )
     {
-      this.setState(token); 
-      if(this.state.authToken)
-        this.setState({readyToFetch: true});
+      console.log("setToken: " + token.authToken);
+      this.setState( token );
     }
     else
     {
-        this.setState({readyToFetch: false});
+      this.setState({readyToRender: false});
     }
   }
 
   componentDidMount() {
     console.log("Did Mount");
-    if(!this.state.readyToFetch) { 
+    if(!this.state.authToken) { 
       console.log("Calling setToken");
       this._setToken();
     }
   }
 
   componentDidUpdate() {
-    if(this.state.readyToFetch && this.state.listStale)
+    if(this.state.authToken && this.state.listStale)
     { 
-      console.log("Calling _getListDetails()");
-      if(this._getListItemDetails())
-        this.setState({listStale: false});
+      console.log("Fetching...");
+      (async ()=>{
+        result = await this._getListItemDetails();
+        if(result)
+          this.setState({listStale: false});
+      })();
     }
-    else if (this.state.readyToFetch &! this.state.listStale)
+    else if (this.state.tableData &! this.state.listStale)
     {
       return;
     }
-    else
+    else if(!this.state.authToken)
     {
-      console.log("calling set token");
+      console.log("Token not set with cDM; calling settoken");
       this._setToken();
     }
   }
@@ -67,44 +73,47 @@ export default class ListDetails extends Component {
     console.log("Will Unmount");
   }
 
-
   _getListItemDetails = async () => {
-    result = false;
-    let url = 'https://pryce-cs467.appspot.com/pryce_lists/details/' + this.state.pryceListId;
-    console.log("url: " + url);
+    let result = true; 
+    let resJson = null;
+    console.log("authToken in getPryceLists: " + this.state.authToken);
+		let url = 'https://pryce-cs467.appspot.com/pryce_lists/details/' + this.state.pryceListId;
 		const response = await fetch(url, {
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
 				'Accept': 'application/json',
-        'Authorization': "Bearer " + this.state.authToken,
-			} 
+        'Authorization': "Bearer " + this.state.authToken
+			}, 
     })
     .then(response => response.json())
-    .then(responseJson => { console.log("responseJson: " + JSON.stringify(responseJson) + ", " + this.state.authToken); this.setState({ listDetails: responseJson }); result = true; })
-    .catch( (error) => {console.error(error + "_this is horrible"); result = false;});
-    console.log("returning result of " + result);
-    if(result)
-      this.setState({readyToRender: true});
+    .then( jsonObj => { 
+      let tableRows = jsonObj.map( (cv, i, responseJson) => {
+        return [cv.item_name, cv.price, cv.store_name, cv.reported];
+        } 
+      );
+      this.setState({ tableData: tableRows});
+    })
+    .catch(error => {console.error(error); result = false;})
     return result;
 	};
 
-  render(){ 
-    if( !this.state.readyToRender )
+	render(){
+    if( !this.state.tableData )
     {
       return (<SafeAreaView><Text>Loading...</Text></SafeAreaView>);
     } 
-    //const listData = Object.keys(this.state.pryceLists).map(key => ({key,...this.state.pryceLists[key] }));
-    listData = this.state.listDetails;
-    return (
-        <SafeAreaView>
-          <FlatList
-            data={listData}
-            renderItem={({ item }) => <PryceList pryceListDetails={this.props.navigation} pryceListId={item.pryce_list_id} pryceListName={item.name} />}
-            keyExtractor={item => item.key} 
-          />
+    else
+    {
+      return (
+        <SafeAreaView style={styles.container}>
+          <Table borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}}>
+            <Row data={this.state.tableHead} style={styles.head} textStyle={styles.text}/>
+            <Rows data={this.state.tableData} textStyle={styles.text}/>
+          </Table>
         </SafeAreaView>
-	  );
+      );
+    }
   }
 }
 
@@ -128,4 +137,3 @@ const styles = StyleSheet.create({
     },
   }
 );
-
