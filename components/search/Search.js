@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+	Button,
 	View,
 	Text,
 	StyleSheet,
@@ -8,20 +9,58 @@ import {
 	FlatList
 } from 'react-native';
 import { Card } from 'react-native-paper';
+import ListDetails from '../lists/ListDetails';
 import ItemInfo from '../item/ItemInfo';
+
+class ItemButton extends Component {
+	
+	onPress(itemInstance){
+		console.log("foo");	
+		if( this.props.searchState.routeName === 'ListDetails')
+		{
+			(async () => { 
+				let itemString = JSON.stringify(itemInstance);
+				ListDetails.addItemToList(itemString, this.props.searchState.listId);
+			})();
+			this.props.searchNav.navigate(this.props.searchState.routeName);
+		}
+		else
+		{
+			//go to itemInfo and take the item 
+			this.props.searchNav.navigate('ItemInfo', {item: itemInstance});
+		}
+	}
+	
+	render(){
+		return (
+			<View>
+				<Button title={this.props.title} onPress={() => this.onPress(this.props.instance)} /> 
+			</View>
+		);
+	}
+}
+
 
 export default class Search extends Component {
 	constructor(props) {
 		super(props);
+		
+		//Parameters that would be passed in
+		/*this.listId = this.props.buttonNavigation.state.params.pryceListId,
+		this.routeName = this.props.buttonNavigation.state.params.routeName,
+		this.addItemFunc = this.props.buttonNavigation.state.params.addItemCallBack*/
 		this.state = {
 			itemName: '',
 			error: false,
-			data: []
+			data: [],
+			routeName: 'ListDetails',
+			listId: 1,
+			addItemFunc: ListDetails.addItemToList,
 		}
 
 		this.handleChange = this.handleChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
-		}
+	}
 
 		handleChange(e) {
 			this.setState({
@@ -81,9 +120,10 @@ export default class Search extends Component {
 					data={ this.state.data }
 					ItemSeparatorComponent = {this.FlatListItemSeparator}
 					renderItem={({item}) => 
-					<Text style={styles.item}>{item.brand} - {item.name}           
-					</Text>}
-					keyExtractor={(item, index) => item.name}
+					<ItemButton instance={item} searchState={this.state} searchNav={this.props.navigation}
+						title={item.name} style={styles.item}>{item.brand} - {item.name}           
+					</ItemButton>}
+					keyExtractor={item => item.code}
 				/>
 			</Card>
 
@@ -113,7 +153,7 @@ const styles = StyleSheet.create({
 		borderWidth: 1,
 		borderColor: 'white',
 		borderRadius: 8,
-		color: 'white'
+		color: 'black'
 	},
 	buttonText: {
 		fontSize: 18,

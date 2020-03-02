@@ -31,6 +31,8 @@ class Login extends React.Component {
 		await this.getLoggedInUser();
 		this.keyboardDidShowSub = Keyboard.addListener('keyboardDidShow', this.keyboardDidShow);
 		this.keyboardDidHideSub = Keyboard.addListener('keyboardDidHide', this.keyboardDidHide);
+		if(this.state.loggedInUser.isLoggedIn)
+			this.props.navigation.navigate('Application');
 	}
 
 	componentWillUnmount() {
