@@ -3,6 +3,7 @@ import { createStackNavigator } from 'react-navigation-stack';
 
 import UserLists from './UserLists.js';
 import ListDetails from './ListDetails.js';
+import Search from '../search/Search.js';
 
 const ListScreen = createStackNavigator({
     UserLists: {
@@ -17,7 +18,12 @@ const ListScreen = createStackNavigator({
             headerShown: false
         }
     },
-
+    Search: {
+        screen: Search,
+        navigationOptions: {
+            headerShown: false
+        } 
+    }
 });
 
 export default createAppContainer(ListScreen);

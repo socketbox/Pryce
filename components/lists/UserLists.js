@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { 
   AsyncStorage,
-  StyleSheet, 
   SafeAreaView, 
   FlatList, 
   Text, 
@@ -9,6 +8,8 @@ import {
   TouchableOpacity,
   View, 
   Button } from 'react-native';
+import { styles } from '../Styles'
+
 
 class PryceList extends Component {
   onPress(plid){
@@ -28,7 +29,7 @@ class PryceList extends Component {
 export default class UserLists extends Component {
   constructor(props){
     super(props);
-    this.state = {pryceLists: [], listStale: true};
+    this.state = {pryceLists: [], listStale: true, readyToRender: false};
   }
 
   _setToken = async () => {
@@ -151,35 +152,9 @@ export default class UserLists extends Component {
             onPress={() => this.props.navigation.goBack()}
             style={styles.buttonContainer}
             >
-            <Text style={styles.signIn2}>Back</Text>
+            <Text style={styles.login2}>Back</Text>
           </TouchableOpacity>
         </SafeAreaView>
 	  );
   }
 }
-
-const styles = StyleSheet.create({
-    newList: {
-      width: '65%',
-      borderWidth: 1,
-      marginTop: 1,
-      alignSelf: 'center',
-      alignItems: 'center',
-      alignContent: 'center',
-      color: '#000000',
-      padding: 20
-    },
-    newListForm: {
-      borderWidth: 1,
-      borderColor: '#000000',
-      width: '80%', 
-      fontSize: 18,
-      textAlign: 'center',
-    },
-    signIn2: {
-		color: "#121212",
-		textAlign: "center",
-		paddingTop: 5,
-    },
-  }
-);

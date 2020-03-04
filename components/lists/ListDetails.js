@@ -8,15 +8,16 @@ import {
   View 
   } from 'react-native';
 import { Table, Row, Rows } from 'react-native-table-component';
+import { withNavigation } from 'react-navigation';
+import { styles } from '../Styles'
 
-
-export default class ListDetails extends Component {
-  
+class ListDetails extends Component {
   _mounted = null;
   
   constructor(props) {
     super(props);
     this.state = {
+      tableHead: ['Name', 'Price', 'Store', 'Reported'],
       tableData: null,
       listStale: true,
       pryceListId: this.props.navigation.state.params.pryceListId,
@@ -41,6 +42,23 @@ export default class ListDetails extends Component {
     }
   }
 
+  _addItemFromSearch()
+  {
+    /*if we're coming back from Search, check for added item*/
+    if(this.props.navigation.state.params.addedItem)
+    {
+      //table library expects an array
+      let addedItem = this.props.navigation.state.params.addedItem;
+      let backingArray = this.state.tableData;
+      //TODO: filter the values returned such that they conform to table columns defined in tableHead
+      backingArray.push(Object.values(addedItem));
+      this.setState({tableData: backingArray});
+
+      //add item to db
+      this.addItemToList(addedItem, this.props.navigation.state.params.pryceListId);
+    }
+  }
+
   componentDidMount() {
     //this.storeNavigationParams();
     console.log("Did Mount");
@@ -49,6 +67,9 @@ export default class ListDetails extends Component {
       this._setToken();
     }
     this._mounted = true;
+    this._unsubscribe = this.props.navigation.addListener('didFocus', () =>
+      { this._addItemFromSearch() }
+    );
   }
 
   componentDidUpdate() {
@@ -81,22 +102,18 @@ export default class ListDetails extends Component {
   componentWillUnmount() {
     console.log("Will Unmount");
     this._mounted = false;
+    this._unsubscribe.remove();
   }
 
-  /* necessary because Search is in a different stackNavigator */
+  /* necessary because Search is in a different stackNavigator 
   storeNavigationParams() {
-    /*let parms = {
-      pryceListId: this.state.pryceListId,
-      routeName: this.props.navigation.state.routeName,
-      //addItemCallBack: this.addItemToList 
-    };*/
     let serPlid = JSON.stringify(this.state.pryceListId);
     AsyncStorage.setItem(serPlid).then(res => console.log(res)).catch( (err) => {
       console.log("Failed to store parms: " + err);
     });
-  }
+  }*/
   
-  static addItemToList = async(itemJson, plid) => {
+  addItemToList = async(itemObj, plid) => {
     let token = null;
     try{
       let user = await AsyncStorage.getItem('user');
@@ -115,14 +132,11 @@ export default class ListDetails extends Component {
 				'Accept': 'application/json',
         'Authorization': "Bearer " + token
       },
-      body: itemJson,
+      body: JSON.stringify(itemObj),
     })
     .then(response => response.json())
     .then(responseJson => { 
       console.log("response: " + JSON.stringify(responseJson));
-      //How to update the component? We have no access to 'this'
-      //if ('pryce_list' in responseJson.keys())  
-      //{}
     })
     .catch(error => console.error(error));
 	};
@@ -166,7 +180,10 @@ _getListItemDetails = async () => {
             <Rows data={this.state.tableData} textStyle={styles.text}/>
           </Table>
           <View style={{alignContent: 'center'}}>
-            <TouchableOpacity onPress={() => this.props.navigation.navigate('Search')}
+            <TouchableOpacity onPress={() => this.props.navigation.navigate('Search', {
+              listId: this.state.pryceListId,
+              routeName: this.props.navigation.state.routeName
+            })}
                 style={styles.buttonContainer} >
               <Text style={styles.buttons}>Add Item</Text>
             </TouchableOpacity>
@@ -183,30 +200,5 @@ _getListItemDetails = async () => {
   }
 }
 
-const styles = StyleSheet.create({
-    newList: {
-      width: '65%',
-      borderWidth: 1,
-      marginTop: 1,
-      alignSelf: 'center',
-      alignItems: 'center',
-      alignContent: 'center',
-      color: '#000000',
-      padding: 20
-    },
-    newListForm: {
-      borderWidth: 1,
-      borderColor: '#000000',
-      width: '80%', 
-      fontSize: 18,
-      textAlign: 'center',
-    },
-    buttons: {
-      fontSize: 18,
-      color: "#121212",
-      width: '35%', 
-      padding: 15,
-      borderWidth: 1,
-    },
-  }
-);
+
+export default withNavigation(ListDetails);
