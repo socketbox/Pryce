@@ -106,13 +106,6 @@ export default class Register extends React.Component {
 					<Text style={styles.buttonText}>Submit</Text>
 				</TouchableOpacity>
 	
-				<TouchableOpacity
-					onPress={() => props.navigation.goBack()}
-					style={styles.buttonContainer}
-					>
-					<Text style={styles.buttonText}>Back</Text>
-				</TouchableOpacity>
-	
 				</View>
 			</View>
 		);
