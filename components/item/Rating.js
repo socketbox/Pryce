@@ -15,7 +15,8 @@ export default class Rating extends Component {
         rating: 0,
         comments: "",
         maxRating: 5,
-        addedPrice: this.props.navigation.state.params.addedPrice
+        addedPrice: this.props.navigation.state.params.addedPrice,
+        submitted: false
     };
 
     updateRating(key) {
@@ -60,9 +61,8 @@ export default class Rating extends Component {
             }
         })
 		.then(responseData => {
-			/** HANDLE DATA HERE  */
-			alert("Thanks for adding your comments!", JSON.stringify(responseData));
-			console.log(JSON.stringify(responseData));
+            console.log(JSON.stringify(responseData));
+            this.setState({submitted: true});
 		})
 	} 
     
@@ -86,34 +86,53 @@ export default class Rating extends Component {
             );
         }
 
-    return (
-        <View style={styles.container}>
-            <Text style={styles.textStyleSmall}>How was your shopping experience at {this.state.addedPrice.store.name}? (optional)</Text>
+        const commentsForm = (
+            <View style={styles.commentsForm}>
+                <Text style={styles.textStyleSmall}>How was your shopping experience at {this.state.addedPrice.store.name}?</Text>
+                {/*View to hold our Stars*/}
+                <View style={styles.childView}>{ratingBar}</View>
 
-            {/*View to hold our Stars*/}
-            <View style={styles.childView}>{ratingBar}</View>
+                <TextInput
+                    multiline
+                    numberOfLines={4}
+                    placeholderTextColor="#e6e6e6"
+                    editable={true}
+                    style={styles.textarea}
+                    name="comments"
+                    value={this.state.comments}
+                    placeholder="Comments"
+                    onChangeText={(comments) => this.setState({ comments })}
+                    maxLength={140}
+                />
 
-            <TextInput
-                multiline
-                numberOfLines={4}
-                placeholderTextColor="#e6e6e6"
-                editable={true}
-                style={styles.textarea}
-                name="comments"
-                value={this.state.comments}
-                placeholder="Comments"
-                onChangeText={(comments) => this.setState({ comments })}
-                maxLength={140}
-            />
+                <TouchableOpacity
+                    activeOpacity={0.7}
+                    style={styles.button}
+                    onPress={() => this.submitInfo()}>
+                    <Text>Submit</Text>
+                </TouchableOpacity>
+            </View>
+        );
 
-            <TouchableOpacity
-                activeOpacity={0.7}
-                style={styles.button}
-                onPress={() => this.submitInfo()}>
-                {/**Submit to ITEM_ID rating ** need to discuss*/}
-                <Text>Submit</Text>
-            </TouchableOpacity>
-        </View>
+        return (
+            <View style={styles.container}>
+                
+
+                {this.state.submitted ? <Text style={styles.italic}>Thanks for submitting your comments</Text> : commentsForm }
+                <TouchableOpacity
+                    activeOpacity={0.7}
+                    style={styles.button}
+                    onPress={() => this.props.navigation.navigate('ItemInfo', this.state.addedPrice.item)}>
+                    <Text>Go to Item Page</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    activeOpacity={0.7}
+                    style={styles.button}
+                    onPress={() => this.props.navigation.navigate('Scanner')}>
+                    <Text>Scan More Items</Text>
+                </TouchableOpacity>
+            </View>
         );
     }
 }
@@ -121,6 +140,7 @@ export default class Rating extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        width: '100%',
         justifyContent: 'center',
         alignItems: 'center',
         paddingTop: Platform.OS === 'ios' ? 20 : 0,
@@ -131,6 +151,7 @@ const styles = StyleSheet.create({
         marginTop: 30,
     },
     button: {
+        width: '80%',
         justifyContent: 'center',
         flexDirection: 'row',
         marginTop: 30,
@@ -156,13 +177,24 @@ const styles = StyleSheet.create({
         marginTop: 15,
     },
     textarea: {
-		width: '80%',
 		color: '#121212',
         textAlign: 'left',
+        width: '100%',
         marginTop: 30,
         padding: 5,
         borderRadius: 2,
         borderColor: "#ccc",
         borderWidth: 1
-	}
+    },
+    commentsForm: {
+        width: '80%',
+        alignItems: 'center',
+        padding: 10,
+        borderColor: '#ccc',
+        borderWidth: 2,
+        borderRadius: 5
+    },
+    italic: {
+        fontStyle: 'italic'
+    }
 });
