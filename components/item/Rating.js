@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import {
-    StyleSheet,
     View,
-    Platform,
     Text,
     Image,
     TouchableOpacity,
     TextInput,
-    AsyncStorage
+    AsyncStorage,
+    Alert
 } from 'react-native';
 import {styles} from '../Styles'
 
@@ -36,6 +35,10 @@ export default class Rating extends Component {
     }
 
     submitInfo = () => {
+        if (this.state.rating == 0) {
+            Alert.alert("Could Not Submit", "Please provide a rating to submit feedback.");
+            return;
+        }
 
 		let requestData = {
             "item_id": this.state.addedPrice.item_id,
@@ -54,7 +57,6 @@ export default class Rating extends Component {
 			body: JSON.stringify(requestData),
 		})
 		.then((response) => {
-            console.log(JSON.stringify(response));
             if (response.status == 200) {
                 return response.json();
             } else {
@@ -63,7 +65,6 @@ export default class Rating extends Component {
             }
         })
 		.then(responseData => {
-            console.log(JSON.stringify(responseData));
             this.setState({submitted: true});
 		})
 	} 
@@ -118,7 +119,7 @@ export default class Rating extends Component {
 
         return (
             <View style={styles.ratingsContainer}>
-                
+                <Text style={{fontSize: 24, fontWeight: "bold"}}>Price added!</Text>
 
                 {this.state.submitted ? <Text style={styles.italic}>Thanks for submitting your comments</Text> : commentsForm }
                 <TouchableOpacity
