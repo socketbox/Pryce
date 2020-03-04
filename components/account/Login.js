@@ -11,7 +11,6 @@ import {
 	} from 'react-native'
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import SimpleLineIconsIcon from 'react-native-vector-icons/SimpleLineIcons';
-import { styles } from '../Styles'
 
 class Login extends React.Component {
 	constructor(props) {
@@ -29,10 +28,11 @@ class Login extends React.Component {
 	}
 
 	async componentDidMount() {
-		await this.getLoggedInUser();
 		this.keyboardDidShowSub = Keyboard.addListener('keyboardDidShow', this.keyboardDidShow);
 		this.keyboardDidHideSub = Keyboard.addListener('keyboardDidHide', this.keyboardDidHide);
-		if(this.state.loggedInUser.isLoggedIn)
+		
+		await this.getLoggedInUser();
+		if(this.state.loggedInUser && this.state.loggedInUser.isLoggedIn)
 			this.props.navigation.navigate('Application');
 	}
 
@@ -120,28 +120,13 @@ class Login extends React.Component {
 			</View>
 		);	
 
-		const logoutButton = (
-			<View style={styles.loginInfo}>
-				<Text style={styles.inputRow}>{this.state.loggedInUser ? 'Logged in as ' + this.state.loggedInUser.name : '' }</Text>
-				
-				<TouchableOpacity onPress={this.doLogout} style={styles.loginButton}>
-					<Text style={styles.login2}>Logout</Text>
-				</TouchableOpacity>
-			</View>
-		);
-
 		return (
 			<View style={styles.container}>
 				<Text style={styles.pryce}>PRYCE</Text>
 
-				{ this.state.loggedInUser ? logoutButton : loginForm }
-
+				{ loginForm }
 			</View>
 		);
-	}
-
-	doLogout = async () => {
-		return await AsyncStorage.removeItem('user').then(this.setState({loggedInUser: null}));
 	}
 
 	async doLogin(username, password) {
@@ -185,5 +170,84 @@ class Login extends React.Component {
 		});
 	}
 }
+
+const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+	},
+	pryce: {
+		flex: 1,
+		fontSize: 70,
+		textAlign: 'center',
+		paddingTop: 60
+	},
+	loginInfo: {
+		alignItems: 'center',
+		justifyContent: 'center',
+		flex: 2
+	},
+	inputRow: {
+		width: 220,
+		height: 30,
+		marginBottom: 30,
+		flexDirection: 'row'
+	},
+	inputIcon: {
+		fontSize: 30,
+		alignSelf: 'flex-end',
+		justifyContent: 'flex-end',
+	},
+	inputField: {
+		width: 193,
+		height: "100%",
+		color: '#121212',
+		textAlign: 'left',
+		fontSize: 20,
+		marginLeft: 6,
+		borderBottomWidth: 1,
+		borderBottomColor: '#060606'
+	},
+	loginButton: {
+		width: 220,
+		height: 40,
+		alignItems: 'center',
+		justifyContent: 'center',
+		borderRadius: 6,
+		borderWidth: 1,
+		borderStyle: 'solid',
+		marginBottom: 30
+	},
+	login2: {
+		color: '#121212',
+		textAlign: 'center',
+		padding: 5,
+	},
+	createAccount: {
+		width: 168,
+		height: 16,
+		flexDirection: 'row',
+		flex: 1,
+		alignSelf: 'center',
+	},
+	newText: {
+		color: '#121212',
+		fontSize: 14,
+		marginTop: 2,
+	},
+	createAccountHere: {
+		top: 2,
+		left: 0,
+		color: '#126ef7',
+		fontSize: 14,
+	},
+	continueAsGuest: {
+		width: 125,
+		height: 18,
+		color: '#126ef7',
+		fontSize: 14,
+		alignSelf: 'center',
+		marginBottom: 57,
+	},
+});
 
 export default Login;

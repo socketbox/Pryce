@@ -9,7 +9,7 @@ const AppDrawer = createDrawerNavigator({
     Home: Application,
     },
     {
-        drawerWidth: "90%",
+        drawerWidth: "50%",
         contentComponent: User,
 })
 
