@@ -40,7 +40,7 @@ export const styles = StyleSheet.create({
 	 * Map
 	 */
 	mapContainer: {
-    	flex: 1,
+        flex: 1,
         width: '100%',
         height: '100%',
         alignItems: 'center'
@@ -163,33 +163,33 @@ export const styles = StyleSheet.create({
      * UserLists
      */
     newList: {
-      width: '65%',
-      borderWidth: 1,
-      marginTop: 1,
-      alignSelf: 'center',
-      alignItems: 'center',
-      alignContent: 'center',
-      color: '#121212',
-      padding: 20
+        width: '65%',
+        borderWidth: 1,
+        marginTop: 1,
+        alignSelf: 'center',
+        alignItems: 'center',
+        alignContent: 'center',
+        color: '#121212',
+        padding: 20
     },
     newListForm: {
-      borderWidth: 1,
-      borderColor: '#000000',
-      width: '80%', 
-      fontSize: 18,
-      textAlign: 'center',
+        borderWidth: 1,
+        borderColor: '#000000',
+        width: '80%', 
+        fontSize: 18,
+        textAlign: 'center',
     },
     
     /*
      * ListDetails
      */
     buttons: {
-      fontSize: 18,
-      color: "#121212",
-      width: '35%', 
-      padding: 15,
-      borderWidth: StyleSheet.hairlineWidth,
-    },
+        fontSize: 18,
+        color: "#121212",
+        width: '35%', 
+        padding: 15,
+        borderWidth: StyleSheet.hairlineWidth,
+        },
     /*
      * Login
      */
@@ -229,7 +229,6 @@ export const styles = StyleSheet.create({
 		borderBottomColor: '#060606'
 	},
 	
-    	
 	createAccount: {
 		width: 168,
 		height: 16,
@@ -349,7 +348,15 @@ export const styles = StyleSheet.create({
 		paddingTop: Constants.statusBarHeight,
 		backgroundColor: '#ecf0f1',
 		padding: 8,
-	},
+    },
+    title: {
+        fontSize: 25,
+        textAlign: 'center',
+    },
+    description: {
+        fontSize: 12,
+        alignContent: 'flex-start',
+    },
 	/***********
 	 * NewItem
 	 */
@@ -403,11 +410,12 @@ export const styles = StyleSheet.create({
 		flexDirection: 'column',
 		justifyContent: 'center',
 	},
-	/*title: {
-		marginBottom: 20,
+	title: {
+		flex: 1,
 		fontSize: 25,
-		textAlign: 'center'
-	},*/
+		textAlign: 'center',
+		paddingTop: 60,
+	},
 	searchInput: {
 		height: 50,
 		padding: 4,
@@ -473,15 +481,6 @@ export const styles = StyleSheet.create({
 		marginTop: 76,
 		alignSelf: "center"
 	},
-	xXx3: {
-		width: 95,
-		height: 27,
-		color: "rgba(113,113,113,1)",
-		fontSize: 15,
-		textAlign: "center",
-		marginTop: 46,
-		marginLeft: 74
-	},
 	group1: {
 		width: 297,
 		height: 164,
@@ -514,13 +513,6 @@ export const styles = StyleSheet.create({
 		fontSize: 30,
 		textAlign: "center"
 	},
-	xXx7Row: {
-		height: 29,
-		flexDirection: "row",
-		marginTop: -275,
-		marginLeft: 57,
-		marginRight: 56
-	}
 });
 
 

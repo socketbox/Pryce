@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Text, View, StyleSheet, FlatList, Alert, TouchableOpacity } from 'react-native';
+import { Text, View, Button, FlatList, Alert, TouchableOpacity } from 'react-native';
 import Constants from 'expo-constants';
 import { Card } from 'react-native-paper';
 import {styles} from '../Styles'
@@ -132,7 +132,7 @@ export default class ItemInfo extends React.Component {
 
     render() {
         return (
-			<View style={styles.container}>
+			<View style={styles.containerItemInfo}>
 				<Text>{this.state.itemData.name}</Text>
 				<Text>SELECT STORE BELOW TO SEE REVIEW</Text>
 				<Card>
@@ -155,10 +155,7 @@ export default class ItemInfo extends React.Component {
 					<Text style={styles.continueAsGuest}>Add New Price</Text>
 				</TouchableOpacity>
 				<Card>
-				<Text>Description:</Text>
-				<TouchableOpacity style={styles.generalButtonTO}>
-					<Button style={styles.continueAsGuest} style={styles.generalButtonText}>Add to list (WIP)</Button>
-				</TouchableOpacity>
+				<Text style={styles.description}>Description:</Text>
 				<Text>{this.state.itemData.description}</Text>
 				</Card>
 			</View>

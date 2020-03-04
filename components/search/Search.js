@@ -12,38 +12,38 @@ import { Card } from 'react-native-paper';
 import ItemInfo from '../item/ItemInfo';
 import { withNavigation } from 'react-navigation';
 import { styles } from '../Styles';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
-class ItemButton extends Component {
+// class ItemButton extends Component {
 	
-	onPress(itemInstance){
-		//searchNav proxy for navigation object; provided by Search class in render()	
-		let navParams = this.props.searchNav.state.params; 
-		if(navParams)	
-		{
-			if(navParams.routeName === 'ListDetails')
-			{
-				let listId = navParams.listId;
-				this.props.searchNav.navigate(navParams.routeName, {
-					addedItem: itemInstance, pryceListId: listId
-				});
-			}
-		}
-		else //default to std search 
-		{
-			//go to itemInfo and take the item 
-			this.props.searchNav.navigate('ItemInfo', {item: itemInstance});
-		}
-	}
+// 	onPress(itemInstance){
+// 		//searchNav proxy for navigation object; provided by Search class in render()	
+// 		let navParams = this.props.searchNav.state.params; 
+// 		if(navParams)	
+// 		{
+// 			if(navParams.routeName === 'ListDetails')
+// 			{
+// 				let listId = navParams.listId;
+// 				this.props.searchNav.navigate(navParams.routeName, {
+// 					addedItem: itemInstance, pryceListId: listId
+// 				});
+// 			}
+// 		}
+// 		else //default to std search 
+// 		{
+// 			//go to itemInfo and take the item 
+// 			this.props.searchNav.navigate('ItemInfo', {item: itemInstance});
+// 		}
+// 	}
 	
-	render(){
-		return (
-			<View>
-				<Button title={this.props.title} onPress={() => this.onPress(this.props.instance)} /> 
-			</View>
-		);
-	}
-}
-
+// 	render(){
+// 		return (
+// 				<Text onPress={() => this.onPress(this.props.instance)}>
+// 					{this.props.instance.brand} - {this.props.instance.name}
+// 				</Text> 
+// 		);
+// 	}
+// }
 
 class Search extends Component {
 	constructor(props) {
@@ -59,26 +59,43 @@ class Search extends Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
-		handleChange(e) {
-			this.setState({
-				itemName: e.nativeEvent.text
-			});
-		}
+	handleChange(e) {
+		this.setState({
+			itemName: e.nativeEvent.text
+		});
+	}
 
-		handleSubmit = async () => {
-			console.log(this.state.itemName);
-			const url = `https://pryce-cs467.appspot.com/items?name=${this.state.itemName}`;
-			const response = await fetch(url, {
-				method: 'GET',
+	handleSubmit = async () => {
+		console.log(this.state.itemName);
+		const url = `https://pryce-cs467.appspot.com/items?name=${this.state.itemName}`;
+		const response = await fetch(url, {
+			method: 'GET',
+		})
+		.then(response => response.json())
+		.then((responseJson) => {
+			console.log(responseJson);
+			this.setState({
+				data: responseJson
 			})
-			.then(response => response.json())
-			.then((responseJson) => {
-				console.log(responseJson);
-				this.setState({
-					data: responseJson
-				})
-			})
-			.catch(error => console.error(error));
+		})
+		.catch(error => console.error(error));
+	}
+
+	selectedItem(itemInstance){
+		let navParams = this.props.navigation.getParam('ListDetails', 'null');
+		console.log(navParams);
+		if(navParams.routeName === 'ListDetails')
+			{
+				let listId = navParams.listId;
+				this.props.navigation.navigate(navParams.routeName, {
+					addedItem: itemInstance, pryceListId: listId
+				});
+			}
+		else //default to std search 
+		{
+			//go to itemInfo and take the item 
+			this.props.navigation.navigate('ItemInfo', {item: itemInstance});
+		}
 	}
 
 	/**NEED TO REFACTOR THIS INTO FUNCTION SERVICE */
@@ -107,7 +124,7 @@ class Search extends Component {
 				>
 				<Text
 					style={styles.searchButtonText}>
-					SEARCH
+					Search
 				</Text>
 			</TouchableHighlight>
 			<Card>
@@ -118,9 +135,11 @@ class Search extends Component {
 					data={ this.state.data }
 					ItemSeparatorComponent = {this.FlatListItemSeparator}
 					renderItem={({item}) => 
-					<ItemButton instance={item} searchState={this.state} searchNav={this.props.navigation}
-						title={item.name} style={styles.item}>{item.brand} - {item.name}           
-					</ItemButton>}
+						<TouchableOpacity style={styles.button}
+							onPress={ () => this.selectedItem(item)}>
+							<Text>{item.brand} - {item.name}</Text>
+						</TouchableOpacity>
+					}
 					keyExtractor={item => item.code}
 				/>
 			</Card>
