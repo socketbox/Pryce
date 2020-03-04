@@ -28,10 +28,11 @@ class Login extends React.Component {
 	}
 
 	async componentDidMount() {
-		await this.getLoggedInUser();
 		this.keyboardDidShowSub = Keyboard.addListener('keyboardDidShow', this.keyboardDidShow);
 		this.keyboardDidHideSub = Keyboard.addListener('keyboardDidHide', this.keyboardDidHide);
-		if(this.state.loggedInUser.isLoggedIn)
+		
+		await this.getLoggedInUser();
+		if(this.state.loggedInUser && this.state.loggedInUser.isLoggedIn)
 			this.props.navigation.navigate('Application');
 	}
 
@@ -119,28 +120,13 @@ class Login extends React.Component {
 			</View>
 		);	
 
-		const logoutButton = (
-			<View style={styles.loginInfo}>
-				<Text style={styles.inputRow}>{this.state.loggedInUser ? 'Logged in as ' + this.state.loggedInUser.name : '' }</Text>
-				
-				<TouchableOpacity onPress={this.doLogout} style={styles.loginButton}>
-					<Text style={styles.login2}>Logout</Text>
-				</TouchableOpacity>
-			</View>
-		);
-
 		return (
 			<View style={styles.container}>
 				<Text style={styles.pryce}>PRYCE</Text>
 
-				{ this.state.loggedInUser ? logoutButton : loginForm }
-
+				{ loginForm }
 			</View>
 		);
-	}
-
-	doLogout = async () => {
-		return await AsyncStorage.removeItem('user').then(this.setState({loggedInUser: null}));
 	}
 
 	async doLogin(username, password) {

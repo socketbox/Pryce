@@ -4,7 +4,6 @@ import MapView from 'react-native-maps';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 import { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import googleAPIsearch from '../../assets/find.json'
 import mapStyle from '../../assets/mapStyle.json'
 
 class Map extends React.Component {
@@ -102,7 +101,7 @@ class Map extends React.Component {
 
     render() {
         return (
-            <View style={styles.mapContainer}>
+            <View style={styles.container}>
                 <MapView
                     provider={PROVIDER_GOOGLE}
                     customMapStyle={mapStyle}
@@ -133,12 +132,16 @@ class Map extends React.Component {
 }
 
 const styles = StyleSheet.create({
-    mapContainer: {
+    container: {
         flex: 1,
-        justifyContent: 'center',
-        width: Dimensions.get('window').width,
-        height: Dimensions.get('window').height - 40,
-        },
-    });
+        width: '100%',
+        height: '100%',
+        alignItems: 'center'
+    },
+    mapContainer: {
+        width: '100%',
+        height: '100%'
+    },
+});
 
 export default Map;
