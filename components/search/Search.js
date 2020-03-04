@@ -9,25 +9,28 @@ import {
 	FlatList
 } from 'react-native';
 import { Card } from 'react-native-paper';
-import ListDetails from '../lists/ListDetails';
 import ItemInfo from '../item/ItemInfo';
+import { withNavigationFocus, withNavigation } from 'react-navigation';
 
 class ItemButton extends Component {
 	
 	onPress(itemInstance){
-		console.log("foo");	
-		if( this.props.searchState.routeName === 'ListDetails')
+		//searchNav proxy for navigation object; provided by Search class in render()	
+		let rn = this.props.searchNav.state.params.routeName; 	
+		if(rn)
 		{
-			(async () => { 
-				let itemString = JSON.stringify(itemInstance);
-				ListDetails.addItemToList(itemString, this.props.searchState.listId);
-			})();
-			this.props.searchNav.navigate(this.props.searchState.routeName);
-		}
-		else
-		{
-			//go to itemInfo and take the item 
-			this.props.searchNav.navigate('ItemInfo', {item: itemInstance});
+			if(rn === 'ListDetails')
+			{
+				let listId = this.props.searchNav.state.params.listId;
+				this.props.searchNav.navigate(this.props.searchNav.state.params.routeName, {
+					addedItem: itemInstance, pryceListId: listId
+				});
+			}
+			else
+			{
+				//go to itemInfo and take the item 
+				this.props.searchNav.navigate('ItemInfo', {item: itemInstance});
+			}
 		}
 	}
 	
@@ -41,21 +44,14 @@ class ItemButton extends Component {
 }
 
 
-export default class Search extends Component {
+class Search extends Component {
 	constructor(props) {
 		super(props);
 		
-		//Parameters that would be passed in
-		/*this.listId = this.props.buttonNavigation.state.params.pryceListId,
-		this.routeName = this.props.buttonNavigation.state.params.routeName,
-		this.addItemFunc = this.props.buttonNavigation.state.params.addItemCallBack*/
 		this.state = {
 			itemName: '',
 			error: false,
 			data: [],
-			routeName: 'ListDetails',
-			listId: 1,
-			addItemFunc: ListDetails.addItemToList,
 		}
 
 		this.handleChange = this.handleChange.bind(this);
@@ -95,6 +91,7 @@ export default class Search extends Component {
 
 
 	render() {
+		
 		return (
 		<View style={styles.container}>
 			<Text style={styles.title}>Search for Item</Text>
@@ -173,3 +170,6 @@ const styles = StyleSheet.create({
 		justifyContent: 'center'
 	}
 });
+
+export default withNavigationFocus(Search)
+
