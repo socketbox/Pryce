@@ -9,6 +9,8 @@ import {
     TextInput,
     AsyncStorage
 } from 'react-native';
+import {styles} from '../Styles'
+
 
 export default class Rating extends Component {
     state = {
@@ -107,7 +109,7 @@ export default class Rating extends Component {
 
                 <TouchableOpacity
                     activeOpacity={0.7}
-                    style={styles.button}
+                    style={styles.ratingsButton}
                     onPress={() => this.submitInfo()}>
                     <Text>Submit</Text>
                 </TouchableOpacity>
@@ -115,20 +117,20 @@ export default class Rating extends Component {
         );
 
         return (
-            <View style={styles.container}>
+            <View style={styles.ratingsContainer}>
                 
 
                 {this.state.submitted ? <Text style={styles.italic}>Thanks for submitting your comments</Text> : commentsForm }
                 <TouchableOpacity
                     activeOpacity={0.7}
-                    style={styles.button}
+                    style={styles.ratingsButton}
                     onPress={() => this.props.navigation.navigate('ItemInfo', this.state.addedPrice.item)}>
                     <Text>Go to Item Page</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
                     activeOpacity={0.7}
-                    style={styles.button}
+                    style={styles.ratingsButton}
                     onPress={() => this.props.navigation.navigate('Scanner')}>
                     <Text>Scan More Items</Text>
                 </TouchableOpacity>
@@ -137,64 +139,3 @@ export default class Rating extends Component {
     }
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        width: '100%',
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingTop: Platform.OS === 'ios' ? 20 : 0,
-    },
-    childView: {
-        justifyContent: 'center',
-        flexDirection: 'row',
-        marginTop: 30,
-    },
-    button: {
-        width: '80%',
-        justifyContent: 'center',
-        flexDirection: 'row',
-        marginTop: 30,
-        padding: 15,
-        backgroundColor: '#d3d3d3',
-    },
-    starImage: {
-        width: 40,
-        height: 40,
-        resizeMode: 'cover',
-    },
-    textStyle: {
-        textAlign: 'center',
-        fontSize: 23,
-        color: '#000',
-        marginTop: 15,
-    },
-    textStyleSmall: {
-        textAlign: 'center',
-        fontSize: 16,
-
-        color: '#000',
-        marginTop: 15,
-    },
-    textarea: {
-		color: '#121212',
-        textAlign: 'left',
-        width: '100%',
-        marginTop: 30,
-        padding: 5,
-        borderRadius: 2,
-        borderColor: "#ccc",
-        borderWidth: 1
-    },
-    commentsForm: {
-        width: '80%',
-        alignItems: 'center',
-        padding: 10,
-        borderColor: '#ccc',
-        borderWidth: 2,
-        borderRadius: 5
-    },
-    italic: {
-        fontStyle: 'italic'
-    }
-});

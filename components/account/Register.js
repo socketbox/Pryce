@@ -7,6 +7,7 @@ import {
 	TouchableOpacity
 } from "react-native";
 import SimpleLineIconsIcon from "react-native-vector-icons/SimpleLineIcons";
+import {styles} from '../Styles'
 
 export default class Register extends React.Component {
 	constructor(props) {
@@ -112,53 +113,3 @@ export default class Register extends React.Component {
 	}
 }
 
-const styles = StyleSheet.create({
-	container: {
-		flex: 1
-	},
-	title: {
-		color: "#121212",
-		fontSize: 40,
-		textAlign: 'center',
-		paddingTop: '20%',
-	},
-	form: {
-		alignItems: 'center',
-	},
-	inputRow: {
-		width: 220,
-		height: 30,
-		marginBottom: 30,
-		flexDirection: 'row'
-	},
-	inputIcon: {
-		fontSize: 30,
-		width: 30,
-		alignSelf: 'flex-end',
-		justifyContent: 'flex-end',
-	},
-	inputField: {
-		width: "100%",
-		height: "100%",
-		color: '#121212',
-		textAlign: 'left',
-		fontSize: 20,
-		borderBottomWidth: 1,
-		borderBottomColor: '#060606'
-	},
-	buttonContainer: {
-		width: 220,
-		height: 40,
-		alignItems: 'center',
-		justifyContent: 'center',
-		borderRadius: 6,
-		borderWidth: 1,
-		borderStyle: 'solid',
-		marginBottom: 30
-	},
-	buttonText: {
-		color: '#121212',
-		textAlign: 'center',
-		padding: 5,
-	},
-});

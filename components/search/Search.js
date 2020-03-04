@@ -11,20 +11,24 @@ import {
 import { Card } from 'react-native-paper';
 import ItemInfo from '../item/ItemInfo';
 import { withNavigation } from 'react-navigation';
+import { styles } from '../Styles';
 
 class ItemButton extends Component {
 	
 	onPress(itemInstance){
 		//searchNav proxy for navigation object; provided by Search class in render()	
-		let rn = this.props.searchNav.state.params.routeName || null; 	
-		if(rn === 'ListDetails')
+		let navParams = this.props.searchNav.state.params; 
+		if(navParams)	
 		{
-			let listId = this.props.searchNav.state.params.listId;
-			this.props.searchNav.navigate(this.props.searchNav.state.params.routeName, {
-				addedItem: itemInstance, pryceListId: listId
-			});
+			if(navParams.routeName === 'ListDetails')
+			{
+				let listId = navParams.listId;
+				this.props.searchNav.navigate(navParams.routeName, {
+					addedItem: itemInstance, pryceListId: listId
+				});
+			}
 		}
-		else
+		else //default to std search 
 		{
 			//go to itemInfo and take the item 
 			this.props.searchNav.navigate('ItemInfo', {item: itemInstance});
@@ -45,8 +49,6 @@ class Search extends Component {
 	constructor(props) {
 		super(props);
 
-		this.props.navigation.state.params = {}
-		
 		this.state = {
 			itemName: '',
 			error: false,

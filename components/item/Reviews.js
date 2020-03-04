@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { StyleSheet, View, Text } from "react-native";
+import { View, Text } from "react-native";
+import {styles} from '../Styles'
 
 class Review extends React.Component {
     render() {
@@ -22,67 +23,5 @@ class Review extends React.Component {
     }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1
-  },
-  itemName1: {
-    width: 286,
-    height: 49,
-    color: "#121212",
-    fontSize: 40,
-    textAlign: "center",
-    marginTop: 76,
-    alignSelf: "center"
-  },
-  xXx3: {
-    width: 95,
-    height: 27,
-    color: "rgba(113,113,113,1)",
-    fontSize: 15,
-    textAlign: "center",
-    marginTop: 46,
-    marginLeft: 74
-  },
-  group1: {
-    width: 297,
-    height: 164,
-    marginTop: 44,
-    alignSelf: "center"
-  },
-  reviews: {
-    width: 297,
-    height: 25,
-    color: "#121212",
-    fontSize: 20,
-  },
-  description2: {
-    width: 297,
-    height: 434,
-    color: "#121212",
-    fontSize: 20,
-  },
-  xXx7: {
-    width: 131,
-    height: 29,
-    color: "#121212",
-    fontSize: 30,
-    textAlign: "center"
-  },
-  store: {
-    width: 131,
-    height: 29,
-    color: "#121212",
-    fontSize: 30,
-    textAlign: "center"
-  },
-  xXx7Row: {
-    height: 29,
-    flexDirection: "row",
-    marginTop: -275,
-    marginLeft: 57,
-    marginRight: 56
-  }
-});
 
 export default Review;

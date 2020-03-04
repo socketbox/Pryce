@@ -10,6 +10,7 @@ import {
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import RNPickerSelect from 'react-native-picker-select';
 import * as Location from 'expo-location';
+import {styles} from '../Styles'
 
 class NewPrice extends React.Component {
 	state = {
@@ -174,7 +175,7 @@ class NewPrice extends React.Component {
 			value: '',
 		};
 		return (
-		<View style={styles.container}>
+		<View style={styles.newPriceContainer}>
 			<View style={styles.data}>
 
 				<View style={styles.iconRow}>
@@ -296,53 +297,7 @@ class NewPrice extends React.Component {
 		</View>
 		);
 	}
-	}
+}
 
-const styles = StyleSheet.create({
-	container: {
-		flex: 1, 
-		//justifyContent: 'center',
-		marginTop: 40,
-		alignItems: 'center'
-	},
-	data: {
-		width: 220,
-		height: 23,
-	},
-	icon: {
-		fontSize: 20,
-		opacity: 0.5,
-		alignSelf: 'flex-end',
-		marginBottom: 1,
-	},
-	input: {
-		width: 193,
-		height: 15,
-		textAlign: 'left',
-		marginLeft: 6,
-		marginTop: 6,
-	},
-	iconRow: {
-		height: 21,
-		flexDirection: 'row',
-		marginRight: 1,
-	},
-	line: {
-		width: 218,
-		height: 1,
-		backgroundColor: '#060606',
-		opacity: 0.25,
-		marginTop: 1,
-		marginLeft: 2,
-	},
-	submit: {
-		width: 100,
-		height: 25,
-		borderWidth: 2,
-		marginTop: 10,
-		textAlign: 'center',
-		alignSelf: 'center',
-	},
-})
 
 export default NewPrice;

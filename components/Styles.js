@@ -2,7 +2,149 @@ import { StyleSheet } from 'react-native';
 import Constants from 'expo-constants'
 
 export const styles = StyleSheet.create({
-    /*
+	/*
+	 * Scanner
+	 */
+	scannerContainer: {
+        flex: 1, 
+        height: 200,
+        flexDirection: 'column',
+        justifyContent: 'center',
+    },
+    /*goBackButton: {
+        flex: 1,
+        marginLeft: 30,
+        marginTop: 50,
+    },
+    backStyle: {
+        width: 30,
+        height: 30,
+    }*/
+
+	/*
+	 * Map
+	 */
+	mapContainer: {
+    	flex: 1,
+        width: '100%',
+        height: '100%',
+        alignItems: 'center'
+	},
+	mapDisplay: {
+		width: '100%',
+		height: '100%',
+	},
+	/*
+	 * Ratings
+	 */
+    ratingsContainer: {
+        flex: 1,
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingTop: Platform.OS === 'ios' ? 20 : 0,
+    },
+    childView: {
+        justifyContent: 'center',
+        flexDirection: 'row',
+        marginTop: 30,
+    },
+    ratingsButton: {
+        width: '80%',
+        justifyContent: 'center',
+        flexDirection: 'row',
+        marginTop: 30,
+        padding: 15,
+        backgroundColor: '#d3d3d3',
+    },
+    starImage: {
+        width: 40,
+        height: 40,
+        resizeMode: 'cover',
+    },
+    textStyle: {
+        textAlign: 'center',
+        fontSize: 23,
+        color: '#000',
+        marginTop: 15,
+    },
+    textStyleSmall: {
+        textAlign: 'center',
+        fontSize: 16,
+
+        color: '#000',
+        marginTop: 15,
+    },
+    textarea: {
+		color: '#121212',
+        textAlign: 'left',
+        width: '100%',
+        marginTop: 30,
+        padding: 5,
+        borderRadius: 2,
+        borderColor: "#ccc",
+        borderWidth: 1
+    },
+    commentsForm: {
+        width: '80%',
+        alignItems: 'center',
+        padding: 10,
+        borderColor: '#ccc',
+        borderWidth: 2,
+        borderRadius: 5
+    },
+    italic: {
+        fontStyle: 'italic'
+    },
+	/*
+	 * NewPrice
+	 */
+	newPriceContainer: {
+		flex: 1, 
+		//justifyContent: 'center',
+		marginTop: 40,
+		alignItems: 'center'
+	},
+	data: {
+		width: 220,
+		height: 23,
+	},
+	icon: {
+		fontSize: 20,
+		opacity: 0.5,
+		alignSelf: 'flex-end',
+		marginBottom: 1,
+	},
+	input: {
+		width: 193,
+		height: 15,
+		textAlign: 'left',
+		marginLeft: 6,
+		marginTop: 6,
+	},
+	iconRow: {
+		height: 21,
+		flexDirection: 'row',
+		marginRight: 1,
+	},
+	line: {
+		width: 218,
+		height: 1,
+		backgroundColor: '#060606',
+		opacity: 0.25,
+		marginTop: 1,
+		marginLeft: 2,
+	},
+	submit: {
+		width: 100,
+		height: 25,
+		borderWidth: 2,
+		marginTop: 10,
+		textAlign: 'center',
+		alignSelf: 'center',
+	},
+
+	/*
      * UserLists
      */
     newList: {
@@ -42,7 +184,8 @@ export const styles = StyleSheet.create({
 	pryce: {
 		flex: 1,
 		fontSize: 70,
-		textAlign: 'center'
+		textAlign: 'center',
+		paddingTop: 60,
 	},
 	loginInfo: {
 		alignItems: 'center',
@@ -132,12 +275,6 @@ export const styles = StyleSheet.create({
 		borderWidth: 1,
 		borderStyle: "solid",
 	},
-	unIcon: {
-		fontSize: 20,
-		opacity: 0.5,
-		alignSelf: 'flex-end',
-		marginBottom: 1,
-	},
 	unInput: {
 		width: 193,
 		height: 15,
@@ -145,11 +282,6 @@ export const styles = StyleSheet.create({
 		textAlign: 'left',
 		marginLeft: 6,
 		marginTop: 6,
-	},
-	unIconRow: {
-		height: 21,
-		flexDirection: 'row',
-		marginRight: 1,
 	},
 	unLine: {
 		width: 218,
@@ -164,12 +296,6 @@ export const styles = StyleSheet.create({
 		height: 23,
 		marginTop: 19,
 	},
-	pwIcon: {
-		fontSize: 20,
-		opacity: 0.5,
-		alignSelf: 'flex-end',
-		marginBottom: 1,
-	},
 	pwInput: {
 		width: 193,
 		height: 15,
@@ -177,11 +303,6 @@ export const styles = StyleSheet.create({
 		textAlign: 'left',
 		marginLeft: 6,
 		marginTop: 6,
-	},
-	pwIconRow: {
-		height: 21,
-		flexDirection: 'row',
-		marginRight: 1,
 	},
 	pwLine: {
 		width: 218,
@@ -194,57 +315,47 @@ export const styles = StyleSheet.create({
 	/*
 	 * EditItem
 	 */
-    signInButton: {
-    width: 161,
-    height: 32,
-    marginTop: 36,
-    marginLeft: 40
-  },
-  signInContainer: {
-    width: 161,
-    height: 32,
-    borderRadius: 6,
-    borderColor: "rgba(0,0,0,0.65)",
-    borderWidth: 1,
-    borderStyle: "solid"
-  },
-  editItem1: {
-    color: "#121212",
-    textAlign: "center",
-    marginLeft: 59
-  },
-    pryceColumn: {
-    width: 240,
-    marginTop: 87,
-    marginLeft: 67
-  },
-  /*
-   * ItemInfo
-   */
-  containerItemInfo: {
-	flex: 1,
-	justifyContent: 'center',
-	paddingTop: Constants.statusBarHeight,
-	backgroundColor: '#ecf0f1',
-	padding: 8,
-  },
-  /*
-   * NewItem
-   */
+	signInButton: {
+		width: 161,
+		height: 32,
+		marginTop: 36,
+		marginLeft: 40
+	},
+	signInContainer: {
+		width: 161,
+		height: 32,
+		borderRadius: 6,
+		borderColor: "rgba(0,0,0,0.65)",
+		borderWidth: 1,
+		borderStyle: "solid"
+	},
+	editItem1: {
+		color: "#121212",
+		textAlign: "center",
+		marginLeft: 59
+	},
+	pryceColumn: {
+		width: 240,
+		marginTop: 87,
+		marginLeft: 67
+	},
+	/*
+	 * ItemInfo
+	 */
+	containerItemInfo: {
+		flex: 1,
+		justifyContent: 'center',
+		paddingTop: Constants.statusBarHeight,
+		backgroundColor: '#ecf0f1',
+		padding: 8,
+	},
+	/*
+	 * NewItem
+	 */
 	containerNewItem: {
-		flex: 1, 
+		flex: 1,
 		marginTop: 40,
 		alignItems: 'center'
-	},
-	data: {
-		width: 220,
-		height: 23,
-	},
-	icon: {
-		fontSize: 20,
-		opacity: 0.5,
-		alignSelf: 'flex-end',
-		marginBottom: 1,
 	},
 	input: {
 		width: 193,
@@ -253,11 +364,6 @@ export const styles = StyleSheet.create({
 		textAlign: 'left',
 		marginLeft: 6,
 		marginTop: 6,
-	},
-	iconRow: {
-		height: 21,
-		flexDirection: 'row',
-		marginRight: 1,
 	},
 	line: {
 		width: 218,
@@ -308,7 +414,7 @@ export const styles = StyleSheet.create({
 	button: {
 		height: 45,
 		flexDirection: 'row',
-		backgroundColor:'white',
+		backgroundColor: 'white',
 		borderColor: 'white',
 		borderWidth: 1,
 		borderRadius: 8,
@@ -316,7 +422,94 @@ export const styles = StyleSheet.create({
 		marginTop: 10,
 		alignSelf: 'stretch',
 		justifyContent: 'center'
+	},
+	/*
+	 * User
+	 */
+	userContainer: {
+		marginLeft: 5
+	},
+	username: {
+		fontSize: 30,
+		fontWeight: 'bold',
+		textDecorationLine: 'underline',
+		marginBottom: 30
+	},
+	userButton: {
+		width: '50%',
+		height: 30,
+		alignItems: 'center',
+		justifyContent: 'center',
+		backgroundColor: '#d3d3d3',
+		marginBottom: 30
+	},
+	buttonText: {
+		fontSize: 14
+	},
+	/*
+	 * Review
+	 */
+	container: {
+		flex: 1
+	},
+	itemName1: {
+		width: 286,
+		height: 49,
+		color: "#121212",
+		fontSize: 40,
+		textAlign: "center",
+		marginTop: 76,
+		alignSelf: "center"
+	},
+	xXx3: {
+		width: 95,
+		height: 27,
+		color: "rgba(113,113,113,1)",
+		fontSize: 15,
+		textAlign: "center",
+		marginTop: 46,
+		marginLeft: 74
+	},
+	group1: {
+		width: 297,
+		height: 164,
+		marginTop: 44,
+		alignSelf: "center"
+	},
+	reviews: {
+		width: 297,
+		height: 25,
+		color: "#121212",
+		fontSize: 20,
+	},
+	description2: {
+		width: 297,
+		height: 434,
+		color: "#121212",
+		fontSize: 20,
+	},
+	xXx7: {
+		width: 131,
+		height: 29,
+		color: "#121212",
+		fontSize: 30,
+		textAlign: "center"
+	},
+	store: {
+		width: 131,
+		height: 29,
+		color: "#121212",
+		fontSize: 30,
+		textAlign: "center"
+	},
+	xXx7Row: {
+		height: 29,
+		flexDirection: "row",
+		marginTop: -275,
+		marginLeft: 57,
+		marginRight: 56
 	}
 });
+
 
 

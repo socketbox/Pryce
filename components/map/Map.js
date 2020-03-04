@@ -5,6 +5,7 @@ import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 import { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import mapStyle from '../../assets/mapStyle.json'
+import {styles} from '../Styles'
 
 class Map extends React.Component {
 
@@ -101,11 +102,11 @@ class Map extends React.Component {
 
     render() {
         return (
-            <View style={styles.container}>
+            <View style={styles.mapContainer}>
                 <MapView
                     provider={PROVIDER_GOOGLE}
                     customMapStyle={mapStyle}
-                    style={styles.mapContainer}
+                    style={styles.mapDisplay}
                     showsUserLocation={true}
                     followUserLocation={true}
                     showsMyLocationButton={true}
@@ -130,18 +131,5 @@ class Map extends React.Component {
         );
     }
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        width: '100%',
-        height: '100%',
-        alignItems: 'center'
-    },
-    mapContainer: {
-        width: '100%',
-        height: '100%'
-    },
-});
 
 export default Map;
