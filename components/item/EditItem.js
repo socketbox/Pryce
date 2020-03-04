@@ -7,6 +7,8 @@ import {
   TouchableOpacity
 } from "react-native";
 
+import {styles} from '../Styles'
+
 function EditItem(props) {
   return (
     <View style={styles.container}>
@@ -19,7 +21,7 @@ function EditItem(props) {
             onPress={() => props.navigation.goBack()}
             style={styles.signInContainer}
           >
-            <Text style={styles.signIn2}>GO BACK</Text>
+            <Text style={styles.editItem1}>GO BACK</Text>
           </TouchableOpacity>
           
         </View> 
@@ -28,39 +30,5 @@ function EditItem(props) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1
-  },
-  pryce: {
-    color: "#121212",
-    fontSize: 40,
-  },
-    signInButton: {
-    width: 161,
-    height: 32,
-    marginTop: 36,
-    marginLeft: 40
-  },
-  signInContainer: {
-    width: 161,
-    height: 32,
-    borderRadius: 6,
-    borderColor: "rgba(0,0,0,0.65)",
-    borderWidth: 1,
-    borderStyle: "solid"
-  },
-  signIn2: {
-    color: "#121212",
-    textAlign: "center",
-
-    marginLeft: 59
-  },
-    pryceColumn: {
-    width: 240,
-    marginTop: 87,
-    marginLeft: 67
-  },
-});
 
 export default EditItem;

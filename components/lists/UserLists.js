@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   View, 
   Button } from 'react-native';
-import styles from '../Styles'
+import { styles } from '../Styles'
 
 
 class PryceList extends Component {
@@ -152,7 +152,7 @@ export default class UserLists extends Component {
             onPress={() => this.props.navigation.goBack()}
             style={styles.buttonContainer}
             >
-            <Text style={styles.signIn2}>Back</Text>
+            <Text style={styles.login2}>Back</Text>
           </TouchableOpacity>
         </SafeAreaView>
 	  );

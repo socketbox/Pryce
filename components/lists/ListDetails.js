@@ -9,7 +9,7 @@ import {
   } from 'react-native';
 import { Table, Row, Rows } from 'react-native-table-component';
 import { withNavigation } from 'react-navigation';
-
+import { styles } from '../Styles'
 
 class ListDetails extends Component {
   _mounted = null;
@@ -200,32 +200,5 @@ _getListItemDetails = async () => {
   }
 }
 
-const styles = StyleSheet.create({
-    newList: {
-      width: '65%',
-      borderWidth: 1,
-      marginTop: 1,
-      alignSelf: 'center',
-      alignItems: 'center',
-      alignContent: 'center',
-      color: '#000000',
-      padding: 20
-    },
-    newListForm: {
-      borderWidth: 1,
-      borderColor: '#000000',
-      width: '80%', 
-      fontSize: 18,
-      textAlign: 'center',
-    },
-    buttons: {
-      fontSize: 18,
-      color: "#121212",
-      width: '35%', 
-      padding: 15,
-      borderWidth: 1,
-    },
-  }
-);
 
 export default withNavigation(ListDetails);

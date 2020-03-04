@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Text, View, StyleSheet, FlatList, Alert, TouchableOpacity } from 'react-native';
 import Constants from 'expo-constants';
 import { Card } from 'react-native-paper';
+import {styles} from '../Styles'
 
 export default class ItemInfo extends React.Component {
     state = {
@@ -164,13 +165,3 @@ export default class ItemInfo extends React.Component {
         );
     }
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        paddingTop: Constants.statusBarHeight,
-        backgroundColor: '#ecf0f1',
-        padding: 8,
-    },
-});
