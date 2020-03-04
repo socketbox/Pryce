@@ -2,6 +2,21 @@ import { StyleSheet } from 'react-native';
 import Constants from 'expo-constants'
 
 export const styles = StyleSheet.create({
+	generalButtonText: {
+		color: "#121212",
+		textAlign: "center",
+		paddingTop: 5,
+	},	
+	generalButtonTO: {
+		width: 220,
+		height: 40,
+		alignItems: 'center',
+		justifyContent: 'center',
+		borderRadius: 6,
+		borderWidth: 1,
+		borderStyle: 'solid',
+		marginBottom: 30
+	},
 	/*
 	 * Scanner
 	 */
@@ -213,22 +228,8 @@ export const styles = StyleSheet.create({
 		borderBottomWidth: 1,
 		borderBottomColor: '#060606'
 	},
-	login2: {
-		color: "#121212",
-		textAlign: "center",
-		paddingTop: 5,
-    },
-    loginButton: {
-		width: 220,
-		height: 40,
-		alignItems: 'center',
-		justifyContent: 'center',
-		borderRadius: 6,
-		borderWidth: 1,
-		borderStyle: 'solid',
-		marginBottom: 30
-	},
 	
+    	
 	createAccount: {
 		width: 168,
 		height: 16,
@@ -349,7 +350,7 @@ export const styles = StyleSheet.create({
 		backgroundColor: '#ecf0f1',
 		padding: 8,
 	},
-	/*
+	/***********
 	 * NewItem
 	 */
 	containerNewItem: {
@@ -357,7 +358,18 @@ export const styles = StyleSheet.create({
 		marginTop: 40,
 		alignItems: 'center'
 	},
-	input: {
+	/* seems to have no effect on store selector */
+	storeSelect: {
+		fontSize: 16,
+		paddingVertical: 12,
+		paddingHorizontal: 10,
+		borderWidth: 1,
+		borderColor: 'gray',
+		borderRadius: 4,
+		color: 'green',
+		paddingRight: 30,
+	},
+	/*input: {
 		width: 193,
 		height: 15,
 		color: '#121212',
@@ -372,7 +384,7 @@ export const styles = StyleSheet.create({
 		opacity: 0.25,
 		marginTop: 1,
 		marginLeft: 2,
-	},
+	},*/
 	submit: {
 		width: 100,
 		height: 25,
@@ -381,7 +393,7 @@ export const styles = StyleSheet.create({
 		textAlign: 'center',
 		alignSelf: 'center',
 	},
-	/*
+	/*********** 
 	 * Search
 	 */
 	searchContainer: {
@@ -406,7 +418,7 @@ export const styles = StyleSheet.create({
 		borderRadius: 8,
 		color: 'black'
 	},
-	buttonText: {
+	searchButtonText: {
 		fontSize: 18,
 		color: '#111',
 		alignSelf: 'center'

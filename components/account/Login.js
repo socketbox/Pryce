@@ -102,8 +102,8 @@ class Login extends React.Component {
 
 					<TouchableOpacity
 						onPress={this.onLogin}
-						style={styles.loginButton}>
-						<Text style={styles.login2}>Login</Text>
+						style={styles.generalButtonTO}>
+						<Text style={styles.generalButtonText}>Login</Text>
 					</TouchableOpacity>
 				</Animated.View>
 			

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { 
   AsyncStorage,
-  SafeAreaView, 
   FlatList, 
   Text, 
   TextInput, 
@@ -9,7 +8,7 @@ import {
   View, 
   Button } from 'react-native';
 import { styles } from '../Styles'
-
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 class PryceList extends Component {
   onPress(plid){
@@ -120,11 +119,7 @@ export default class UserLists extends Component {
     .catch(error => console.error(error));
 	};
 
-  goBackButton = () => {
-    this.props.navigation.goBack();
-  }
-
-	render(){
+  render(){
     if( !this.state.readyToRender )
     {
       return (<SafeAreaView><Text>Loading...</Text></SafeAreaView>);
@@ -132,7 +127,8 @@ export default class UserLists extends Component {
     const listData = Object.keys(this.state.pryceLists).map(key => ({key,...this.state.pryceLists[key] }));
     console.log(listData); 
     return (
-        <SafeAreaView>
+          
+     <SafeAreaView>
           <FlatList
             data={listData}
             renderItem={({ item }) => <PryceList pryceListDetails={this.props.navigation} pryceListId={item.pryce_list_id} pryceListName={item.name} />}
@@ -150,11 +146,12 @@ export default class UserLists extends Component {
           </View>
           <TouchableOpacity
             onPress={() => this.props.navigation.goBack()}
-            style={styles.buttonContainer}
+            style={styles.generalButtonTO}
             >
-            <Text style={styles.login2}>Back</Text>
+            <Text style={styles.generalButtonText}>Back</Text>
           </TouchableOpacity>
         </SafeAreaView>
+    
 	  );
   }
 }

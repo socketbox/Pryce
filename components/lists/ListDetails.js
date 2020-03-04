@@ -189,7 +189,7 @@ _getListItemDetails = async () => {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => this.props.navigation.goBack()}
-              style={styles.buttonContainer}
+              style={styles.button}
               >
               <Text style={styles.buttons}>Back</Text>
             </TouchableOpacity>

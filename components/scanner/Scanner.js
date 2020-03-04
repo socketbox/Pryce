@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, Button, TouchableOpacity, Image, Alert } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
-
+import {styles} from '../Styles'
 
 function Scanner(props) {
     state = {
@@ -63,7 +63,7 @@ function Scanner(props) {
 
 
     return (
-        <View style={styles.container}>
+        <View style={styles.scannerContainer}>
 
             <BarCodeScanner
                 onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
@@ -88,24 +88,5 @@ function Scanner(props) {
     </View>
     );
 }
-
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1, 
-        height: 200,
-        flexDirection: 'column',
-        justifyContent: 'center',
-    },
-    goBackButton: {
-        flex: 1,
-        marginLeft: 30,
-        marginTop: 50,
-    },
-    backStyle: {
-        width: 30,
-        height: 30,
-    }
-    });
 
 export default Scanner;

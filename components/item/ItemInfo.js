@@ -156,8 +156,8 @@ export default class ItemInfo extends React.Component {
 				</TouchableOpacity>
 				<Card>
 				<Text>Description:</Text>
-				<TouchableOpacity>
-					<Text style={styles.continueAsGuest}>Add to list (WIP)</Text>
+				<TouchableOpacity style={styles.generalButtonTO}>
+					<Button style={styles.continueAsGuest} style={styles.generalButtonText}>Add to list (WIP)</Button>
 				</TouchableOpacity>
 				<Text>{this.state.itemData.description}</Text>
 				</Card>

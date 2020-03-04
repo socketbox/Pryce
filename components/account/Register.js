@@ -102,9 +102,9 @@ export default class Register extends React.Component {
 		
 				<TouchableOpacity
 					onPress={this.submitForm}
-					style={styles.buttonContainer}
+					style={styles.generalButtonTO}
 					>
-					<Text style={styles.buttonText}>Submit</Text>
+					<Text style={styles.generalButtonText}>Submit</Text>
 				</TouchableOpacity>
 	
 				</View>

@@ -182,26 +182,25 @@ class NewItem extends React.Component {
 		<View style={styles.containerNewItem}>
 			<View style={styles.data}>
 
-				<View style={styles.iconRow}>
+				<View style={styles.inputRow}>
 					<FeatherIcon name="box" style={styles.icon} />
 					<TextInput
 						placeholderTextColor="#e6e6e6"
 						editable={true}
-						style={styles.input}
+						style={styles.inputField}
 						name="name"
 						value={this.state.itemName}
 						placeholder="Name"
 						onChangeText={(itemName) => this.setState({ itemName })}
 					/>
 				</View>
-				<View style={styles.line} />
 
-				<View style={styles.iconRow}>
+				<View style={styles.inputRow}>
 					<FeatherIcon name="dollar-sign" style={styles.icon} />
 					<TextInput
 						placeholderTextColor="#e6e6e6"
 						editable={true}
-						style={styles.input}
+						style={styles.inputField}
 						name="price"
 						value={this.state.prices}
 						placeholder="Price"
@@ -209,28 +208,26 @@ class NewItem extends React.Component {
 						onChangeText={(price) => this.setState({ price })}
 					/>
 				</View>
-				<View style={styles.line} />
 
-				<View style={styles.iconRow}>
+				<View style={styles.inputRow}>
 					<FeatherIcon name="zap" style={styles.icon} />
 					<TextInput
 						placeholderTextColor="#e6e6e6"
 						editable={true}
-						style={styles.input}
+						style={styles.inputField}
 						name="brand"
 						value={this.state.itemBrand}
 						placeholder="Brand"
 						onChangeText={(itemBrand) => this.setState({ itemBrand })}
 					/>
 				</View>
-				<View style={styles.line} />
 
-				<View style={styles.iconRow}>
+				<View style={styles.inputRow}>
 					<FeatherIcon name="sun" style={styles.icon} />
 					<TextInput
 						placeholderTextColor="#e6e6e6"
 						editable={true}
-						style={styles.input}
+						style={styles.inputField}
 						name="quantity"
 						value={this.state.itemQuantity}
 						placeholder="Quantity"
@@ -238,9 +235,8 @@ class NewItem extends React.Component {
 						onChangeText={(itemQuantity) => this.setState({ itemQuantity })}
 					/>
 				</View>
-				<View style={styles.line} />
 
-				<View style={styles.iconRow}>
+				<View style={styles.inputRow}>
 					<RNPickerSelect
 						placeholder={placeholder}
 						items={this.state.stores.map(obj => ({
@@ -255,34 +251,32 @@ class NewItem extends React.Component {
 							}); 
 							this.setStoreInfo(index-1);
 						}}
-						style={styles.inputIOS}
+						style={styles.storeSelect}
 						value={this.state.selectedStore}
 						useNativeAndroidPickerStyle={false}
-						textInputProps={{ underlineColor: 'yellow' }}
+						textInputProps={{ underlineColor: 'red' }}
 						/>
 				</View>
-				<View style={styles.line} />
 
-				<View style={styles.iconRow}>
+				<View style={styles.inputRow}>
 					<FeatherIcon name="star" style={styles.icon} />
 					<TextInput
 						placeholderTextColor="#e6e6e6"
 						editable={true}
-						style={styles.input}
+						style={styles.inputField}
 						name="quant_unit"
 						value={this.state.itemQuantUnit}
 						placeholder="Unit"
 						onChangeText={(itemQuantUnit) => this.setState({ itemQuantUnit })}
 					/>
 				</View>
-				<View style={styles.line} />
 
-				<View style={styles.iconRow}>
+				<View style={styles.inputRow}>
 					<FeatherIcon name="eye" style={styles.icon} />
 					<TextInput
 						placeholderTextColor="#e6e6e6"
 						editable={true}
-						style={styles.input}
+						style={styles.inputField}
 						name="itemDescription"
 						value={this.state.itemDescription}
 						placeholder="Description"
@@ -290,14 +284,13 @@ class NewItem extends React.Component {
 						maxLength={50}
 					/>
 				</View>
-				<View style={styles.line} />
 
 				
 				<TouchableOpacity onPress={
 					this.state.currentTime = new Date(),
 					this.submitInfo
-					}>
-					<Text style={styles.submit}>Submit!</Text>
+					} style={styles.generalButtonTO}>
+					<Text style={styles.generalButtonText}>Submit!</Text>
 				</TouchableOpacity>
 
 			</View>
@@ -305,6 +298,6 @@ class NewItem extends React.Component {
 		</View>
 		);
 	}
-	}
+}
 
 export default NewItem;

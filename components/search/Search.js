@@ -106,7 +106,7 @@ class Search extends Component {
 					onPress = {this.handleSubmit}
 				>
 				<Text
-					style={styles.buttonText}>
+					style={styles.searchButtonText}>
 					SEARCH
 				</Text>
 			</TouchableHighlight>
