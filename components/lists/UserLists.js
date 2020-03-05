@@ -28,7 +28,13 @@ class PryceList extends Component {
 export default class UserLists extends Component {
   constructor(props){
     super(props);
-    this.state = {pryceLists: [], listStale: true, readyToRender: false};
+    this.state = {
+      pryceLists: [],
+      listStale: true,
+      readyToRender: false,
+      baseApiUrl: 'http://192.168.1.100:5000'
+      //baseApiUrl: 'https://pryce-cs467.appspot.com',
+    };
   }
 
   _setToken = async () => {
@@ -83,7 +89,7 @@ export default class UserLists extends Component {
   }
 
   _postNewList = async(listName) => {
-		let url = 'https://pryce-cs467.appspot.com/pryce_lists/';
+		let url = this.state.baseApiUrl + '/pryce_lists/';
 		const response = await fetch(url, {
 			method: 'POST',
 			headers: {
@@ -105,7 +111,7 @@ export default class UserLists extends Component {
 
   _getPryceLists = async () => {
     console.log("authToken in getPryceLists: " + this.state.authToken);
-		let url = 'https://pryce-cs467.appspot.com/pryce_lists/';
+		let url = this.state.baseApiUrl + '/pryce_lists/';
 		const response = await fetch(url, {
 			method: 'GET',
 			headers: {

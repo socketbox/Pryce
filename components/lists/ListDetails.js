@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { 
   AsyncStorage,
-  StyleSheet, 
-  SafeAreaView, 
   Text, 
   TouchableOpacity,
   View 
@@ -10,14 +8,18 @@ import {
 import { Table, Row, Rows } from 'react-native-table-component';
 import { withNavigation } from 'react-navigation';
 import { styles } from '../Styles'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 class ListDetails extends Component {
   _mounted = null;
   
   constructor(props) {
     super(props);
+    
     this.state = {
       tableHead: ['Name', 'Price', 'Store', 'Reported'],
+      //baseApiUrl: 'https://pryce-cs467.appspot.com',
+      baseApiUrl: 'http://192.168.1.100:5000',
       tableData: null,
       listStale: true,
       pryceListId: this.props.navigation.state.params.pryceListId,
@@ -45,18 +47,26 @@ class ListDetails extends Component {
   _addItemFromSearch()
   {
     /*if we're coming back from Search, check for added item*/
-    if(this.props.navigation.state.params.addedItem)
-    {
-      //table library expects an array
-      let addedItem = this.props.navigation.state.params.addedItem;
-      let backingArray = this.state.tableData;
-      //TODO: filter the values returned such that they conform to table columns defined in tableHead
-      backingArray.push(Object.values(addedItem));
-      this.setState({tableData: backingArray});
+    let addedItem = null;
+    AsyncStorage.getItem('addedItem').
+        then( (res) => {
+          addedItem = JSON.parse(res); 
+          //table library expects an array
+          if(addedItem)
+          {
+            let backingArray = this.state.tableData;
+    
+            backingArray.push( 
+              Array.of(addedItem.item_name, addedItem.price, addedItem.store_name, addedItem.reported) );
+            this.setState({tableData: backingArray});
 
-      //add item to db
-      this.addItemToList(addedItem, this.props.navigation.state.params.pryceListId);
-    }
+            //add item to db
+            this.addItemToList(addedItem, this.props.navigation.state.params.pryceListId);
+            AsyncStorage.removeItem('addedItem');
+          }
+        },
+        err => {console.log(err)}
+    );
   }
 
   componentDidMount() {
@@ -124,7 +134,7 @@ class ListDetails extends Component {
       console.log(err);
     } 
     setTimeout(()=>{},1000);
-    let url = 'https://pryce-cs467.appspot.com/pryce_lists/' + plid;
+    let url = this.state.baseApiUrl + '/pryce_lists/' + plid;
 		const response = await fetch(url, {
 			method: 'PUT',
 			headers: {
@@ -139,13 +149,14 @@ class ListDetails extends Component {
       console.log("response: " + JSON.stringify(responseJson));
     })
     .catch(error => console.error(error));
-	};
+  };
+  
 
 _getListItemDetails = async () => {
     let result = true; 
     let resJson = null;
     console.log("authToken in getPryceLists: " + this.state.authToken);
-		let url = 'https://pryce-cs467.appspot.com/pryce_lists/details/' + this.state.pryceListId;
+		let url = this.state.baseApiUrl + '/pryce_lists/details/' + this.state.pryceListId;
 		const response = await fetch(url, {
 			method: 'GET',
 			headers: {
@@ -157,7 +168,7 @@ _getListItemDetails = async () => {
     .then(response => response.json())
     .then( jsonObj => { 
       let tableRows = jsonObj.map( (cv, i, responseJson) => {
-        return [cv.item_name, cv.price, cv.store_name, cv.reported];
+        return [cv.item_id, cv.item_name, cv.price, cv.store_name, cv.reported];
         } 
       );
       this.setState({ tableData: tableRows});
@@ -189,7 +200,7 @@ _getListItemDetails = async () => {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => this.props.navigation.goBack()}
-              style={styles.button}
+              style={styles.buttonContainer}
               >
               <Text style={styles.buttons}>Back</Text>
             </TouchableOpacity>

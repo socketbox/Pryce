@@ -3,19 +3,21 @@ import {
 	Button,
 	View,
 	Text,
-	StyleSheet,
 	TextInput,
 	TouchableHighlight,
-	FlatList
+	FlatList,
+	AsyncStorage
 } from 'react-native';
 import { Card } from 'react-native-paper';
 import ItemInfo from '../item/ItemInfo';
 import { withNavigation } from 'react-navigation';
 import { styles } from '../Styles';
+import { SafeAreaView } from 'react-native-safe-area-context'
+
 
 class ItemButton extends Component {
 	
-	onPress(itemInstance){
+	onPress(srchObj){
 		//searchNav proxy for navigation object; provided by Search class in render()	
 		let navParams = this.props.searchNav.state.params; 
 		if(navParams)	
@@ -23,9 +25,9 @@ class ItemButton extends Component {
 			if(navParams.routeName === 'ListDetails')
 			{
 				let listId = navParams.listId;
-				this.props.searchNav.navigate(navParams.routeName, {
-					addedItem: itemInstance, pryceListId: listId
-				});
+				AsyncStorage.setItem('addedItem', JSON.stringify(srchObj));
+				AsyncStorage.setItem('pryceListId', JSON.stringify(listId));
+				this.props.searchNav.navigate(navParams.routeName);
 			}
 		}
 		else //default to std search 
@@ -59,18 +61,20 @@ class Search extends Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
-		handleChange(e) {
-			this.setState({
-				itemName: e.nativeEvent.text
-			});
-		}
+	handleChange(e) {
+		this.setState({
+			itemName: e.nativeEvent.text
+		});
+	}
 
-		handleSubmit = async () => {
-			console.log(this.state.itemName);
-			const url = `https://pryce-cs467.appspot.com/items?name=${this.state.itemName}`;
-			const response = await fetch(url, {
-				method: 'GET',
-			})
+	handleSubmit = async () => {
+		console.log(this.state.itemName);
+		const url = 'http://192.168.1.100:5000/items/search';
+		//const url = 'https://pryce-cs467.appspot.com/items/search';
+		//delete me: const url = `https://pryce-cs467.appspot.com/items?name=${this.state.itemName}`;
+		const response = await fetch(url, {
+			method: 'GET',
+		})
 			.then(response => response.json())
 			.then((responseJson) => {
 				console.log(responseJson);
@@ -92,40 +96,37 @@ class Search extends Component {
 
 
 	render() {
-		
+		let searchList = (srchData) => {
+			console.log(srchData);
+			return(<FlatList initialNumToRender='20' maxToRenderPerBatch='100'
+						data={ srchData } ItemSeparatorComponent = {this.FlatListItemSeparator}
+						renderItem={({item}) => 
+						<ItemButton instance={item} searchState={this.state} searchNav={this.props.navigation}
+							title={item.item_name} style={styles.item}>
+						</ItemButton>}
+						keyExtractor={item => item.code} /> );
+		};
 		return (
-		<View style={styles.searchContainer}>
-			<Text style={styles.title}>Search for Item</Text>
-			<TextInput
-				style={styles.searchInput}
-				onChange={this.handleChange}
-				/>
-			<TouchableHighlight
-					style = {styles.button}
-					underlayColor= "white"
-					onPress = {this.handleSubmit}
-				>
-				<Text
-					style={styles.searchButtonText}>
-					SEARCH
-				</Text>
-			</TouchableHighlight>
-			<Card>
-			<FlatList
-			
-					initialNumToRender='20'
-					maxToRenderPerBatch='100'
-					data={ this.state.data }
-					ItemSeparatorComponent = {this.FlatListItemSeparator}
-					renderItem={({item}) => 
-					<ItemButton instance={item} searchState={this.state} searchNav={this.props.navigation}
-						title={item.name} style={styles.item}>{item.brand} - {item.name}           
-					</ItemButton>}
-					keyExtractor={item => item.code}
-				/>
-			</Card>
-
-		</View>
+			<View style={styles.searchContainer}>
+				<Text style={styles.title}>Search for Item</Text>
+				<TextInput
+					style={styles.searchInput}
+					onChange={this.handleChange}
+					/>
+				<TouchableHighlight
+						style = {styles.button}
+						underlayColor= "white"
+						onPress = {this.handleSubmit}
+					>
+					<Text
+						style={styles.searchButtonText}>
+						SEARCH
+					</Text>
+				</TouchableHighlight>
+				<Card>
+					{searchList(this.state.data)}
+				</Card>
+			</View>
 		)
 	}
 }
