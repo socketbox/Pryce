@@ -82,19 +82,21 @@ class Search extends Component {
 	}
 
 	selectedItem(itemInstance){
-		let navParams = this.props.navigation.getParam('ListDetails', 'null');
-		console.log(navParams);
-		if(navParams.routeName === 'ListDetails')
+		let navParams = this.props.navigation.getParam('routeName', 'null');
+		console.log(this.props.navigation)
+		if(navParams === 'ListDetails')
 			{
-				let listId = navParams.listId;
-				this.props.navigation.navigate(navParams.routeName, {
+				let listId = this.props.navigation.getParam('listId', 'null');
+				this.props.navigation.navigate(navParams, {
 					addedItem: itemInstance, pryceListId: listId
 				});
 			}
 		else //default to std search 
 		{
 			//go to itemInfo and take the item 
-			this.props.navigation.navigate('ItemInfo', {item: itemInstance});
+			let itemCode = itemInstance.code;
+			//console.log(data);
+			this.props.navigation.navigate('ItemInfo', {itemData: itemInstance});
 		}
 	}
 

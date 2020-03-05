@@ -1,11 +1,9 @@
 import React from 'react';
 import {
-	StyleSheet,
 	View,
 	Text,
 	TextInput,
 	TouchableOpacity,
-	Alert
 } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import RNPickerSelect from 'react-native-picker-select';
