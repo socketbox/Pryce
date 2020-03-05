@@ -15,8 +15,21 @@ export const styles = StyleSheet.create({
 		borderRadius: 6,
 		borderWidth: 1,
 		borderStyle: 'solid',
-		marginBottom: 30
+		marginBottom: 30,
+		flexDirection: 'row',
+		backgroundColor: 'white',
+		borderColor: 'white',
+		marginTop: 10,
+		alignSelf: 'stretch',
 	},
+	mainContainer: {
+		flex: 1,
+		padding: 30,
+		marginTop: 65,
+		flexDirection: 'column',
+		justifyContent: 'center',
+		alignContent: 'center',
+	  },
 	/*
 	 * Scanner
 	 */
@@ -26,16 +39,6 @@ export const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'center',
     },
-    /*goBackButton: {
-        flex: 1,
-        marginLeft: 30,
-        marginTop: 50,
-    },
-    backStyle: {
-        width: 30,
-        height: 30,
-    }*/
-
 	/*
 	 * Map
 	 */
@@ -86,7 +89,6 @@ export const styles = StyleSheet.create({
     textStyleSmall: {
         textAlign: 'center',
         fontSize: 16,
-
         color: '#000',
         marginTop: 15,
     },
@@ -195,6 +197,7 @@ export const styles = StyleSheet.create({
      */
 	container: {
 		flex: 1,
+		alignItems: 'center',
 	},
 	pryce: {
 		flex: 1,
@@ -223,12 +226,11 @@ export const styles = StyleSheet.create({
 		height: "100%",
 		color: '#121212',
 		textAlign: 'left',
-		fontSize: 20,
+		fontSize: 18,
 		marginLeft: 6,
 		borderBottomWidth: 1,
 		borderBottomColor: '#060606'
 	},
-	
 	createAccount: {
 		width: 168,
 		height: 16,
@@ -252,18 +254,11 @@ export const styles = StyleSheet.create({
 		height: 18,
 		color: '#126ef7',
 		fontSize: 14,
-		alignSelf: 'center',
 		marginBottom: 57,
     },
     /*
      * Register
      */ 
-    title: {
-		color: "#121212",
-		fontSize: 40,
-		textAlign: 'center',
-		paddingTop: '20%',
-	},
 	form: {
 		alignItems: 'center',
 	},
@@ -313,33 +308,6 @@ export const styles = StyleSheet.create({
 		marginLeft: 2,
 	},
 	/*
-	 * EditItem
-	 */
-	signInButton: {
-		width: 161,
-		height: 32,
-		marginTop: 36,
-		marginLeft: 40
-	},
-	signInContainer: {
-		width: 161,
-		height: 32,
-		borderRadius: 6,
-		borderColor: "rgba(0,0,0,0.65)",
-		borderWidth: 1,
-		borderStyle: "solid"
-	},
-	editItem1: {
-		color: "#121212",
-		textAlign: "center",
-		marginLeft: 59
-	},
-	pryceColumn: {
-		width: 240,
-		marginTop: 87,
-		marginLeft: 67
-	},
-	/*
 	 * ItemInfo
 	 */
 	containerItemInfo: {
@@ -360,10 +328,16 @@ export const styles = StyleSheet.create({
 	/***********
 	 * NewItem
 	 */
-	containerNewItem: {
-		flex: 1,
-		marginTop: 40,
-		alignItems: 'center'
+	newItemDescription: {
+		color: '#121212',
+		alignContent: 'flex-start',
+		textAlign: 'left',
+		width: '100%',
+		borderRadius: 2,
+		borderColor: '#ccc',
+		borderWidth: 1,
+		marginBottom: 30,
+		height: 140,
 	},
 	/* seems to have no effect on store selector */
 	storeSelect: {
@@ -376,22 +350,6 @@ export const styles = StyleSheet.create({
 		color: 'green',
 		paddingRight: 30,
 	},
-	/*input: {
-		width: 193,
-		height: 15,
-		color: '#121212',
-		textAlign: 'left',
-		marginLeft: 6,
-		marginTop: 6,
-	},
-	line: {
-		width: 218,
-		height: 1,
-		backgroundColor: '#060606',
-		opacity: 0.25,
-		marginTop: 1,
-		marginLeft: 2,
-	},*/
 	submit: {
 		width: 100,
 		height: 25,
@@ -417,22 +375,18 @@ export const styles = StyleSheet.create({
 		paddingTop: 60,
 	},
 	searchInput: {
-		height: 50,
 		padding: 4,
-		marginRight: 5,
-		fontSize: 23,
-		borderWidth: 1,
-		borderColor: 'white',
-		borderRadius: 8,
-		color: 'black'
-	},
-	searchButtonText: {
 		fontSize: 18,
+		borderBottomWidth: 1,
+		borderColor: 'black',
+		borderRadius: 4,
+	},
+	buttonText: {
+		fontSize: 20,
 		color: '#111',
-		alignSelf: 'center'
+		alignSelf: 'center',
 	},
 	button: {
-		height: 45,
 		flexDirection: 'row',
 		backgroundColor: 'white',
 		borderColor: 'white',
@@ -441,7 +395,7 @@ export const styles = StyleSheet.create({
 		marginBottom: 10,
 		marginTop: 10,
 		alignSelf: 'stretch',
-		justifyContent: 'center'
+		justifyContent: 'center',
 	},
 	/*
 	 * User
@@ -463,15 +417,9 @@ export const styles = StyleSheet.create({
 		backgroundColor: '#d3d3d3',
 		marginBottom: 30
 	},
-	buttonText: {
-		fontSize: 14
-	},
 	/*
 	 * Review
 	 */
-	container: {
-		flex: 1
-	},
 	itemName1: {
 		width: 286,
 		height: 49,
@@ -499,20 +447,25 @@ export const styles = StyleSheet.create({
 		color: "#121212",
 		fontSize: 20,
 	},
-	xXx7: {
-		width: 131,
-		height: 29,
-		color: "#121212",
-		fontSize: 30,
-		textAlign: "center"
-	},
 	store: {
 		width: 131,
 		height: 29,
-		color: "#121212",
+		color: '#121212',
 		fontSize: 30,
-		textAlign: "center"
+		textAlign: 'center',
 	},
+	addPriceButton: {
+		fontSize: 18,
+		color: '#111',
+		alignSelf: 'center',
+	},
+	columns: {
+		flex: 1,
+		borderBottomWidth: 1,
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'space-between',
+	}
 });
 
 

@@ -3,57 +3,26 @@ import {
 	Button,
 	View,
 	Text,
-	StyleSheet,
 	TextInput,
-	TouchableHighlight,
-	FlatList
+	TouchableOpacity,
 } from 'react-native';
-import { Card } from 'react-native-paper';
-import ItemInfo from '../item/ItemInfo';
+import { Card, DataTable  } from 'react-native-paper';
+import { DataTablePagination } from 'material-bread';
 import { withNavigation } from 'react-navigation';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { styles } from '../Styles';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-
-// class ItemButton extends Component {
-	
-// 	onPress(itemInstance){
-// 		//searchNav proxy for navigation object; provided by Search class in render()	
-// 		let navParams = this.props.searchNav.state.params; 
-// 		if(navParams)	
-// 		{
-// 			if(navParams.routeName === 'ListDetails')
-// 			{
-// 				let listId = navParams.listId;
-// 				this.props.searchNav.navigate(navParams.routeName, {
-// 					addedItem: itemInstance, pryceListId: listId
-// 				});
-// 			}
-// 		}
-// 		else //default to std search 
-// 		{
-// 			//go to itemInfo and take the item 
-// 			this.props.searchNav.navigate('ItemInfo', {item: itemInstance});
-// 		}
-// 	}
-	
-// 	render(){
-// 		return (
-// 				<Text onPress={() => this.onPress(this.props.instance)}>
-// 					{this.props.instance.brand} - {this.props.instance.name}
-// 				</Text> 
-// 		);
-// 	}
-// }
 
 class Search extends Component {
 	constructor(props) {
 		super(props);
 
 		this.state = {
-			itemName: '',
-			error: false,
-			data: [],
-		}
+		itemName: '',
+		error: false,
+		data: [],
+		page: 0,
+		perPage: 6,
+		};
 
 		this.handleChange = this.handleChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -61,95 +30,101 @@ class Search extends Component {
 
 	handleChange(e) {
 		this.setState({
-			itemName: e.nativeEvent.text
+		itemName: e.nativeEvent.text,
 		});
 	}
 
 	handleSubmit = async () => {
-		console.log(this.state.itemName);
-		const url = `https://pryce-cs467.appspot.com/items?name=${this.state.itemName}`;
+		const url = `https://pryce-cs467.appspot.com/items?name=${
+		this.state.itemName
+		}`;
 		const response = await fetch(url, {
-			method: 'GET',
+		method: 'GET',
 		})
 		.then(response => response.json())
-		.then((responseJson) => {
+		.then(responseJson => {
 			console.log(responseJson);
 			this.setState({
-				data: responseJson
-			})
+			data: responseJson,
+			});
 		})
 		.catch(error => console.error(error));
-	}
+	};
 
-	selectedItem(itemInstance){
+	selectedItem(itemInstance) {
 		let navParams = this.props.navigation.getParam('routeName', 'null');
-		console.log(this.props.navigation)
-		if(navParams === 'ListDetails')
-			{
-				let listId = this.props.navigation.getParam('listId', 'null');
-				this.props.navigation.navigate(navParams, {
-					addedItem: itemInstance, pryceListId: listId
-				});
-			}
-		else //default to std search 
-		{
-			//go to itemInfo and take the item 
-			let itemCode = itemInstance.code;
-			//console.log(data);
-			this.props.navigation.navigate('ItemInfo', {itemData: itemInstance});
+		if (navParams === 'ListDetails') {
+		let listId = this.props.navigation.getParam('listId', 'null');
+		this.props.navigation.navigate(navParams, {
+			addedItem: itemInstance,
+			pryceListId: listId,
+		});
+		} //default to std search
+		else {
+		//go to itemInfo and take the item
+		let itemCode = itemInstance.code;
+		this.props.navigation.navigate('ItemInfo', { itemCode });
 		}
 	}
 
-	/**NEED TO REFACTOR THIS INTO FUNCTION SERVICE */
-	/**NEED TO REFACTOR THIS INTO FUNCTION SERVICE */
-	/**NEED TO REFACTOR THIS INTO FUNCTION SERVICE */
-	FlatListItemSeparator = () => {
-        return (
-        <View style={{ height: 1, width: "100%", backgroundColor: "#607D8B" }} />
-        );
-    };
-
-
 	render() {
-		
 		return (
-		<View style={styles.searchContainer}>
-			<Text style={styles.title}>Search for Item</Text>
-			<TextInput
-				style={styles.searchInput}
-				onChange={this.handleChange}
-				/>
-			<TouchableHighlight
-					style = {styles.button}
-					underlayColor= "white"
-					onPress = {this.handleSubmit}
-				>
-				<Text
-					style={styles.searchButtonText}>
-					Search
-				</Text>
-			</TouchableHighlight>
+			<View style={styles.mainContainer}>
 			<Card>
-			<FlatList
-			
-					initialNumToRender='20'
-					maxToRenderPerBatch='100'
-					data={ this.state.data }
-					ItemSeparatorComponent = {this.FlatListItemSeparator}
-					renderItem={({item}) => 
-						<TouchableOpacity style={styles.button}
-							onPress={ () => this.selectedItem(item)}>
-							<Text>{item.brand} - {item.name}</Text>
-						</TouchableOpacity>
-					}
-					keyExtractor={item => item.code}
+				<Card.Title
+				titleStyle={{ fontSize: 25 }}
+				title="Search"
+				subtitle="Look up items in our database!"
 				/>
+				<Card.Content>
+				<TextInput 
+					style={styles.searchInput} 
+					onChange={this.handleChange} 
+					placeholder="Enter item here...">
+				</TextInput><Text></Text>
+				<DataTable>
+					<DataTable.Header>
+					<DataTable.Title>Brand</DataTable.Title>
+					<DataTable.Title>Store</DataTable.Title>
+					</DataTable.Header>
+					{this.state.data
+					.slice(
+					this.state.page * this.state.perPage,
+					this.state.page * this.state.perPage + this.state.perPage,
+					).map(item => (
+					<DataTable.Row
+						onPress={ () => this.selectedItem(item)}
+						key={item.brand}>
+						<DataTable.Cell 
+						borderRight flex={2}>
+						{item.brand}
+						</DataTable.Cell>
+						<DataTable.Cell numeric>
+						{item.name}
+						</DataTable.Cell>
+					</DataTable.Row>
+					))}
+					<DataTablePagination
+						style={{flex: 1, alignContent: 'center', alignItems: 'center'}}
+						page={this.state.page}
+						numberOfPages={this.state.data.length / this.state.perPage}
+						numberOfRows={this.state.data.length}
+						perPage={this.state.perPage}
+						onChangePage={page => this.setState({ page: page })}
+						onChangeRowsPerPage={perPage => this.setState({ perPage: perPage })}
+						possibleNumberPerPage={[ 3, 6]}
+					/>
+				</DataTable>
+				</Card.Content>
 			</Card>
-
-		</View>
-		)
+				<TouchableOpacity
+				style={styles.button}
+				onPress={this.handleSubmit}>
+				<Text style={styles.buttonText}>Submit</Text>
+				</TouchableOpacity>
+			</View>
+		);
 	}
 }
 
-export default withNavigation(Search)
-
+export default withNavigation(Search);
