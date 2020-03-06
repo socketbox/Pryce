@@ -6,6 +6,7 @@ import {
 	TouchableOpacity,
 	Keyboard,
 	Animated, 
+	Alert
 } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import RNPickerSelect from 'react-native-picker-select';
@@ -100,18 +101,20 @@ class NewPrice extends React.Component {
 		},
 		body: JSON.stringify(data),
 		})
-		.then(response => {
-			if (response.status == 200) {
-			return response.json();
-			} else {
-			// todo: handle other responses
-			return;
+		.then(async (response) => {
+			let res = await response.json(); 
+			return {
+				status: response.status,
+				json: res
 			}
 		})
 		.then(responseData => {
-			//Alert.alert("SERVER RESPONSE", JSON.stringify(responseData));
-			console.log(JSON.stringify(responseData));
-			this.props.navigation.navigate('Rating', { addedPrice: responseData });
+			console.log(JSON.stringify(responseData.json));
+			if (responseData.status == 200) {
+				this.props.navigation.navigate('Rating', { addedPrice: responseData.json });
+			} else {
+				Alert.alert("Price Update Failed", JSON.stringify(responseData.json));
+			}
 		});
 	};
 
@@ -214,9 +217,10 @@ class NewPrice extends React.Component {
 					editable={true}
 					style={styles.inputField}
 					name="price"
-					value={this.state.prices}
+					value={this.state.price}
 					placeholder="New Price"
 					keyboardType="decimal-pad"
+					onChangeText={price => this.setState({ price })}
 				/>
 				</View>
 
