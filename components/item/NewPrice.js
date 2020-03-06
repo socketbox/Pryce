@@ -102,10 +102,9 @@ class NewPrice extends React.Component {
 		body: JSON.stringify(data),
 		})
 		.then(async (response) => {
-			let res = await response.json(); 
 			return {
 				status: response.status,
-				json: res
+				json: await response.json()
 			}
 		})
 		.then(responseData => {
