@@ -23,13 +23,12 @@ export const styles = StyleSheet.create({
 		alignSelf: 'stretch',
 	},
 	mainContainer: {
-		flex: 1,
 		padding: 30,
 		marginTop: 65,
 		flexDirection: 'column',
 		justifyContent: 'center',
 		alignContent: 'center',
-	  },
+	},
 	/*
 	 * Scanner
 	 */

@@ -1,16 +1,18 @@
 import React, { Component } from 'react';
-import {
-	Button,
-	View,
-	Text,
-	TextInput,
-	TouchableOpacity,
-} from 'react-native';
-import { Card, DataTable  } from 'react-native-paper';
+import { View, Text } from 'react-native';
+import { DataTable } from 'react-native-paper';
 import { DataTablePagination } from 'material-bread';
 import { withNavigation } from 'react-navigation';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { styles } from '../Styles';
+import {
+	TextField,
+	Icon,
+	IconButton,
+	Card,
+	CardHeader,
+	CardContent,
+} from 'material-bread';
 
 class Search extends Component {
 	constructor(props) {
@@ -18,21 +20,18 @@ class Search extends Component {
 
 		this.state = {
 		itemName: '',
-		error: false,
 		data: [],
 		page: 0,
-		perPage: 6,
+		perPage: 5,
+		showResults: false,
 		};
 
-		this.handleChange = this.handleChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
-	handleChange(e) {
-		this.setState({
-		itemName: e.nativeEvent.text,
-		});
-	}
+	_toggleShow = () => {
+		this.setState({ showResults: true });
+	};
 
 	handleSubmit = async () => {
 		const url = `https://pryce-cs467.appspot.com/items?name=${
@@ -67,62 +66,78 @@ class Search extends Component {
 		}
 	}
 
+	/*Render result card after search */
+	displayResults = () => {
+		this.handleSubmit();
+		return (
+		<Card radius={1} shadow={4} style={{ maxWidth: 400, width: '100%' }}>
+			<CardHeader
+			title="Results"
+			subtitle="Select an item for more details"
+			/>
+			<DataTable>
+			<DataTable.Header>
+				<DataTable.Title>Brand</DataTable.Title>
+				<DataTable.Title>Store</DataTable.Title>
+			</DataTable.Header>
+			{this.state.data
+				.slice(
+				this.state.page * this.state.perPage,
+				this.state.page * this.state.perPage + this.state.perPage
+				)
+				.map(item => (
+				<DataTable.Row
+					onPress={() => this.selectedItem(item)}
+					key={item.brand}>
+					<DataTable.Cell>{item.brand}</DataTable.Cell>
+					<DataTable.Cell>{item.name}</DataTable.Cell>
+				</DataTable.Row>
+				))}
+			<Text />
+			<DataTablePagination
+				style={{
+				flex: 1,
+				alignContent: 'center',
+				alignItems: 'center',
+				}}
+				page={this.state.page}
+				numberOfPages={this.state.data.length / this.state.perPage}
+				numberOfRows={this.state.data.length}
+				perPage={this.state.perPage}
+				onChangePage={page => this.setState({ page: page })}
+			/>
+			<Text />
+			</DataTable>
+		</Card>
+		);
+	};
+
 	render() {
 		return (
-			<View style={styles.mainContainer}>
-			<Card>
-				<Card.Title
-				titleStyle={{ fontSize: 25 }}
-				title="Search"
-				subtitle="Look up items in our database!"
+		<View style={styles.mainContainer}>
+			<TextField
+			style={{ width: '90%' }}
+			label="Enter text here..."
+			focusedLabelColor={'#3d3d3d'}
+			value={this.state.itemName}
+			leadingIcon={<Icon name={'search'} size={24} color={'#6e6e6e'} />}
+			trailingIcon={
+				<IconButton
+				name={'arrow-forward'}
+				size={18}
+				color={'#6e6e6e'}
+				onPress={this._toggleShow}
 				/>
-				<Card.Content>
-				<TextInput 
-					style={styles.searchInput} 
-					onChange={this.handleChange} 
-					placeholder="Enter item here...">
-				</TextInput><Text></Text>
-				<DataTable>
-					<DataTable.Header>
-					<DataTable.Title>Brand</DataTable.Title>
-					<DataTable.Title>Store</DataTable.Title>
-					</DataTable.Header>
-					{this.state.data
-					.slice(
-					this.state.page * this.state.perPage,
-					this.state.page * this.state.perPage + this.state.perPage,
-					).map(item => (
-					<DataTable.Row
-						onPress={ () => this.selectedItem(item)}
-						key={item.brand}>
-						<DataTable.Cell 
-						borderRight flex={2}>
-						{item.brand}
-						</DataTable.Cell>
-						<DataTable.Cell numeric>
-						{item.name}
-						</DataTable.Cell>
-					</DataTable.Row>
-					))}
-					<DataTablePagination
-						style={{flex: 1, alignContent: 'center', alignItems: 'center'}}
-						page={this.state.page}
-						numberOfPages={this.state.data.length / this.state.perPage}
-						numberOfRows={this.state.data.length}
-						perPage={this.state.perPage}
-						onChangePage={page => this.setState({ page: page })}
-						onChangeRowsPerPage={perPage => this.setState({ perPage: perPage })}
-						possibleNumberPerPage={[ 3, 6]}
-					/>
-				</DataTable>
-				</Card.Content>
-			</Card>
-				<TouchableOpacity
-				style={styles.button}
-				onPress={this.handleSubmit}>
-				<Text style={styles.buttonText}>Submit</Text>
-				</TouchableOpacity>
-			</View>
+			}
+			onChangeText={value => this.setState({ itemName: value })}
+			/>
+			<Text style={styles.textStyleSmall}>
+			Search for items in our database!
+			</Text>
+			<Text />
+			{this.state.showResults && this.displayResults()}
+			<View />
+		</View>
 		);
 	}
 }
