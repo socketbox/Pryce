@@ -18,17 +18,14 @@ class PryceList extends Component {
     this.props.pryceListDetails.push('ListDetails', { pryceListId: plid });
   }
 
-  deleteList(plid, rowIndex){
-    let authToken = ( async () => {
-      let user = await AsyncStorage.getItem('user');
-      let token = JSON.parse(user).authToken; 
-      return token;
-    })();
-    
+  async deleteList(plid){
+    let user = await AsyncStorage.getItem('user');
+    let authToken = JSON.parse(user).authToken;
     
     //let listArr = this.state.tableData
-    console.log("In deleteList. plid, rowIndex: " + plid + ", " + rowIndex);
-    let url = this.state.baseApiUrl + '/pryce_lists/' + plid;
+    console.log("In deleteList. authToken: " + JSON.stringify(authToken) );
+    console.log("In deleteList. plid: " + plid );
+    let url = this.props.baseApiUrl + '/pryce_lists/' + plid;
     fetch(url, { 
       method: 'DELETE',
       headers: {
@@ -38,18 +35,23 @@ class PryceList extends Component {
       }
     }).then(res => console.log(res), err => {console.log(err)})
 
-    let listObjs = this.state.pryceLists;
-    //delete relevant list 
+    let listObjs = this.props.pryceLists;
+    for(let i = 0; i < listObjs.length; i++)
+    {
+      //delete relevant list 
+      if(listObjs[i].pryce_list_id === plid)
+        listObjs.splice(i, 1);
+    }
     console.log(listObjs);
-    this.setState({pryceLists: listObjs});
+    //ugh. must call a function passed into component at render in order to set state in DOM parent
+    this.props.setParentState({pryceLists: listObjs});
   }
 
-  _alert = () => (Alert.alert(`This is row ${this.props.pryceListId}`))
+  _alert = () => (Alert.alert(`This is pryceListId ${this.props.pryceListId}`))
 
   render() {
     return (
-      <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'center', borderWidth: 1, borderColor: 'red'}} 
-          onLayout={this._alert(this.props.pryceListId)}>
+      <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'center', marginWidth: 50, borderWidth: 1, borderColor: 'red'}}>
         <Button title={this.props.pryceListName} onPress={() => this.onPress(this.props.pryceListId)} />
         <Button title='DELETE' onPress={() => this.deleteList(this.props.pryceListId)} 
             style={{borderWidth: 1, borderColor: 'black', borderStyle: 'solid' }} />
@@ -70,6 +72,7 @@ export default class UserLists extends Component {
       baseApiUrl: 'http://192.168.1.100:5000'
       //baseApiUrl: 'https://pryce-cs467.appspot.com',
     };
+    this.setFlatListState = this.setFlatListState.bind(this);
   }
 
   _setToken = async () => {
@@ -155,6 +158,12 @@ export default class UserLists extends Component {
       .catch(error => console.error(error));
   };
 
+  setFlatListState(newStateVal)
+  {
+    console.log("foo");
+    this.setState(newStateVal);
+  }
+
   render() {
     if (!this.state.readyToRender) {
       return (<ActivityIndicator size="large" color="#0000ff" />);
@@ -164,10 +173,16 @@ export default class UserLists extends Component {
     return (
       <SafeAreaView>
         <FlatList
-          numColumns='3'
           data={listData}
-          renderItem={({ item }) => <PryceList pryceListDetails={this.props.navigation} pryceListId={item.pryce_list_id} pryceListName={item.name} />}
+          renderItem={({ item }) => <PryceList baseApiUrl={this.state.baseApiUrl} 
+              pryceListDetails={this.props.navigation} 
+              pryceListId={item.pryce_list_id} 
+              pryceLists={this.state.pryceLists}
+              setParentState={this.setFlatListState} 
+              pryceListName={item.name} />
+            }
           keyExtractor={item => item.key}
+          extraData={listData}
         />
         <View style={{alignItems: 'center'}}>
         <View style={styles.newList}>
@@ -180,10 +195,7 @@ export default class UserLists extends Component {
           />
           <Button title="New List" onPress={() => { this._postNewList(this.state.newListName); }} />
         </View>
-        <TouchableOpacity
-          onPress={() => this.props.navigation.goBack()}
-          style={styles.generalButtonTO}
-        >
+        <TouchableOpacity onPress={() => this.props.navigation.goBack()} style={styles.generalButtonTO}>
           <Text style={styles.generalButtonText}>Back</Text>
         </TouchableOpacity>
         </View>
