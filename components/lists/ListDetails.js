@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
+import FeatherIcon from 'react-native-vector-icons/Feather';
 import { 
+  StyleSheet,
   AsyncStorage,
   Text, 
+  ActivityIndicator,
   TouchableOpacity,
   View 
   } from 'react-native';
-import { Table, Row, Rows } from 'react-native-table-component';
+import { Cell, Table, Row, Rows, TableWrapper } from 'react-native-table-component';
 import { withNavigation } from 'react-navigation';
-import { styles } from '../Styles'
+//import { styles } from '../Styles'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 class ListDetails extends Component {
@@ -17,7 +20,8 @@ class ListDetails extends Component {
     super(props);
     
     this.state = {
-      tableHead: ['Name', 'Price', 'Store', 'Reported'],
+      tableHead: ['Name', 'Price', 'Store', 'Reported', ''],
+      //colWidthArr: [100, 50, 100, 50, 25],
       //baseApiUrl: 'https://pryce-cs467.appspot.com',
       baseApiUrl: 'http://192.168.1.100:5000',
       tableData: null,
@@ -57,7 +61,7 @@ class ListDetails extends Component {
             let backingArray = this.state.tableData;
     
             backingArray.push( 
-              Array.of(addedItem.item_name, addedItem.price, addedItem.store_name, addedItem.reported) );
+              Array.of(addedItem.item_name, addedItem.price, addedItem.store_name, addedItem.reported, addedItem.item_id) );
             this.setState({tableData: backingArray});
 
             //add item to db
@@ -150,7 +154,33 @@ class ListDetails extends Component {
     })
     .catch(error => console.error(error));
   };
-  
+ 
+  deleteItem(itemId, rowIndex){
+    let authToken = ( async () => {
+      let user = await AsyncStorage.getItem('user');
+      let token = JSON.parse(user).authToken; 
+      return token;
+    })();
+    
+    
+    let listArr = this.state.tableData
+    let plid = this.state.pryceListId
+    //console.log("In deleteItem. itemId, rowIndex: " + itemId + ", " + rowIndex);
+    let url = this.state.baseApiUrl + '/pryce_lists/' + plid + '/' + itemId;
+    fetch(url, { 
+      method: 'DELETE',
+      headers: {
+				'Content-Type': 'application/json',
+				'Accept': 'application/json',
+        'Authorization': "Bearer " + authToken
+      }
+    }).then(res => console.log(res), err => {console.log(err)})
+
+    let backingArray = this.state.tableData;
+    //delete row that corresponds to item
+    backingArray.splice(rowIndex, 1);
+    this.setState({tableData: backingArray});
+  }
 
 _getListItemDetails = async () => {
     let result = true; 
@@ -168,7 +198,7 @@ _getListItemDetails = async () => {
     .then(response => response.json())
     .then( jsonObj => { 
       let tableRows = jsonObj.map( (cv, i, responseJson) => {
-        return [cv.item_id, cv.item_name, cv.price, cv.store_name, cv.reported];
+        return [ cv.item_name, cv.price, cv.store_name, cv.reported, cv.item_id];
         } 
       );
       this.setState({ tableData: tableRows});
@@ -180,29 +210,45 @@ _getListItemDetails = async () => {
 	render(){
     if( !this.state.tableData || !this._mounted )
     {
-      return (<SafeAreaView><Text>Loading...</Text></SafeAreaView>);
+      return (<ActivityIndicator size="large" color="#0000ff" />);
     } 
     else
     {
+      const element = (itemId, index) => (
+        <TouchableOpacity onPress={() => this.deleteItem(itemId, index)}>
+          <FeatherIcon name='trash' style={styles.button}/>
+        </TouchableOpacity>
+      );
+      
       return (
         <SafeAreaView style={styles.container}>
-          <Table borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}}>
-            <Row data={this.state.tableHead} style={styles.head} textStyle={styles.text}/>
-            <Rows data={this.state.tableData} textStyle={styles.text}/>
+          <Table borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}} >
+            <Row data={this.state.tableHead} textStyle={styles.text} />
+            {
+              this.state.tableData.map(( rowData, index ) => (
+                <TableWrapper key={index} style={styles.row} widthArr={this.state.colWidthArr} >
+                  { 
+                    rowData.map( (cellData, cellIndex ) => (
+                        <Cell key={cellIndex} data={cellIndex === 4 ? element(cellData, index) : cellData} textStyle={styles.text}  />
+                    ))
+                  }
+                </TableWrapper>
+              )) 
+            }
           </Table>
-          <View style={{alignContent: 'center'}}>
+          <View style={ styles.buttonView }>
             <TouchableOpacity onPress={() => this.props.navigation.navigate('Search', {
               listId: this.state.pryceListId,
               routeName: this.props.navigation.state.routeName
             })}
                 style={styles.buttonContainer} >
-              <Text style={styles.buttons}>Add Item</Text>
+              <Text style={styles.button}>Add Item</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => this.props.navigation.goBack()}
               style={styles.buttonContainer}
               >
-              <Text style={styles.buttons}>Back</Text>
+              <Text style={styles.button}>Back</Text>
             </TouchableOpacity>
           </View>
         </SafeAreaView>
@@ -211,5 +257,41 @@ _getListItemDetails = async () => {
   }
 }
 
+const styles = StyleSheet.create({
+  button: {
+    fontFamily: 'Arial',
+    fontSize: 14,
+    padding: 10,
+    color: '#444', 
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: '#999',
+    backgroundColor: '#E6E6E6',
+    borderRadius: 2,
+    lineHeight: 10,
+    textAlignVertical: 'center',
+    textAlign: 'center',
+    width: '100%'
+  },
+  buttonView: {
+    flexDirection: 'row',
+    width: '100%',
+    justifyContent: 'center'
+  },
+  container: 
+  {
+    flex: 1, 
+    width:'95%', 
+		height: '90%',
+    padding: 15,
+    paddingTop: 25,
+  }, 
+  //singleHead: { width: 80, height: 40, backgroundColor: '#c8e1ff' },
+  //head: { flex: 1, backgroundColor: '#c8e1ff' },
+  //title: { flex: 2, backgroundColor: '#f6f8fa' },
+  row: { flexDirection: 'row', backgroundColor: '#FFF' },
+  titleText: { marginRight: 6, textAlign:'right' },
+  text: { textAlign: 'center' },
+});
 
 export default withNavigation(ListDetails);
