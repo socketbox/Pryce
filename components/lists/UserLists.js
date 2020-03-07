@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+  //https://github.com/shimohq/react-native-prompt-android/issues/45
   Alert,
   ActivityIndicator,
   AsyncStorage,
@@ -13,9 +14,44 @@ import {
 import { styles } from '../Styles'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
+
 class PryceList extends Component {
+  constructor(props) {
+    super(props)
+  }
+
+  listName = null;
+
   onPress(plid) {
     this.props.pryceListDetails.push('ListDetails', { pryceListId: plid });
+  }
+
+  async copyList(plid, name){
+    let user = await AsyncStorage.getItem('user');
+    let authToken = JSON.parse(user).authToken;
+    
+    this.listName = name;
+    
+    let url = this.props.baseApiUrl + '/pryce_lists/duplicate/' + plid;
+    fetch(url, { 
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': "Bearer " + authToken
+        },
+        body: JSON.stringify(this.listName)
+      }).then(response => response.json())
+      .then(responseJson => {
+        let pls = this.props.pryceLists;
+        console.log("response: " + responseJson + ", pls arr: " + pls);
+        pls.push(responseJson);
+        //ugly hack. must call a function passed into component at render in order to set state in DOM parent
+        this.props.setParentState({ pryceLists: pls });
+      })
+      .catch(error => console.error(error));
+
+      this.listName = null;
   }
 
   async deleteList(plid){
@@ -47,16 +83,19 @@ class PryceList extends Component {
     this.props.setParentState({pryceLists: listObjs});
   }
 
-  _alert = () => (Alert.alert(`This is pryceListId ${this.props.pryceListId}`))
-
   render() {
+    let modal = function(){ 
+      return (<ListNameModal /> )
+    };
+
     return (
-      <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'center', marginWidth: 50, borderWidth: 1, borderColor: 'red'}}>
-        <Button title={this.props.pryceListName} onPress={() => this.onPress(this.props.pryceListId)} />
-        <Button title='DELETE' onPress={() => this.deleteList(this.props.pryceListId)} 
-            style={{borderWidth: 1, borderColor: 'black', borderStyle: 'solid' }} />
-        <Button title='DUPLICATE' onPress={() => this.onPress(this.props.pryceListId)} />
-      </View>
+        <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'center', marginWidth: 50, borderWidth: 1, borderColor: 'red'}}>
+          <Button title={this.props.pryceListName} onPress={() => this.onPress(this.props.pryceListId)} />
+          <Button title='DELETE' onPress={() => this.deleteList(this.props.pryceListId)} 
+              style={{borderWidth: 1, borderColor: 'black', borderStyle: 'solid' }} />
+          <Button title='COPY' onPress={() => { Alert.prompt('Copied List Name', 
+              'Please provide a name for your copied list.', (name) => {this.copyList(this.props.pryceListId, name)})}} />
+        </View>
     );
   }
 }
@@ -123,7 +162,7 @@ export default class UserLists extends Component {
 
   _postNewList = async (listName) => {
     let url = this.state.baseApiUrl + '/pryce_lists/';
-    const response = await fetch(url, {
+    fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -200,7 +239,6 @@ export default class UserLists extends Component {
         </TouchableOpacity>
         </View>
       </SafeAreaView>
-
 	  );
   }
 }
