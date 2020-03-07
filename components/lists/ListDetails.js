@@ -22,8 +22,8 @@ class ListDetails extends Component {
     this.state = {
       tableHead: ['Name', 'Price', 'Store', 'Reported', ''],
       //colWidthArr: [100, 50, 100, 50, 25],
-      //baseApiUrl: 'https://pryce-cs467.appspot.com',
-      baseApiUrl: 'http://192.168.1.100:5000',
+      baseApiUrl: 'https://pryce-cs467.appspot.com',
+      //baseApiUrl: 'http://192.168.1.100:5000',
       tableData: null,
       listStale: true,
       pryceListId: this.props.navigation.state.params.pryceListId,

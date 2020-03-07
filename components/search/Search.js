@@ -69,9 +69,9 @@ class Search extends Component {
 
 	handleSubmit = async () => {
 		console.log(this.state.itemName);
-		const url = 'http://192.168.1.100:5000/items/search';
-		//const url = 'https://pryce-cs467.appspot.com/items/search';
-		//delete me: const url = `https://pryce-cs467.appspot.com/items?name=${this.state.itemName}`;
+		//const url = 'http://192.168.1.100:5000/items/search';
+		const url = 'https://pryce-cs467.appspot.com/items/search';
+		//old, broken url: const url = `https://pryce-cs467.appspot.com/items?name=${this.state.itemName}`;
 		const response = await fetch(url, {
 			method: 'GET',
 		})

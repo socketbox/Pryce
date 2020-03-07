@@ -108,8 +108,8 @@ export default class UserLists extends Component {
       pryceLists: [],
       listStale: true,
       readyToRender: false,
-      baseApiUrl: 'http://192.168.1.100:5000'
-      //baseApiUrl: 'https://pryce-cs467.appspot.com',
+      //baseApiUrl: 'http://192.168.1.100:5000'
+      baseApiUrl: 'https://pryce-cs467.appspot.com',
     };
     this.setFlatListState = this.setFlatListState.bind(this);
   }
