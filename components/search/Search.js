@@ -24,41 +24,6 @@ import {
 } from 'material-bread';
 
 
-class ItemButton extends Component {
-
-	/*
-	onPress(srchObj){
-	   this logic now included in selectedItem(itemInstance)	
-    //searchNav proxy for navigation object; provided by Search class in render()	
-		let navParams = this.props.searchNav.state.params; 
-		if(navParams)	
-		{
-			if(navParams.routeName === 'ListDetails')
-			{
-				let listId = navParams.listId;
-			  //asyncstorage not necessary (merged out)	
-        AsyncStorage.setItem('addedItem', JSON.stringify(srchObj));
-				AsyncStorage.setItem('pryceListId', JSON.stringify(listId));
-				this.props.searchNav.navigate(navParams.routeName);
-			}
-		}
-		else //default to std search 
-		{
-			//go to itemInfo and take the item 
-			this.props.searchNav.navigate('ItemInfo', {item: itemInstance});
-		}
-	}*/
-	
-	render(){
-		return (
-			<View>
-				<Button title={this.props.title} onPress={() => this.onPress(this.props.instance)} /> 
-			</View>
-		);
-	}
-}
-
-
 class Search extends Component {
 	constructor(props) {
 		super(props);
@@ -72,12 +37,6 @@ class Search extends Component {
 		};
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
-
-	/*handleChange(e) {
-		this.setState({
-			itemName: e.nativeEvent.text
-		});
-	}*/
 	
   	_toggleShow = () => {
 		this.setState({ showResults: true });
@@ -100,18 +59,11 @@ class Search extends Component {
 			.catch(error => console.error(error));
   	};
 
-  	/*NEED TO REFACTOR THIS INTO FUNCTION SERVICE 
-	FlatListItemSeparator = () => {
-        return (
-        <View style={{ height: 1, width: "100%", backgroundColor: "#607D8B" }} />
-        );
-    };
-	*/
 
 	selectedItem(itemInstance) {
-		let navParams = this.props.navigation.getParam('routeName', 'null');
+		let navParams = this.props.navigation.getParam('routeName', null);
 		if (navParams === 'ListDetails') {
-			let listId = this.props.navigation.getParam('listId', 'null');
+			let listId = this.props.navigation.getParam('listId', null);
 			this.props.navigation.navigate(navParams, {
 				addedItem: itemInstance,
 				pryceListId: listId,
@@ -172,41 +124,7 @@ class Search extends Component {
 
 	render() {
 
-		/*let searchList = (srchData) => {
-				console.log(srchData);
-				return(<FlatList initialNumToRender='20' maxToRenderPerBatch='100'
-							data={ srchData } ItemSeparatorComponent = {this.FlatListItemSeparator}
-							renderItem={({item}) => 
-							<ItemButton instance={item} searchState={this.state} searchNav={this.props.navigation}
-								title={item.item_name} style={styles.item}>
-							</ItemButton>}
-							keyExtractor={item => item.code} /> );
-			};
-		*/
-
-		return ( /*
-			<View style={styles.searchContainer}>
-				<Text style={styles.title}>Search for Item</Text>
-				<TextInput
-					style={styles.searchInput}
-					onChange={this.handleChange}
-					/>
-				<TouchableHighlight
-						style = {styles.button}
-						underlayColor= "white"
-						onPress = {this.handleSubmit}
-					>
-					<Text
-						style={styles.searchButtonText}>
-						SEARCH
-					</Text>
-				</TouchableHighlight>
-				<Card>
-					{searchList(this.state.data)}
-				</Card>
-			</View>
-		)*/
-
+		return ( 
 			<View style={styles.mainContainer}>
 				<TextField
 					style={{ width: '90%' }}
