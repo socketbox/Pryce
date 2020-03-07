@@ -51,26 +51,19 @@ class ListDetails extends Component {
   _addItemFromSearch()
   {
     /*if we're coming back from Search, check for added item*/
-    let addedItem = null;
-    AsyncStorage.getItem('addedItem').
-        then( (res) => {
-          addedItem = JSON.parse(res); 
-          //table library expects an array
-          if(addedItem)
-          {
-            let backingArray = this.state.tableData;
-    
-            backingArray.push( 
-              Array.of(addedItem.item_name, addedItem.price, addedItem.store_name, addedItem.reported, addedItem.item_id) );
-            this.setState({tableData: backingArray});
+    let addedItem = this.props.navigation.getParam('addedItem', null);
+    if(addedItem)
+    {
+      let backingArray = this.state.tableData;
 
-            //add item to db
-            this.addItemToList(addedItem, this.props.navigation.state.params.pryceListId);
-            AsyncStorage.removeItem('addedItem');
-          }
-        },
-        err => {console.log(err)}
-    );
+      backingArray.push(
+        Array.of(addedItem.item_name, addedItem.price, addedItem.store_name, addedItem.reported, addedItem.item_id));
+      this.setState({ tableData: backingArray });
+
+      //clear addedItem and add item to db
+      this.props.navigation.setParams({addedItem: null});
+      this.addItemToList(addedItem, this.props.navigation.state.params.pryceListId);
+    }
   }
 
   componentDidMount() {
@@ -111,6 +104,8 @@ class ListDetails extends Component {
       console.log("Token not set with cDM; calling settoken");
       this._setToken();
     }
+
+    console.log("at end of cDU");
   }
 
   componentWillUnmount() {
@@ -128,16 +123,8 @@ class ListDetails extends Component {
   }*/
   
   addItemToList = async(itemObj, plid) => {
-    let token = null;
-    try{
-      let user = await AsyncStorage.getItem('user');
-      token = JSON.parse(user).authToken; 
-    }
-    catch(err)
-    {
-      console.log(err);
-    } 
-    setTimeout(()=>{},1000);
+    let token = this.state.authToken;
+    console.log("authToken in addItemToList: " + token);
     let url = this.state.baseApiUrl + '/pryce_lists/' + plid;
 		const response = await fetch(url, {
 			method: 'PUT',
@@ -152,16 +139,17 @@ class ListDetails extends Component {
     .then(responseJson => { 
       console.log("response: " + JSON.stringify(responseJson));
     })
-    .catch(error => console.error(error));
+    .catch(error => {console.log("in add item to list"); console.error(error);});
   };
  
   deleteItem(itemId, rowIndex){
-    let authToken = ( async () => {
+    /*let authToken = ( async () => {
       let user = await AsyncStorage.getItem('user');
       let token = JSON.parse(user).authToken; 
       return token;
     })();
-    
+    */
+    let authToken = this.state.authToken;
     
     let listArr = this.state.tableData
     let plid = this.state.pryceListId
@@ -184,7 +172,6 @@ class ListDetails extends Component {
 
 _getListItemDetails = async () => {
     let result = true; 
-    let resJson = null;
     console.log("authToken in getPryceLists: " + this.state.authToken);
 		let url = this.state.baseApiUrl + '/pryce_lists/details/' + this.state.pryceListId;
 		const response = await fetch(url, {
@@ -203,7 +190,8 @@ _getListItemDetails = async () => {
       );
       this.setState({ tableData: tableRows});
     })
-    .catch(error => {console.error(error); result = false;})
+    .catch(error => {console.log("error in _getListItemDetails"); console.error(error); result = false;})
+    console.log("after _getList..." );
     return result;
 	};
 
@@ -219,14 +207,15 @@ _getListItemDetails = async () => {
           <FeatherIcon name='trash' style={styles.button}/>
         </TouchableOpacity>
       );
-      
+     
+      console.log("before return in render");
       return (
         <SafeAreaView style={styles.container}>
           <Table borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}} >
             <Row data={this.state.tableHead} textStyle={styles.text} />
             {
               this.state.tableData.map(( rowData, index ) => (
-                <TableWrapper key={index} style={styles.row} widthArr={this.state.colWidthArr} >
+                <TableWrapper key={index} style={styles.row} >
                   { 
                     rowData.map( (cellData, cellIndex ) => (
                         <Cell key={cellIndex} data={cellIndex === 4 ? element(cellData, index) : cellData} textStyle={styles.text}  />

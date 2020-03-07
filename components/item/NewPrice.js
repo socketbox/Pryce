@@ -1,26 +1,27 @@
 import React from 'react';
-import {
-	StyleSheet,
-	View,
-	Text,
-	TextInput,
+import { 
+	View, 
+	Text, 
+	TextInput, 
 	TouchableOpacity,
+	Keyboard,
+	Animated, 
 	Alert
 } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import RNPickerSelect from 'react-native-picker-select';
+import { Card } from 'react-native-paper';
 import * as Location from 'expo-location';
-import {styles} from '../Styles'
+import { styles } from '../Styles';
 
 class NewPrice extends React.Component {
 	state = {
-        
-		location: { 
-            coords: { 
-                latitude: 0, 
-                longitude: 0 
-            } 
-        },
+		location: {
+		coords: {
+			latitude: 0,
+			longitude: 0,
+		},
+		},
 		data: [],
 		stores: [],
 		selectedStore: null,
@@ -31,84 +32,105 @@ class NewPrice extends React.Component {
 		storeLat: null,
 		storeLng: null,
 		storePID: null,
-        item: this.props.navigation.state.params.item
-    };
-    
+		item: this.props.navigation.state.params.item,
+	};
+
 	componentDidMount() {
-        this._getLocationAsync();
+		this.keyboardHeight = new Animated.Value(0);
+		this._getLocationAsync();
+		this.keyboardDidShowSub = Keyboard.addListener('keyboardDidShow', this.keyboardDidShow);
+			this.keyboardDidHideSub = Keyboard.addListener('keyboardDidHide', this.keyboardDidHide);
 	}
+	
+	componentWillUnmount() {
+			this.keyboardDidShowSub.remove();
+			this.keyboardDidHideSub.remove();
+		}
 
+	keyboardDidShow = (event) => {
+			Animated.parallel([
+				Animated.timing(this.keyboardHeight, {
+					duration: event.duration,
+					toValue: event.endCoordinates.height,
+				})
+			]).start();
+		};
 
+		keyboardDidHide = (event) => {
+			Animated.parallel([
+				Animated.timing(this.keyboardHeight, {
+					duration: event.duration,
+					toValue: 0,
+				})
+			]).start();
+		};
 
-
-    /**NEED TO REFACTOR THIS INTO FUNCTION SERVICE */
-    /**NEED TO REFACTOR THIS INTO FUNCTION SERVICE */
-    /**NEED TO REFACTOR THIS INTO FUNCTION SERVICE */
-
+	/**NEED TO REFACTOR THIS INTO FUNCTION SERVICE */
 	/**POST info to server for verification */
 	/**--------------------------------------------------------------*/
 	submitInfo = () => {
+		this.setState({
+		currentTime: new Date(),
+		});
 
 		let data = {
-			price: this.state.price,
-			currency: this.state.currency,
-			reported: this.state.currentTime, 
-			store: {
-				place_id: this.state.storePID,
-				lat: this.state.storeLat,
-				lng: this.state.storeLng,
-				name: this.state.storeName,
-			},
-			item: {
-				code: this.state.item.code,
-				brand: this.state.item.brand,
-				name: this.state.item.name,
-				quantity: this.state.item.quantity,
-				quant_unit: this.state.item.quant_unit,
-				description: this.state.item.description,
-			}
-        }
+		price: this.state.price,
+		currency: this.state.currency,
+		reported: this.state.currentTime,
+		store: {
+			place_id: this.state.storePID,
+			lat: this.state.storeLat,
+			lng: this.state.storeLng,
+			name: this.state.storeName,
+		},
+		item: {
+			code: this.state.item.code,
+			brand: this.state.item.brand,
+			name: this.state.item.name,
+			quantity: this.state.item.quantity,
+			quant_unit: this.state.item.quant_unit,
+			description: this.state.item.description,
+		},
+		};
 
 		fetch('http://pryce-cs467.appspot.com/prices', {
-			method: 'POST',
-			headers: {
-				Accept: 'application/json',
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify(data),
+		method: 'POST',
+		headers: {
+			Accept: 'application/json',
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify(data),
 		})
-		.then((response) => {
-            if (response.status == 200) {
-                return response.json();
-            } else {
-                // todo: handle other responses
-                return;
-            }
-        })
+		.then(async (response) => {
+			return {
+				status: response.status,
+				json: await response.json()
+			}
+		})
 		.then(responseData => {
-			//Alert.alert("SERVER RESPONSE", JSON.stringify(responseData));
-			console.log(JSON.stringify(responseData));
-			this.props.navigation.navigate("Rating", {addedPrice: responseData});
-		})
-	} 
+			console.log(JSON.stringify(responseData.json));
+			if (responseData.status == 200) {
+				this.props.navigation.navigate('Rating', { addedPrice: responseData.json });
+			} else {
+				Alert.alert("Price Update Failed", JSON.stringify(responseData.json));
+			}
+		});
+	};
 
-    /**NEED TO REFACTOR THIS INTO FUNCTION SERVICE */
-    /**NEED TO REFACTOR THIS INTO FUNCTION SERVICE */
-    /**NEED TO REFACTOR THIS INTO FUNCTION SERVICE */
+	/**NEED TO REFACTOR THIS INTO FUNCTION SERVICE */
 	_getLocationAsync = async () => {
-        let location = await Location.getCurrentPositionAsync({});
+		let location = await Location.getCurrentPositionAsync({});
 		this.setState({ location });
-        this._getData();
-    };
+		this._getData();
+	};
 
-    /**NEED TO REFACTOR THIS INTO FUNCTION SERVICE */
-    /**NEED TO REFACTOR THIS INTO FUNCTION SERVICE */
-    /**NEED TO REFACTOR THIS INTO FUNCTION SERVICE */
-	/**fetch data from server to retrieve location data for nearby stores */	
-    _getData = async () => {
-        let lat = this.state.location.coords.latitude;
-        let lng = this.state.location.coords.longitude;
-		let url = `https://pryce-cs467.appspot.com/stores/find?lat=${lat}&long=${lng}`
+	/**NEED TO REFACTOR THIS INTO FUNCTION SERVICE */
+	/**fetch data from server to retrieve location data for nearby stores */
+
+	_getData = async () => {
+		let lat = this.state.location.coords.latitude;
+		let lng = this.state.location.coords.longitude;
+		let url = `https://pryce-cs467.appspot.com/stores/find?lat=${lat}&long=${lng}`;
 		const response = await fetch(url, {
 		method: 'GET',
 		headers: {
@@ -117,47 +139,42 @@ class NewPrice extends React.Component {
 		})
 		.then(response => response.json())
 		.then(responseJson => {
-            this.setState({
-			    data: responseJson
+			this.setState({
+			data: responseJson,
 			});
-        })
+		})
 		.catch(error => console.error(error));
 		this._getStores();
 	};
 
-    /**NEED TO REFACTOR THIS INTO FUNCTION SERVICE */
-    /**NEED TO REFACTOR THIS INTO FUNCTION SERVICE */
-    /**NEED TO REFACTOR THIS INTO FUNCTION SERVICE */
+	/**NEED TO REFACTOR THIS INTO FUNCTION SERVICE */
 	/**Function to retrieve and store store name and place_id */
 	_getStores() {
-	let i = 0;
-	let tempName = '';
-	let tempPlaceID = '';
-	let tempArr = [];
-	let tempLat = '';
-	let tempLng = '';
+		let i = 0;
+		let tempName = '';
+		let tempPlaceID = '';
+		let tempArr = [];
+		let tempLat = '';
+		let tempLng = '';
 
-	for (i = 0; i < this.state.data.results.length; i++) {
+		for (i = 0; i < this.state.data.results.length; i++) {
 		tempName = this.state.data.results[i].name;
 		tempPlaceID = this.state.data.results[i].place_id;
 		tempLat = this.state.data.results[i].geometry.location.lat;
 		tempLng = this.state.data.results[i].geometry.location.lng;
 		// console.log(tempName + " " + tempPlaceID)
 		tempArr.push({
-		name: tempName,
-		place_id: tempPlaceID,
-		lat: tempLat,
-		lng: tempLng,
+			name: tempName,
+			place_id: tempPlaceID,
+			lat: tempLat,
+			lng: tempLng,
 		});
-	}
-	this.setState({ stores: tempArr });
+		}
+		this.setState({ stores: tempArr });
 	}
 
-
-    /**NEED TO REFACTOR THIS INTO FUNCTION SERVICE */
-    /**NEED TO REFACTOR THIS INTO FUNCTION SERVICE */
-    /**NEED TO REFACTOR THIS INTO FUNCTION SERVICE */
-	  /**set store info to be sent */
+	/**NEED TO REFACTOR THIS INTO FUNCTION SERVICE */
+	/**set store info to be sent */
 	setStoreInfo(index) {
 		this.setState({ storeName: this.state.stores[index].name });
 		this.setState({ storePID: this.state.stores[index].place_id });
@@ -166,138 +183,87 @@ class NewPrice extends React.Component {
 	}
 	/**--------------------------------------------------------------*/
 
-
-
-
 	render() {
 		const placeholder = {
-			label: 'Select a store...',
-			value: '',
+		label: 'Select a store...',
+		value: '',
 		};
 		return (
-		<View style={styles.newPriceContainer}>
-			<View style={styles.data}>
-
-				<View style={styles.iconRow}>
-					<FeatherIcon name="box" style={styles.icon} />
-					<TextInput
-                        editable={false}
-						style={styles.input}
-						name="name"
-						value={this.state.item.name}
-						placeholder={this.state.item.name}
-						onChangeText={(itemName) => this.setState({ itemName })}
-					/>
+		<View style={styles.mainContainer}>
+			<Card>
+			<Card.Title
+				titleStyle={{ fontSize: 25 }}
+				wrapperStyle={true}
+				title="New price!"
+				subtitle="Provide a new price for the item. "
+			/>
+			<Card.Content>
+				<View style={styles.inputRow}>
+				<FeatherIcon name="box" style={styles.icon} />
+				<TextInput
+					placeholderTextColor="#3d3d3d"
+					editable={false}
+					style={styles.inputField}
+					name="name"
+					value={this.state.itemName}
+					placeholder={this.state.item.name}
+				/>
 				</View>
-				<View style={styles.line} />
-
-				<View style={styles.iconRow}>
-					<FeatherIcon name="dollar-sign" style={styles.icon} />
-					<TextInput
-						editable={true}
-						style={styles.input}
-						name="price"
-						value={this.state.prices}
-						placeholder="New Price"
-						keyboardType="decimal-pad"
-						onChangeText={(price) => this.setState({ price })}
-					/>
+				<View style={styles.inputRow}>
+				<FeatherIcon name="dollar-sign" style={styles.icon} />
+				<TextInput
+					placeholderTextColor="#e6e6e6"
+					editable={true}
+					style={styles.inputField}
+					name="price"
+					value={this.state.price}
+					placeholder="New Price"
+					keyboardType="decimal-pad"
+					onChangeText={price => this.setState({ price })}
+				/>
 				</View>
-				<View style={styles.line} />
 
-				<View style={styles.iconRow}>
-					<FeatherIcon name="zap" style={styles.icon} />
-					<TextInput
-                        editable={false}
-						style={styles.input}
-						name="brand"
-						value={this.state.item.brand}
-						placeholder={this.state.item.brand}
-						onChangeText={(itemBrand) => this.setState({ itemBrand })}
-					/>
+				<View style={styles.inputRow}>
+				<FeatherIcon name="zap" style={styles.icon} />
+				<TextInput
+					placeholderTextColor="#3d3d3d"
+					editable={false}
+					style={styles.inputField}
+					name="brand"
+					value={this.state.itemBrand}
+					placeholder={this.state.item.brand}
+				/>
 				</View>
-				<View style={styles.line} />
 
-				<View style={styles.iconRow}>
-					<FeatherIcon name="sun" style={styles.icon} />
-					<TextInput
-                        editable={false}
-						style={styles.input}
-						name="quantity"
-						value={String(this.state.item.quantity)}
-						placeholder={String(this.state.item.quantity)}
-						keyboardType='number-pad'
-						onChangeText={(itemQuantity) => this.setState({ itemQuantity })}
-					/>
+				<View style={styles.inputRow}>
+				<RNPickerSelect
+					placeholder={placeholder}
+					items={this.state.stores.map(obj => ({
+					label: obj.name,
+					value: obj.name,
+					color: 'rgba(77,38,22,1)',
+					}))}
+					onValueChange={(name, index) => {
+					this.setState({
+						selectedStore: name,
+						selectedStorePID: index,
+					});
+					this.setStoreInfo(index - 1);
+					}}
+					style={styles.storeSelect}
+					value={this.state.selectedStore}
+					useNativeAndroidPickerStyle={false}
+					textInputProps={{ underlineColor: 'red' }}
+				/>
 				</View>
-				<View style={styles.line} />
-
-				<View style={styles.iconRow}>
-					<RNPickerSelect
-						required={true}
-                        editable={false}
-						placeholder={placeholder}
-						items={this.state.stores.map(obj => ({
-							label: obj.name,
-							value: obj.name,
-							color: 'rgba(77,38,22,1)',
-						}))}
-						onValueChange={(name, index) => {
-							this.setState({
-							selectedStore: name,
-							selectedStorePID: index,
-							}); 
-							this.setStoreInfo(index-1);
-						}}
-						style={styles.inputIOS}
-						value={this.state.selectedStore}
-						useNativeAndroidPickerStyle={false}
-                        textInputProps={{ underlineColor: 'yellow' }}
-						/>
-				</View>
-				<View style={styles.line} />
-
-				<View style={styles.iconRow}>
-					<FeatherIcon name="star" style={styles.icon} />
-					<TextInput
-                        editable={false}
-						style={styles.input}
-						name="quant_unit"
-						value={this.state.item.quant_unit}
-						placeholder={this.state.item.quant_unit}
-						onChangeText={(itemQuantUnit) => this.setState({ itemQuantUnit })}
-					/>
-				</View>
-				<View style={styles.line} />
-
-				<View style={styles.iconRow}>
-					<FeatherIcon name="eye" style={styles.icon} />
-					<TextInput
-                        editable={false}
-						style={styles.input}
-						name="itemDescription"
-						value={this.state.item.description}
-						placeholder={this.state.item.description}
-						onChangeText={(itemDescription) => this.setState({ itemDescription })}
-						maxLength={50}
-					/>
-				</View>
-				<View style={styles.line} />
-
-				
-				<TouchableOpacity onPress={
-					this.state.currentTime = new Date(),
-					this.submitInfo
-					}>
-					<Text style={styles.submit}>Submit!</Text>
-				</TouchableOpacity>
-
-			</View>
-
+			</Card.Content>
+			</Card>
+			<TouchableOpacity onPress={this.submitInfo} style={styles.button}>
+			<Text style={styles.buttonText}>Submit</Text>
+			</TouchableOpacity>
 		</View>
 		);
 	}
 }
-
 
 export default NewPrice;

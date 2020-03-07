@@ -112,6 +112,7 @@ class Map extends React.Component {
                     showsMyLocationButton={true}
                     zoomEnabled={true}
                     zoomControlEnabled={true}
+                    scrollEnabled={false}
                     region={{
                         latitude: this.state.location.coords.latitude,
                         longitude: this.state.location.coords.longitude,

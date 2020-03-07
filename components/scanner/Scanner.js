@@ -75,16 +75,6 @@ function Scanner(props) {
             <Button title={'Tap to Scan Again'} onPress={() => setScanned(false)} />
         )}
 
-        {/* <View style={styles.goBackButton}>
-            <TouchableOpacity
-                onPress={() => this.props.navigation.navigate('AppNavigator')}>
-                <Image
-                source={require('../../assets/back.png')}
-                style={styles.backStyle}
-                />
-            </TouchableOpacity>
-        </View> */}
-
     </View>
     );
 }

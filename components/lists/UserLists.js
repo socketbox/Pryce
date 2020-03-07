@@ -16,9 +16,6 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 
 
 class PryceList extends Component {
-  constructor(props) {
-    super(props)
-  }
 
   listName = null;
 
@@ -55,6 +52,7 @@ class PryceList extends Component {
   }
 
   async deleteList(plid){
+    console.log(JSON.stringify(this.props))
     let user = await AsyncStorage.getItem('user');
     let authToken = JSON.parse(user).authToken;
     
@@ -213,32 +211,32 @@ export default class UserLists extends Component {
       <SafeAreaView>
         <FlatList
           data={listData}
-          renderItem={({ item }) => <PryceList baseApiUrl={this.state.baseApiUrl} 
-              pryceListDetails={this.props.navigation} 
-              pryceListId={item.pryce_list_id} 
-              pryceLists={this.state.pryceLists}
-              setParentState={this.setFlatListState} 
-              pryceListName={item.name} />
-            }
+          renderItem={({ item }) => <PryceList baseApiUrl={this.state.baseApiUrl}
+            pryceListDetails={this.props.navigation}
+            pryceListId={item.pryce_list_id}
+            pryceLists={this.state.pryceLists}
+            setParentState={this.setFlatListState}
+            pryceListName={item.name} />
+          }
           keyExtractor={item => item.key}
           extraData={listData}
         />
-        <View style={{alignItems: 'center'}}>
-        <View style={styles.newList}>
-          <TextInput style={styles.newListForm}
-            placeholderTextColor="#CCCCCC"
-            editable={true}
-            placeholder="New List Name"
-            autoCapitalize="none"
-            onChangeText={(text) => this.setState({ newListName: text })}
-          />
-          <Button title="New List" onPress={() => { this._postNewList(this.state.newListName); }} />
-        </View>
-        <TouchableOpacity onPress={() => this.props.navigation.goBack()} style={styles.generalButtonTO}>
-          <Text style={styles.generalButtonText}>Back</Text>
-        </TouchableOpacity>
+        <View>
+          <View style={styles.newList}>
+            <TextInput style={styles.newListForm}
+              placeholderTextColor="#CCCCCC"
+              editable={true}
+              placeholder="New List Name"
+              autoCapitalize="none"
+              onChangeText={(text) => this.setState({ newListName: text })}
+            />
+            <Button title="New List" onPress={() => { this._postNewList(this.state.newListName); }} />
+          <TouchableOpacity onPress={() => this.props.navigation.goBack()} style={styles.generalButtonTO}>
+            <Text style={styles.generalButtonText}>Back</Text>
+          </TouchableOpacity>
+          </View>
         </View>
       </SafeAreaView>
-	  );
+    );
   }
 }

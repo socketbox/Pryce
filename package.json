@@ -18,6 +18,7 @@
     "expo-cli": "^3.13.1",
     "ionicons": "^5.0.0",
     "link": "^0.1.5",
+    "material-bread": "^0.2.5",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-36.0.0.tar.gz",
