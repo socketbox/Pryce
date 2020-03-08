@@ -23,6 +23,7 @@ export const styles = StyleSheet.create({
 		alignSelf: 'stretch',
 	},
 	mainContainer: {
+		flex: 1,
 		padding: 30,
 		marginTop: 65,
 		flexDirection: 'column',
@@ -33,21 +34,28 @@ export const styles = StyleSheet.create({
 	 * Scanner
 	 */
 	scannerContainer: {
-        flex: 1, 
-        height: 200,
-        flexDirection: 'column',
-        justifyContent: 'center',
-    },
+		paddingTop:'40%',
+		justifyContent: 'center',
+	},
+	scanner: {
+		borderWidth: 3,
+		width: '100%',
+        height: '100%',
+		justifyContent: 'center',
+	},
 	/*
 	 * Map
 	 */
 	mapContainer: {
-        flex: 1,
-        width: '100%',
-        height: '100%',
+		flex: 1,
+		justifyContent: 'center',
+
         alignItems: 'center'
 	},
+
+	
 	mapDisplay: {
+		marginLeft: 20,
 		width: '100%',
 		height: '100%',
 	},
@@ -361,9 +369,8 @@ export const styles = StyleSheet.create({
 	 * Search
 	 */
 	searchContainer: {
-		flex: 1,
 		padding: 30,
-		marginTop: 65,
+		marginTop: 20,
 		flexDirection: 'column',
 		justifyContent: 'center',
 	},

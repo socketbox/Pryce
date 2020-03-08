@@ -9,12 +9,6 @@ import NewPrice from './NewPrice'
 import Rating from './Rating';
 
 const ItemScreen = createStackNavigator({
-    Landing: {
-        screen: stackDEBUG,
-        navigationOptions: {
-            headerShown: false
-        } 
-    },
     NewItem: {
         screen: NewItem,
         navigationOptions: {

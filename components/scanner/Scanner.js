@@ -4,9 +4,7 @@ import { BarCodeScanner } from 'expo-barcode-scanner';
 import {styles} from '../Styles'
 
 function Scanner(props) {
-    state = {
-        scannedInfo: null,
-    }
+
 
     const [hasPermission, setHasPermission] = useState(null);
     const [scanned, setScanned] = useState(false);
@@ -20,11 +18,11 @@ function Scanner(props) {
     }, []);
 
     // Handle scanned item - need to review
-    const handleBarCodeScanned = ({ data }) => {
+    const handleBarCodeScanned = ({ item }) => {
         setScanned(true);
 
         // TODO: Handle request separate function
-        const url = `https://pryce-cs467.appspot.com/items/${data}`;
+        const url = `https://pryce-cs467.appspot.com/items/${item}`;
         fetch(url, {
             method: 'GET',
             headers: { 
@@ -35,7 +33,7 @@ function Scanner(props) {
         .then(response => {
             if (response.ok === false) {
                 props.navigation.navigate(
-                    "NewItem", { data } 
+                    "NewItem", { item } 
                 );
             } else if (response.ok === true) {
                 // Alert.alert(
@@ -43,7 +41,7 @@ function Scanner(props) {
                 //     `ADD OPTIONS TO ADD HERE`
                 // );
                 props.navigation.navigate(
-                    "ItemInfo", { data } 
+                    "ItemInfo", { item } 
                 );
             }
             // console.log(JSON.stringify(response.ok));
@@ -68,12 +66,14 @@ function Scanner(props) {
             <BarCodeScanner
                 onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
 
-                style={StyleSheet.absoluteFillObject}
+                style={styles.scanner}
             />
 
             {scanned && (
             <Button title={'Tap to Scan Again'} onPress={() => setScanned(false)} />
         )}
+
+        <Text style={styles.textStyleSmall}>Scan a code in the window above!</Text>
 
     </View>
     );

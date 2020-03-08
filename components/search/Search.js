@@ -1,15 +1,9 @@
 import React, { Component } from 'react';
 import {
-	Button,
 	View,
 	Text,
-	TextInput,
-	TouchableHighlight,
-	FlatList,
-	AsyncStorage
 } from 'react-native';
 import { DataTable } from 'react-native-paper';
-import ItemInfo from '../item/ItemInfo';
 import { DataTablePagination } from 'material-bread';
 import { withNavigation } from 'react-navigation';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -20,7 +14,6 @@ import {
 	IconButton,
 	Card,
 	CardHeader,
-	CardContent,
 } from 'material-bread';
 
 
@@ -44,9 +37,9 @@ class Search extends Component {
 	};
 
 	handleSubmit = async () => {
-		console.log(this.state.itemName);
 		//const url = 'http://192.168.1.100:5000/items/search';
-		const url = 'https://pryce-cs467.appspot.com/items/search';
+		const url = `https://pryce-cs467.appspot.com/items?name=${this.state.itemName}`;
+		//const url = `https://pryce-cs467.appspot.com/items/search`;
 		const response = await fetch(url, {
 			method: 'GET',
 		})
@@ -58,7 +51,7 @@ class Search extends Component {
 				})
 			})
 			.catch(error => console.error(error));
-  	};
+	};
 
 
 	selectedItem(itemInstance) {
@@ -80,45 +73,47 @@ class Search extends Component {
 	/*Render result card after search */
 	displayResults = () => {
 		return (
-			<Card radius={1} shadow={4} style={{ maxWidth: 400, width: '100%' }}>
-				<CardHeader
-					title="Results"
-					subtitle="Select an item for more details"
-				/>
-				<DataTable>
-					<DataTable.Header>
-						<DataTable.Title>Brand</DataTable.Title>
-						<DataTable.Title>Store</DataTable.Title>
-					</DataTable.Header>
-					{this.state.data
-						.slice(
-							this.state.page * this.state.perPage,
-							this.state.page * this.state.perPage + this.state.perPage
-						)
-						.map(item => (
-							<DataTable.Row
-								onPress={() => this.selectedItem(item)}
-								key={item.brand}>
-								<DataTable.Cell>{item.brand}</DataTable.Cell>
-								<DataTable.Cell>{item.name}</DataTable.Cell>
-							</DataTable.Row>
-						))}
-					<Text />
-					<DataTablePagination
-						style={{
-							flex: 1,
-							alignContent: 'center',
-							alignItems: 'center',
-						}}
-						page={this.state.page}
-						numberOfPages={this.state.data.length / this.state.perPage}
-						numberOfRows={this.state.data.length}
-						perPage={this.state.perPage}
-						onChangePage={page => this.setState({ page: page })}
+			<SafeAreaView>
+				<Card radius={1} shadow={4} style={{ maxWidth: 400, width: '100%' }}>
+					<CardHeader
+						title="Results"
+						subtitle="Select an item for more details"
 					/>
-					<Text />
-				</DataTable>
-			</Card>
+					<DataTable>
+						<DataTable.Header>
+							<DataTable.Title>Brand</DataTable.Title>
+							<DataTable.Title>Store</DataTable.Title>
+						</DataTable.Header>
+						{this.state.data
+							.slice(
+								this.state.page * this.state.perPage,
+								this.state.page * this.state.perPage + this.state.perPage
+							)
+							.map(item => (
+								<DataTable.Row
+									onPress={() => this.selectedItem(item)}
+									key={item.code}>
+									<DataTable.Cell>{item.brand}</DataTable.Cell>
+									<DataTable.Cell>{item.name}</DataTable.Cell>
+								</DataTable.Row>
+							))}
+						<Text />
+						<DataTablePagination
+							style={{
+								flex: 1,
+								alignContent: 'center',
+								alignItems: 'center',
+							}}
+							page={this.state.page}
+							numberOfPages={this.state.data.length / this.state.perPage}
+							numberOfRows={this.state.data.length}
+							perPage={this.state.perPage}
+							onChangePage={page => this.setState({ page: page })}
+						/>
+						<Text />
+					</DataTable>
+				</Card>
+			</SafeAreaView>
 		);
 	};
 

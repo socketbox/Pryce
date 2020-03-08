@@ -4,6 +4,7 @@ import { createStackNavigator } from 'react-navigation-stack';
 import stackDEBUG from '../stackDEBUG';
 
 import Search from './Search';
+import Items from '../item/index'
 
 const SearchScreen = createStackNavigator({
     // Landing: {
@@ -14,6 +15,12 @@ const SearchScreen = createStackNavigator({
     // },
     Search: {
         screen: Search,
+        navigationOptions: {
+            headerShown: false
+        } 
+    },
+    Items: {
+        screen: Items,
         navigationOptions: {
             headerShown: false
         } 
