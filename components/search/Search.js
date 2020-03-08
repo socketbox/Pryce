@@ -37,9 +37,7 @@ class Search extends Component {
 	};
 
 	handleSubmit = async () => {
-		//const url = 'http://192.168.1.100:5000/items/search';
 		const url = `https://pryce-cs467.appspot.com/items?name=${this.state.itemName}`;
-		//const url = `https://pryce-cs467.appspot.com/items/search`;
 		const response = await fetch(url, {
 			method: 'GET',
 		})

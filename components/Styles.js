@@ -193,14 +193,26 @@ export const styles = StyleSheet.create({
     /*
      * ListDetails
      */
-    buttons: {
-        fontSize: 18,
-        color: "#121212",
-        width: '35%', 
-        padding: 15,
-        borderWidth: StyleSheet.hairlineWidth,
-        },
-    /*
+ 	listDetailsTrashColumn: {
+		flex: 0,	
+		width: 30,
+		alignContent: 'center',
+	},	
+	listDetailsPriceColumn: {
+		flex: 0,	
+		width: 50,
+		alignContent: 'center',
+	},
+	listDetailsStoreColumn: {
+		flex: 1,	
+		flexShrink: 1,
+		paddingLeft: 10
+	},
+	listDetailsNameColumn: {
+		flex: 1,	
+		flexShrink: 1,
+	},
+	/*
      * Login
      */
 	container: {
