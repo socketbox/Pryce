@@ -41,7 +41,7 @@ function Scanner(props) {
                 //     `ADD OPTIONS TO ADD HERE`
                 // );
                 props.navigation.navigate(
-                    "ItemInfo", { data } 
+                    "ItemInfo", { itemCode: data } 
                 );
             }
             // console.log(JSON.stringify(response.ok));
