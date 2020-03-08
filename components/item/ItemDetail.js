@@ -4,16 +4,10 @@ import {
 	View,
 	TouchableOpacity,
 } from 'react-native';
-import { Card, DataTable } from 'react-native-paper';
+import { Card } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { styles } from '../Styles';
-import {
-	DataTablePagination,
-	TextField,
-	Icon,
-	IconButton,
-	CardHeader,
-} from 'material-bread';
+import { Divider, Button } from 'material-bread';
 
 export default class ItemDetail extends React.Component {
     state = {
@@ -22,9 +16,7 @@ export default class ItemDetail extends React.Component {
     }
 
     _goToStore(storeId) {
-        // add store to search stack index for this to work!
-        console.log("pressed + " + storeId);
-        this.props.navigation.navigate('Store', { storeId: storeId })
+        this.props.navigation.navigate('Store', { storeId: storeId });
     }
 
     _addToList(){
@@ -46,16 +38,35 @@ export default class ItemDetail extends React.Component {
                         subtitle={title}
                     />
                     <Card.Content>
-                        <Text style={styles.textStyleSmall}>Located at: </Text>
-                        <TouchableOpacity onPress={() => this._goToStore(storeId)} style={styles.button}>
-                            <Text style={styles.buttonText, {fontSize: 25}}>{this.state.priceID.store.name}</Text>
+                        <Divider marginVertical={5} subheader="Price:" />
+                        <Text>${this.state.priceID.price}</Text>
+                        <Divider marginVertical={5} subheader="Located at:" />
+                        <TouchableOpacity 
+                            onPress={() => this._goToStore(storeId)} >
+                            <Text style={{fontSize: 20}}>{this.state.priceID.store.name}</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={this._addToList} style={styles.button}>
-                            <Text style={styles.buttonText, {fontSize: 25}}>Add item to list!</Text>
-                        </TouchableOpacity>
-                        <Text style={styles.textStyleSmall}>Price: {this.state.priceID.price}</Text>
                     </Card.Content>
                 </Card>
+                <View 
+                    style={{
+                        flexDirection: 'row', 
+                        alignItems: 'center', 
+                        justifyContent: 'space-around', 
+                        flexWrap: 'wrap'
+                    }}>
+                    <Button 
+                        style={styles.button}
+                        text={'Back'} 
+                        type="text" 
+                        onPress={() => this.props.navigation.goBack()} 
+                    />
+                    <Button 
+                        style={styles.button}
+                        text={'Add item to list'} 
+                        type="outlined" 
+                        onPress={() => this._addToList()} 
+                    />
+                </View>
             </View>
         );
     }
