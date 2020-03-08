@@ -4,11 +4,11 @@ import {
 	Text,
 } from 'react-native';
 import { DataTable } from 'react-native-paper';
-import { DataTablePagination } from 'material-bread';
 import { withNavigation } from 'react-navigation';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { styles } from '../Styles';
 import {
+	DataTablePagination,
 	TextField,
 	Icon,
 	IconButton,
@@ -31,7 +31,7 @@ class Search extends Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 	
-  	_toggleShow = () => {
+	_toggleShow = () => {
 		this.setState({ showResults: true });
 		this.handleSubmit();
 	};
@@ -120,7 +120,7 @@ class Search extends Component {
 	render() {
 
 		return ( 
-			<View style={styles.mainContainer}>
+			<View style={styles.searchContainer}>
 				<TextField
 					style={{ width: '90%' }}
 					label="Enter text here..."

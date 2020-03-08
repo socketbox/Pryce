@@ -29,6 +29,7 @@ export const styles = StyleSheet.create({
 		flexDirection: 'column',
 		justifyContent: 'center',
 		alignContent: 'center',
+		marginBottom: '5%',
 	},
 	/*
 	 * Scanner
@@ -220,7 +221,7 @@ export const styles = StyleSheet.create({
 	inputRow: {
 		width: 220,
 		height: 30,
-		marginBottom: 30,
+		marginBottom: 10,
 		flexDirection: 'row'
 	},
 	inputIcon: {
@@ -233,7 +234,7 @@ export const styles = StyleSheet.create({
 		height: "100%",
 		color: '#121212',
 		textAlign: 'left',
-		fontSize: 18,
+		fontSize: 14,
 		marginLeft: 6,
 		borderBottomWidth: 1,
 		borderBottomColor: '#060606'

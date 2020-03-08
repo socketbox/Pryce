@@ -4,9 +4,9 @@ import { createStackNavigator } from 'react-navigation-stack';
 import stackDEBUG from '../stackDEBUG';
 import NewItem from './NewItem';
 import ItemInfo from './ItemInfo'
-import Review from './Reviews'
+import Review from './ItemDetail'
 import NewPrice from './NewPrice'
-import Rating from './Rating';
+import ItemDetail from './ItemDetail';
 
 const ItemScreen = createStackNavigator({
     NewItem: {
@@ -33,8 +33,8 @@ const ItemScreen = createStackNavigator({
             headerShown: false
         }
     },
-    Rating: {
-        screen: Rating,
+    ItemDetail: {
+        screen: ItemDetail,
         navigationOptions: {
             headerShown: false
         }

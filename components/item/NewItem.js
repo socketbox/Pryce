@@ -13,6 +13,7 @@ import { Card } from 'react-native-paper';
 import * as Location from 'expo-location';
 import googleAPIsearch from '../../assets/find.json';
 import { styles } from '../Styles';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 class NewItem extends React.Component {
 	state = {
@@ -204,126 +205,127 @@ class NewItem extends React.Component {
 		color: '#9EA0A4',
 		};
 		return (
-		<View style={styles.mainContainer}>
-			<Card>
-			<Card.Title
-				titleStyle={{ fontSize: 25 }}
-				wrapperStyle={true}
-				title="Add a new item!"
-				subtitle="Provide information below"
-			/>
-			<Card.Content>
-				<View style={styles.inputRow}>
-				<FeatherIcon name="box" style={styles.icon} />
-				<TextInput
-					placeholderTextColor="#e6e6e6"
-					editable={true}
-					style={styles.inputField}
-					name="name"
-					value={this.state.itemName}
-					placeholder="Name"
-					onChangeText={itemName => this.setState({ itemName })}
-				/>
-				</View>
-				<View style={styles.inputRow}>
-				<FeatherIcon name="dollar-sign" style={styles.icon} />
-				<TextInput
-					placeholderTextColor="#e6e6e6"
-					editable={true}
-					style={styles.inputField}
-					name="price"
-					value={this.state.prices}
-					placeholder="Price"
-					keyboardType="decimal-pad"
-					onChangeText={price => this.setState({ price })}
-				/>
-				</View>
-
-				<View style={styles.inputRow}>
-				<FeatherIcon name="zap" style={styles.icon} />
-				<TextInput
-					placeholderTextColor="#e6e6e6"
-					editable={true}
-					style={styles.inputField}
-					name="brand"
-					value={this.state.itemBrand}
-					placeholder="Brand"
-					onChangeText={itemBrand => this.setState({ itemBrand })}
-				/>
-				</View>
-
-				<View style={styles.inputRow}>
-				<FeatherIcon name="sun" style={styles.icon} />
-				<TextInput
-					placeholderTextColor="#e6e6e6"
-					editable={true}
-					style={styles.inputField}
-					name="quantity"
-					value={this.state.itemQuantity}
-					placeholder="Quantity"
-					keyboardType="number-pad"
-					onChangeText={itemQuantity => this.setState({ itemQuantity })}
-				/>
-				</View>
-
-				<View style={styles.inputRow}>
-				<FeatherIcon name="star" style={styles.icon} />
-				<TextInput
-					placeholderTextColor="#e6e6e6"
-					editable={true}
-					style={styles.inputField}
-					name="quant_unit"
-					value={this.state.itemQuantUnit}
-					placeholder="Unit"
-					onChangeText={itemQuantUnit => this.setState({ itemQuantUnit })}
-				/>
-				</View>
-
-				<Animated.View style={{ paddingBottom: this.keyboardHeight }}>
-				<View>
-					<Text style={{fontSize: 18}}>Description:</Text>
-					<TextInput
-					placeholderTextColor="#e6e6e6"
-					editable={true}
-					style={styles.newItemDescription}
-					name="itemDescription"
-					value={this.state.itemDescription}
-					placeholder="Enter description here..."
-					onChangeText={itemDescription =>
-						this.setState({ itemDescription })
-					}
-					maxLength={50}
+			<View style={styles.mainContainer}>
+				<Card>
+					<Card.Title
+						titleStyle={{ fontSize: 25 }}
+						wrapperStyle={true}
+						title="Add a new item!"
+						subtitle="Provide information below"
 					/>
-				</View>
-				</Animated.View>
+					<Card.Content>
+						<View style={styles.inputRow}>
+							<FeatherIcon name="box" style={styles.icon} />
+							<TextInput
+								placeholderTextColor="#e6e6e6"
+								editable={true}
+								style={styles.inputField}
+								name="name"
+								value={this.state.itemName}
+								placeholder="Name"
+								onChangeText={itemName => this.setState({ itemName })}
+							/>
+							</View>
+						<View style={styles.inputRow}>
+							<FeatherIcon name="dollar-sign" style={styles.icon} />
+							<TextInput
+								placeholderTextColor="#e6e6e6"
+								editable={true}
+								style={styles.inputField}
+								name="price"
+								value={this.state.prices}
+								placeholder="Price"
+								keyboardType="decimal-pad"
+								onChangeText={price => this.setState({ price })}
+							/>
+						</View>
 
-				<View style={styles.inputRow}>
-				<RNPickerSelect
-					placeholder={placeholder}
-					items={this.state.stores.map(obj => ({
-					label: obj.name,
-					value: obj.name,
-					color: 'rgba(77,38,22,1)',
-					}))}
-					onValueChange={(name, index) => {
-					this.setState({
-						selectedStore: name,
-						selectedStorePID: index,
-					});
-					this.setStoreInfo(index - 1);
-					}}
-					style={styles.storeSelect}
-					value={this.state.selectedStore}
-					useNativeAndroidPickerStyle={false}
-					textInputProps={{ underlineColor: 'red' }}
-				/>
-				</View>
-			</Card.Content>
-			</Card>
-			<TouchableOpacity onPress={this.submitInfo} style={styles.button}>
-			<Text style={styles.buttonText}>Submit</Text>
-			</TouchableOpacity>
-		</View>
+						<View style={styles.inputRow}>
+							<FeatherIcon name="zap" style={styles.icon} />
+							<TextInput
+								placeholderTextColor="#e6e6e6"
+								editable={true}
+								style={styles.inputField}
+								name="brand"
+								value={this.state.itemBrand}
+								placeholder="Brand"
+								onChangeText={itemBrand => this.setState({ itemBrand })}
+							/>
+						</View>
+
+						<View style={styles.inputRow}>
+							<FeatherIcon name="sun" style={styles.icon} />
+							<TextInput
+								placeholderTextColor="#e6e6e6"
+								editable={true}
+								style={styles.inputField}
+								name="quantity"
+								value={this.state.itemQuantity}
+								placeholder="Quantity"
+								keyboardType="number-pad"
+								onChangeText={itemQuantity => this.setState({ itemQuantity })}
+							/>
+						</View>
+
+						<View style={styles.inputRow}>
+							<FeatherIcon name="star" style={styles.icon} />
+							<TextInput
+								placeholderTextColor="#e6e6e6"
+								editable={true}
+								style={styles.inputField}
+								name="quant_unit"
+								value={this.state.itemQuantUnit}
+								placeholder="Unit"
+								onChangeText={itemQuantUnit => this.setState({ itemQuantUnit })}
+							/>
+						</View>
+
+						<Animated.View style={{ paddingBottom: this.keyboardHeight }}>
+						<View>
+							<Text style={{fontSize: 14}}>Description:</Text>
+							<TextInput
+							placeholderTextColor="#e6e6e6"
+							editable={true}
+							style={styles.newItemDescription}
+							name="itemDescription"
+							value={this.state.itemDescription}
+							placeholder="Enter description here..."
+							onChangeText={itemDescription =>
+								this.setState({ itemDescription })
+							}
+							maxLength={50}
+							/>
+						</View>
+						</Animated.View>
+
+						<View style={styles.inputRow}>
+						<RNPickerSelect
+							placeholder={placeholder}
+							items={this.state.stores.map(obj => ({
+							label: obj.name,
+							value: obj.name,
+							color: 'rgba(77,38,22,1)',
+							}))}
+							onValueChange={(name, index) => {
+							this.setState({
+								selectedStore: name,
+								selectedStorePID: index,
+							});
+							this.setStoreInfo(index - 1);
+							}}
+							style={styles.storeSelect}
+							value={this.state.selectedStore}
+							useNativeAndroidPickerStyle={false}
+							textInputProps={{ underlineColor: 'red' }}
+						/>
+						</View>
+					</Card.Content>
+				</Card>
+				<TouchableOpacity onPress={this.submitInfo} style={styles.button}>
+						<Text style={styles.buttonText}>Submit</Text>
+				</TouchableOpacity>
+			</View>
+			
 		);
 	}
 }
