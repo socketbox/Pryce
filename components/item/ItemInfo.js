@@ -2,12 +2,12 @@ import * as React from 'react';
 import {
 	Text,
 	View,
-	Alert,
 	TouchableOpacity,
 } from 'react-native';
 import { Card, DataTable } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { styles } from '../Styles';
+import { Button } from 'material-bread'
 
 export default class ItemInfo extends React.Component {
 	state = {
@@ -17,7 +17,7 @@ export default class ItemInfo extends React.Component {
 		currency: 'USD',
 		currentTime: null,
 		itemName: null,
-		itemCode: this.props.navigation.getParam('itemCode', 'null'),
+		itemCode: this.props.navigation.getParam('data', 'null'),
 		itemBrand: null,
 		itemQuantity: null,
 		itemQuantUnit: null,
@@ -125,7 +125,7 @@ export default class ItemInfo extends React.Component {
 		let title = this.state.itemData.brand + ' - ' + this.state.itemData.name;
 		let description = this.state.itemData.description;
 		return (
-			<View style={styles.mainContainer}>
+			<View style={styles.searchContainer}>
 				{/*<Text style={styles.title}>Information</Text>*/}
 				<Card>
 					<Card.Title
@@ -157,16 +157,16 @@ export default class ItemInfo extends React.Component {
 						</DataTable>
 					</Card.Content>
 				</Card>
-				<TouchableOpacity
-				style={styles.button}
-				underlayColor="white"
-				onPress={() =>
-					this.props.navigation.navigate('NewPrice', {
-					item: this.state.itemData,
-					})
-				}>
-				<Text style={styles.buttonText}>Add New Price</Text>
-				</TouchableOpacity>
+				<Button 
+					style={styles.button}
+					text={'add new price'} 
+					type="outlined" 
+					onPress={() =>
+						this.props.navigation.navigate('NewPrice', {
+							item: this.state.itemData,
+						})
+					}
+				/>
 			</View>
 		);
 	}

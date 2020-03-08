@@ -340,7 +340,7 @@ export const styles = StyleSheet.create({
 		color: '#121212',
 		alignContent: 'flex-start',
 		textAlign: 'left',
-		width: '100%',
+		width: '90%',
 		borderRadius: 2,
 		borderColor: '#ccc',
 		borderWidth: 1,
@@ -389,19 +389,18 @@ export const styles = StyleSheet.create({
 		borderRadius: 4,
 	},
 	buttonText: {
-		fontSize: 20,
+		fontSize: 14,
 		color: '#111',
 		alignSelf: 'center',
 	},
 	button: {
-		flexDirection: 'row',
+		height: 25,
 		backgroundColor: 'white',
-		borderColor: 'white',
+		borderColor: '#d3d3d3',
 		borderWidth: 1,
 		borderRadius: 8,
 		marginBottom: 10,
 		marginTop: 10,
-		alignSelf: 'stretch',
 		justifyContent: 'center',
 	},
 	/*
@@ -472,7 +471,10 @@ export const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'space-between',
-	}
+	},
+		/*
+	 * ItemDetails
+	 */
 });
 
 

@@ -82,7 +82,7 @@ class Search extends Component {
 					<DataTable>
 						<DataTable.Header>
 							<DataTable.Title>Brand</DataTable.Title>
-							<DataTable.Title>Store</DataTable.Title>
+							<DataTable.Title>Name</DataTable.Title>
 						</DataTable.Header>
 						{this.state.data
 							.slice(
@@ -118,7 +118,6 @@ class Search extends Component {
 	};
 
 	render() {
-
 		return ( 
 			<View style={styles.searchContainer}>
 				<TextField
@@ -139,7 +138,7 @@ class Search extends Component {
 				/>
 				<Text style={styles.textStyleSmall}>
 					Search for items in our database!
-			</Text>
+				</Text>
 				<Text />
 				{this.state.showResults && this.displayResults()}
 				<View />
