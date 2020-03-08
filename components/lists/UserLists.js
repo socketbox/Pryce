@@ -19,8 +19,8 @@ class PryceList extends Component {
 
   listName = null;
 
-  onPress(plid) {
-    this.props.pryceListDetails.push('ListDetails', { pryceListId: plid });
+  onPress(plid, plname) {
+    this.props.pryceListNav.push('ListDetails', { pryceListId: plid, pryceListName: plname });
   }
 
   async copyList(plid, name){
@@ -88,7 +88,7 @@ class PryceList extends Component {
 
     return (
         <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'center', marginWidth: 50, borderWidth: 1, borderColor: 'red'}}>
-          <Button title={this.props.pryceListName} onPress={() => this.onPress(this.props.pryceListId)} />
+          <Button title={this.props.pryceListName} onPress={() => this.onPress(this.props.pryceListId, this.props.pryceListName)} />
           <Button title='DELETE' onPress={() => this.deleteList(this.props.pryceListId)} 
               style={{borderWidth: 1, borderColor: 'black', borderStyle: 'solid' }} />
           <Button title='COPY' onPress={() => { Alert.prompt('Copied List Name', 
@@ -212,7 +212,7 @@ export default class UserLists extends Component {
         <FlatList
           data={listData}
           renderItem={({ item }) => <PryceList baseApiUrl={this.state.baseApiUrl}
-            pryceListDetails={this.props.navigation}
+            pryceListNav={this.props.navigation}
             pryceListId={item.pryce_list_id}
             pryceLists={this.state.pryceLists}
             setParentState={this.setFlatListState}

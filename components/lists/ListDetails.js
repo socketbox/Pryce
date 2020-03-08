@@ -1,17 +1,12 @@
 import React, { Component } from 'react';
 import FeatherIcon from 'react-native-vector-icons/Feather';
-import { 
-  StyleSheet,
-  AsyncStorage,
-  Text, 
-  ActivityIndicator,
-  TouchableOpacity,
-  View 
-  } from 'react-native';
-import { Cell, Table, Row, Rows, TableWrapper } from 'react-native-table-component';
+import { ActivityIndicator, AsyncStorage, Text, TouchableOpacity, View } from 'react-native';
+import { DataTable } from 'react-native-paper';
+import { DataTablePagination } from 'material-bread';
 import { withNavigation } from 'react-navigation';
-//import { styles } from '../Styles'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { styles } from '../Styles'
+import { Card, CardHeader } from 'material-bread';
 
 class ListDetails extends Component {
   _mounted = null;
@@ -20,13 +15,11 @@ class ListDetails extends Component {
     super(props);
     
     this.state = {
-      tableHead: ['Name', 'Price', 'Store', 'Reported', ''],
-      //colWidthArr: [100, 50, 100, 50, 25],
       baseApiUrl: 'https://pryce-cs467.appspot.com',
-      //baseApiUrl: 'http://192.168.1.100:5000',
       tableData: null,
       listStale: true,
       pryceListId: this.props.navigation.state.params.pryceListId,
+      pryceListName: this.props.navigation.state.params.pryceListName,
     };
   }
 
@@ -36,10 +29,10 @@ class ListDetails extends Component {
         return {authToken: parsed.authToken};
       });
 
-    console.log("token value: " + token.authToken);
+    console.log("ListDetails: token value: " + token.authToken);
     if( token.authToken )
     {
-      console.log("setToken: " + token.authToken);
+      console.log("ListDetails: setToken: " + token.authToken);
       this.setState( token );
     }
     else
@@ -70,7 +63,7 @@ class ListDetails extends Component {
     //this.storeNavigationParams();
     console.log("Did Mount");
     if(!this.state.authToken) { 
-      console.log("Calling setToken");
+      console.log("ListDetails: calling _setToken()");
       this._setToken();
     }
     this._mounted = true;
@@ -114,14 +107,6 @@ class ListDetails extends Component {
     this._unsubscribe.remove();
   }
 
-  /* necessary because Search is in a different stackNavigator 
-  storeNavigationParams() {
-    let serPlid = JSON.stringify(this.state.pryceListId);
-    AsyncStorage.setItem(serPlid).then(res => console.log(res)).catch( (err) => {
-      console.log("Failed to store parms: " + err);
-    });
-  }*/
-  
   addItemToList = async(itemObj, plid) => {
     let token = this.state.authToken;
     console.log("authToken in addItemToList: " + token);
@@ -143,17 +128,12 @@ class ListDetails extends Component {
   };
  
   deleteItem(itemId, rowIndex){
-    /*let authToken = ( async () => {
-      let user = await AsyncStorage.getItem('user');
-      let token = JSON.parse(user).authToken; 
-      return token;
-    })();
-    */
+  
     let authToken = this.state.authToken;
     
     let listArr = this.state.tableData
     let plid = this.state.pryceListId
-    //console.log("In deleteItem. itemId, rowIndex: " + itemId + ", " + rowIndex);
+ 
     let url = this.state.baseApiUrl + '/pryce_lists/' + plid + '/' + itemId;
     fetch(url, { 
       method: 'DELETE',
@@ -172,8 +152,8 @@ class ListDetails extends Component {
 
 _getListItemDetails = async () => {
     let result = true; 
-    console.log("authToken in getPryceLists: " + this.state.authToken);
 		let url = this.state.baseApiUrl + '/pryce_lists/details/' + this.state.pryceListId;
+    console.log("url in _getListItemDetails: " + url);
 		const response = await fetch(url, {
 			method: 'GET',
 			headers: {
@@ -183,15 +163,10 @@ _getListItemDetails = async () => {
 			}, 
     })
     .then(response => response.json())
-    .then( jsonObj => { 
-      let tableRows = jsonObj.map( (cv, i, responseJson) => {
-        return [ cv.item_name, cv.price, cv.store_name, cv.reported, cv.item_id];
-        } 
-      );
-      this.setState({ tableData: tableRows});
-    })
+    .then(jsonResp => this.setState({tableData: jsonResp}))
     .catch(error => {console.log("error in _getListItemDetails"); console.error(error); result = false;})
     console.log("after _getList..." );
+    
     return result;
 	};
 
@@ -202,42 +177,59 @@ _getListItemDetails = async () => {
     } 
     else
     {
-      const element = (itemId, index) => (
-        <TouchableOpacity onPress={() => this.deleteItem(itemId, index)}>
-          <FeatherIcon name='trash' style={styles.button}/>
-        </TouchableOpacity>
-      );
-     
-      console.log("before return in render");
       return (
-        <SafeAreaView style={styles.container}>
-          <Table borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}} >
-            <Row data={this.state.tableHead} textStyle={styles.text} />
-            {
-              this.state.tableData.map(( rowData, index ) => (
-                <TableWrapper key={index} style={styles.row} >
-                  { 
-                    rowData.map( (cellData, cellIndex ) => (
-                        <Cell key={cellIndex} data={cellIndex === 4 ? element(cellData, index) : cellData} textStyle={styles.text}  />
-                    ))
-                  }
-                </TableWrapper>
-              )) 
-            }
-          </Table>
-          <View style={ styles.buttonView }>
-            <TouchableOpacity onPress={() => this.props.navigation.navigate('Search', {
-              listId: this.state.pryceListId,
-              routeName: this.props.navigation.state.routeName
-            })}
-                style={styles.buttonContainer} >
-              <Text style={styles.button}>Add Item</Text>
+        <SafeAreaView style={{flex: 4, flexDirection: 'column'}}>
+          <Card radius={1} shadow={4} style={{ maxWidth: 400, width: '100%', flex: 3}}>
+            <CardHeader title={this.state.pryceListName} />
+            <DataTable>
+              <DataTable.Header>
+                <DataTable.Title style={styles.listDetailsNameColumn}>Item</DataTable.Title>
+                <DataTable.Title style={styles.listDetailsPriceColumn} numeric >Price</DataTable.Title>
+                <DataTable.Title >Location</DataTable.Title>
+                <DataTable.Title style={{flex: 1}}></DataTable.Title>
+              </DataTable.Header>
+              {this.state.tableData
+                /*.slice(
+                  this.state.page * this.state.perPage,
+                  this.state.page * this.state.perPage + this.state.perPage
+                )*/
+                .map((item, index) => (
+                  <DataTable.Row >
+                    <DataTable.Cell style={styles.listDetailsNameColumn}>{item.item_name}</DataTable.Cell>
+                    <DataTable.Cell style={styles.listDetailsPriceColumn} numeric>{item.price}</DataTable.Cell>
+                    <DataTable.Cell style={styles.listDetailsStoreColumn}>{item.store_name}</DataTable.Cell>
+                    <DataTable.Cell numeric style={styles.listDetailsTrashColumn}>
+                        <FeatherIcon name='trash' style={styles.button} onPress={() => this.deleteItem(item.item_id, index)} />
+                    </DataTable.Cell>
+                  </DataTable.Row>
+                ))}
+              <Text />
+              {/*<DataTablePagination style={{
+                  flex: 1,
+                  alignContent: 'center',
+                  alignItems: 'center',
+                }}
+                page={this.state.page}
+                numberOfPages={this.state.tableData.length / this.state.perPage}
+                numberOfRows={this.state.tableData.length}
+                perPage={this.state.perPage}
+                onChangePage={page => this.setState({ page: page })}
+              />*/}
+            </DataTable>
+          </Card>
+          <View style={{flex: 2, flexDirection: 'row'}}>
+          {/*<View style={styles.childView}>*/}
+            <TouchableOpacity onPress={
+                () => this.props.navigation.navigate('Search', {
+                  listId: this.state.pryceListId, routeName: this.props.navigation.state.routeName 
+                })
+              }
+              style={styles.generalButtonTO}
+            >
+              <Text style={styles.generalButtonText}>Add Item</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => this.props.navigation.goBack()}
-              style={styles.buttonContainer}
-              >
-              <Text style={styles.button}>Back</Text>
+			      <TouchableOpacity onPress={() => this.props.navigation.goBack()} style={styles.generalButtonTO} >
+              <Text style={styles.generalButtonText}>Back</Text>
             </TouchableOpacity>
           </View>
         </SafeAreaView>
@@ -245,42 +237,5 @@ _getListItemDetails = async () => {
     }
   }
 }
-
-const styles = StyleSheet.create({
-  button: {
-    fontFamily: 'Arial',
-    fontSize: 14,
-    padding: 10,
-    color: '#444', 
-    borderWidth: 1,
-    borderStyle: 'solid',
-    borderColor: '#999',
-    backgroundColor: '#E6E6E6',
-    borderRadius: 2,
-    lineHeight: 10,
-    textAlignVertical: 'center',
-    textAlign: 'center',
-    width: '100%'
-  },
-  buttonView: {
-    flexDirection: 'row',
-    width: '100%',
-    justifyContent: 'center'
-  },
-  container: 
-  {
-    flex: 1, 
-    width:'95%', 
-		height: '90%',
-    padding: 15,
-    paddingTop: 25,
-  }, 
-  //singleHead: { width: 80, height: 40, backgroundColor: '#c8e1ff' },
-  //head: { flex: 1, backgroundColor: '#c8e1ff' },
-  //title: { flex: 2, backgroundColor: '#f6f8fa' },
-  row: { flexDirection: 'row', backgroundColor: '#FFF' },
-  titleText: { marginRight: 6, textAlign:'right' },
-  text: { textAlign: 'center' },
-});
 
 export default withNavigation(ListDetails);
