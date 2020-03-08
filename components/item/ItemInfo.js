@@ -17,7 +17,7 @@ export default class ItemInfo extends React.Component {
 		currency: 'USD',
 		currentTime: null,
 		itemName: null,
-		itemCode: this.props.navigation.getParam('data', 'null'),
+		itemCode: this.props.navigation.getParam('itemCode', 'null'),
 		itemBrand: null,
 		itemQuantity: null,
 		itemQuantUnit: null,
