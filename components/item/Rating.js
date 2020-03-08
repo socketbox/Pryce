@@ -51,7 +51,6 @@ export default class Rating extends Component {
 			headers: {
 				Accept: 'application/json',
                 'Content-Type': 'application/json',
-                // todo: get token from state
                 'Authorization': 'Bearer ' + this.state.authToken
 			},
 			body: JSON.stringify(requestData),

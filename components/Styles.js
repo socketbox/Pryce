@@ -484,7 +484,17 @@ export const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'space-between',
-	}
+	},
+	/*
+	* Store
+	*/
+	storeContainer: {
+        flex: 1,
+        width: '100%',
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start',
+        paddingTop: Platform.OS === 'ios' ? 20 : 0,
+    },
 });
 
 

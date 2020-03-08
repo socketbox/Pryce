@@ -3,9 +3,10 @@ import { createStackNavigator } from 'react-navigation-stack';
 
 import stackDEBUG from '../stackDEBUG';
 import NewItem from './NewItem';
-import ItemInfo from './ItemInfo'
-import ItemDetail from './ItemDetail'
-import NewPrice from './NewPrice'
+import ItemInfo from './ItemInfo';
+import ItemDetail from './ItemDetail';
+import NewPrice from './NewPrice';
+import Store from './Store';
 
 const ItemScreen = createStackNavigator({
     NewItem: {
@@ -30,6 +31,13 @@ const ItemScreen = createStackNavigator({
         screen: ItemDetail,
         navigationOptions: {
             headerShown: false
+        }
+    },
+    Store: {
+        screen: Store,
+        navigationOptions: {
+            headerShown: true,
+            headerTitle: 'Store Details'
         }
     }
 });

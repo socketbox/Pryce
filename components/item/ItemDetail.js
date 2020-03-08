@@ -21,10 +21,10 @@ export default class ItemDetail extends React.Component {
         itemData: this.props.navigation.getParam('itemData', 'null'),
     }
 
-    _goToStore(storeInfo) {
+    _goToStore(storeId) {
         // add store to search stack index for this to work!
-        console.log("pressed");
-        this.props.navigation.navigate('Store', { storeInfo })
+        console.log("pressed + " + storeId);
+        this.props.navigation.navigate('Store', { storeId: storeId })
     }
 
     _addToList(){
@@ -34,7 +34,8 @@ export default class ItemDetail extends React.Component {
     render() {
         let title = this.state.itemData.brand;
         let subtitle = this.state.itemData.name;
-        let storeInfo = this.state.priceID.store;
+        let storeId = this.state.priceID.store.store_id;
+        console.log(JSON.stringify(this.state.priceID));
         return (
             <View style={styles.mainContainer}>
                 <Card>
@@ -46,7 +47,7 @@ export default class ItemDetail extends React.Component {
                     />
                     <Card.Content>
                         <Text style={styles.textStyleSmall}>Located at: </Text>
-                        <TouchableOpacity onPress={() => this._goToStore(storeInfo)} style={styles.button}>
+                        <TouchableOpacity onPress={() => this._goToStore(storeId)} style={styles.button}>
                             <Text style={styles.buttonText, {fontSize: 25}}>{this.state.priceID.store.name}</Text>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={this._addToList} style={styles.button}>
