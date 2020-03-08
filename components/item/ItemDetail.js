@@ -32,15 +32,17 @@ export default class ItemDetail extends React.Component {
     }
 
     render() {
-        let title = this.state.itemData.brand + ' - ' + this.state.itemData.name;
-        let storeInfo = this.state.priceID.store.place_id;
+        let title = this.state.itemData.brand;
+        let subtitle = this.state.itemData.name;
+        let storeInfo = this.state.priceID.store;
         return (
             <View style={styles.mainContainer}>
                 <Card>
                     <Card.Title
                         titleStyle={{ fontSize: 25 }}
                         wrapperStyle={true}
-                        title={title}
+                        title={subtitle}
+                        subtitle={title}
                     />
                     <Card.Content>
                         <Text style={styles.textStyleSmall}>Located at: </Text>
