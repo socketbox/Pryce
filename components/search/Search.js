@@ -40,6 +40,7 @@ class Search extends Component {
 	
   	_toggleShow = () => {
 		this.setState({ showResults: true });
+		this.handleSubmit();
 	};
 
 	handleSubmit = async () => {
@@ -78,7 +79,6 @@ class Search extends Component {
 
 	/*Render result card after search */
 	displayResults = () => {
-		this.handleSubmit();
 		return (
 			<Card radius={1} shadow={4} style={{ maxWidth: 400, width: '100%' }}>
 				<CardHeader
