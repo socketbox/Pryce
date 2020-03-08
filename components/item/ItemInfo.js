@@ -115,67 +115,59 @@ export default class ItemInfo extends React.Component {
 		this.setState({ priceList: tempArr });
 	}
 
-	/**NEED TO REFACTOR THIS INTO FUNCTION SERVICE */
-	FlatListItemSeparator = () => {
-		return (
-		<View style={{ height: 1, width: '100%', backgroundColor: '#607D8B' }} />
-		);
-	};
-
-	GetItem(item) {
-		/**onPress={this.GetItem.bind(this, item.store)
-		 * THIS IS FOR BINDING SELECTION TO VAR? set state to go to correct store ID?
-		 */
-		Alert.alert(item);
+	_selectItem(item){
+		let price_id = item.price_id;
+		let itemData = this.state.itemData;
+		this.props.navigation.navigate('ItemDetail', { item, itemData })
 	}
 
 	render() {
 		let title = this.state.itemData.brand + ' - ' + this.state.itemData.name;
 		let description = this.state.itemData.description;
 		return (
-		<View style={styles.mainContainer}>
-			{/*<Text style={styles.title}>Information</Text>*/}
-			<Card>
-			<Card.Title
-				titleStyle={{ fontSize: 25 }}
-				wrapperStyle={true}
-				title={title}
-				subtitle={description}
-			/>
-			<Card.Content>
-				<Text style={{ fontSize: 18 }}>Select item for details</Text>
-				<DataTable>
-				<DataTable.Header>
-					<DataTable.Title>Store</DataTable.Title>
-					<DataTable.Title numeric>Price</DataTable.Title>
-				</DataTable.Header>
-				{this.state.priceList.map(item => (
-					<DataTable.Row
-					onPress={() => console.log('Pressed')}
-					key={item.price_id}>
-					<DataTable.Cell 
-						borderRight flex={2}>
-						{item.store.name}
-					</DataTable.Cell>
-					<DataTable.Cell numeric>
-						{item.price}
-					</DataTable.Cell>
-					</DataTable.Row>
-				))}
-				</DataTable>
-			</Card.Content>
-			</Card>
-			<TouchableOpacity
-			style={styles.button}
-			underlayColor="white"
-			onPress={() =>
-				this.props.navigation.navigate('NewPrice', {
-				item: this.state.itemData,
-				})
-			}>
-			<Text style={styles.buttonText}>Add New Price</Text>
-			</TouchableOpacity>
-		</View>
+			<View style={styles.mainContainer}>
+				{/*<Text style={styles.title}>Information</Text>*/}
+				<Card>
+					<Card.Title
+						titleStyle={{ fontSize: 25 }}
+						wrapperStyle={true}
+						title={title}
+						subtitle={description}
+					/>
+					<Card.Content>
+						<Text style={{ fontSize: 18 }}>Select item for details</Text>
+						<DataTable>
+							<DataTable.Header>
+								<DataTable.Title>Store</DataTable.Title>
+								<DataTable.Title numeric>Price</DataTable.Title>
+							</DataTable.Header>
+							{this.state.priceList.map(item => (
+								<DataTable.Row
+									onPress={() => this._selectItem(item)}
+									key={item.price_id}>
+								<DataTable.Cell 
+									borderRight flex={2}>
+									{item.store.name}
+								</DataTable.Cell>
+								<DataTable.Cell numeric>
+									{item.price}
+								</DataTable.Cell>
+								</DataTable.Row>
+							))}
+						</DataTable>
+					</Card.Content>
+				</Card>
+				<TouchableOpacity
+				style={styles.button}
+				underlayColor="white"
+				onPress={() =>
+					this.props.navigation.navigate('NewPrice', {
+					item: this.state.itemData,
+					})
+				}>
+				<Text style={styles.buttonText}>Add New Price</Text>
+				</TouchableOpacity>
+			</View>
 		);
 	}
 }
