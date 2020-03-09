@@ -6,13 +6,17 @@ import {
 	TextInput,
 	TouchableOpacity
 } from "react-native";
-import SimpleLineIconsIcon from "react-native-vector-icons/SimpleLineIcons";
 import {styles} from '../Styles'
+import { Button, TextField, Icon } from 'material-bread';
 
 export default class Register extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {}
+		this.state = {
+			username: '',
+			password: '',
+			passwordConfirmation: '',
+		}
 	}
 
 	submitForm = async () => {
@@ -20,11 +24,10 @@ export default class Register extends React.Component {
 			alert("Please fill out all fields.");
 			return;
 		}
-		const username = this.state.username;
-		const password = this.state.password;
-		const passwordConfirmation = this.state.passwordConfirmation;
+		
+		const {username, password} = this.state;
 
-		if (password !== passwordConfirmation) {
+		if (this.state.password !== passwordConfirmation) {
 			alert("Passwords don't match.");
 			return;
 		}
@@ -61,55 +64,49 @@ export default class Register extends React.Component {
 	}
 
 	render () {
+		const registerForm = (
+			<View style={styles.container}>
+					<View style={styles.inputRow}>
+						<TextField
+							label={'Username'}
+							value={this.state.username}
+							onChangeText={(text) => this.setState({ username: text })}
+							leadingIcon={
+								<Icon name={'account-circle'} size={24} color={'#6e6e6e'} />
+							}
+						/>
+						<TextField
+							label={'Password'}
+							value={this.state.password}
+							secureTextEntry={true}
+							onChangeText={(text) => this.setState({ password: text })}
+							leadingIcon={
+								<Icon name={'lock'} size={24} color={'#6e6e6e'} />
+							}
+						/>
+						<TextField
+							label={'Confirm Password'}
+							value={this.state.password}
+							secureTextEntry={true}
+							onChangeText={(text) => this.setState({ password: text })}
+							leadingIcon={
+								<Icon name={'check'} size={24} color={'#6e6e6e'} />
+							}
+						/>
+						<TouchableOpacity
+							onPress={this.submitForm}
+							style={styles.generalButtonTO}
+							>
+							<Text style={styles.generalButtonText}>Submit</Text>
+						</TouchableOpacity>
+					</View>
+				</View>
+		);
+
 		return (
 			<View style={styles.container}>
-				<View style={styles.form}>
-					<Text style={styles.title}>Register</Text>
-					<View style={styles.inputRow}>
-						<SimpleLineIconsIcon name="user" style={styles.inputIcon} />
-						<TextInput
-							placeholder="Username"
-							placeholderTextColor="#e6e6e6"
-							editable={true}
-							style={styles.inputField}
-							onChangeText={(text) => this.setState({username:text})}
-						/>
-					</View>
-	
-					<View style={styles.inputRow}>
-						<SimpleLineIconsIcon name="lock" style={styles.inputIcon} />
-						<TextInput
-							placeholder="Password"
-							placeholderTextColor="#e6e6e6"
-							editable={true}
-							secureTextEntry={true}
-							style={styles.inputField}
-							onChangeText={(text) => this.setState({password:text})}
-						/>
-					</View>
-	
-					<View style={styles.inputRow}>
-						<SimpleLineIconsIcon name="lock" style={styles.inputIcon} />
-						<TextInput
-							placeholder="PasswordConfirmation"
-							placeholderTextColor="#e6e6e6"
-							editable={true}
-							secureTextEntry={true}
-							style={styles.inputField}
-							onChangeText={(text) => this.setState({passwordConfirmation:text})}
-						/>
-					</View>
-		
-				<TouchableOpacity
-					onPress={this.submitForm}
-					style={styles.generalButtonTO}
-					>
-					<Text style={styles.generalButtonText}>Submit</Text>
-				</TouchableOpacity>
-	
-				</View>
+				{ registerForm }
 			</View>
 		);
 	}
 }
-
