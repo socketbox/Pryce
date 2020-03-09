@@ -19,6 +19,7 @@ class User extends React.Component {
 		return await AsyncStorage.getItem('user').then(req => JSON.parse(req))
 			.then((userObj) => {
 				this.setState({loggedInUser: userObj});
+				console.log("User.getLoggedInUser: ");
 				console.log(this.state.loggedInUser);
 		});
     }

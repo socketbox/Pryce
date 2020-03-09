@@ -24,7 +24,6 @@ class Login extends React.Component {
 		return await AsyncStorage.getItem('user').then(req => JSON.parse(req))
 			.then((userObj) => {
 				this.setState({loggedInUser: userObj});
-				console.log(this.state.loggedInUser);
 		});
 	}
 
@@ -131,8 +130,6 @@ class Login extends React.Component {
 	}
 
 	async doLogin(username, password) {
-		//chb:debug
-		console.log("in doLogin, username: " + username + ", password: " + password);
 		fetch('https://pryce-cs467.appspot.com/login', {
 			method: 'POST',
 			headers: {

@@ -1,75 +1,136 @@
 import React, { Component } from 'react';
-import {
-  //https://github.com/shimohq/react-native-prompt-android/issues/45
-  Alert,
-  ActivityIndicator,
-  AsyncStorage,
-  FlatList,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-  Button
-} from 'react-native';
-import { styles } from '../Styles'
+import FeatherIcon from 'react-native-vector-icons/Feather';
+//https://github.com/shimohq/react-native-prompt-android/issues/45
+import { Alert, ActivityIndicator, AsyncStorage, Button, Text, TouchableOpacity, View } from 'react-native';
+import { DataTable } from 'react-native-paper';
+import { DataTablePagination } from 'material-bread';
+import { withNavigation } from 'react-navigation';
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { styles } from '../Styles'
+import { Card, CardHeader } from 'material-bread';
 
 
-class PryceList extends Component {
+export default class UserLists extends Component {
+  state = {
+    page: 0,
+    perPage: 8,
+    tableData: null,
+    listStale: true,
+    readyToFetch: false,
+    readyToRender: false,
+    baseApiUrl: 'https://pryce-cs467.appspot.com',
+  };
 
-  listName = null;
-
-  onPress(plid, plname) {
-    this.props.pryceListNav.push('ListDetails', { pryceListId: plid, pryceListName: plname });
+  setUser(){
+    AsyncStorage.getItem('user')
+      .then( user => {
+          let parsedUser = JSON.parse(user);
+          this.setState({userObj: parsedUser})})
+      .catch(err => console.log(err));
   }
 
-  async copyList(plid, name){
-    let user = await AsyncStorage.getItem('user');
-    let authToken = JSON.parse(user).authToken;
+  componentDidMount() {
+    if(!this.state.userObj) 
+      this.setUser();
+    else
+      this.getPryceLists();
+  }
+
+  componentDidUpdate() {
+    //if (this.state.readyToaFetch && this.state.listStale) {
+    if (!this.state.userObj)
+      this.setUser()
+    else if (!this.state.tableData)
+    {
+      this.getPryceLists();
+    }
     
-    this.listName = name;
+    /*else  if (this.state.tableData)
+        this.setState({ readyToRender: true });
+    }
+    else if (this.state.readyToRender && !this.state.listStale) {
+      return;
+    }
+    else {
+      this.setUser();
+    }*/
+  }
+
+  postNewList = async (listName) => {
+    let url = this.state.baseApiUrl + '/pryce_lists/';
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': "Bearer " + this.state.userObj.authToken
+      },
+      body: JSON.stringify(listName),
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        let pls = Array.from(this.state.tableData)
+        console.log("response: " + responseJson + ", pls arr: " + pls);
+        pls.push(responseJson);
+        this.setState({ tableData: pls });
+      })
+      .catch(error => console.error(error));
+  };
+
+  getPryceLists = async () => {
+    console.log("authToken in getPryceLists: " + this.state.userObj.authToken);
+    let url = this.state.baseApiUrl + '/pryce_lists/';
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': "Bearer " + this.state.userObj.authToken,
+      }
+    })
+      .then(response => response.json())
+      .then(responseJson => { this.setState({ tableData: responseJson }); })
+      .catch(error => console.error(error));
+  
+    if(this.state.tableData != null)
+      this.setState({readyToRender: true});
+  };
+
+  copyList = async(plid, name) => {
     
-    let url = this.props.baseApiUrl + '/pryce_lists/duplicate/' + plid;
+    let url = this.state.baseApiUrl + '/pryce_lists/duplicate/' + plid;
     fetch(url, { 
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-          'Authorization': "Bearer " + authToken
+          'Authorization': "Bearer " + this.state.userObj.authToken
         },
-        body: JSON.stringify(this.listName)
-      }).then(response => response.json())
+        body: JSON.stringify(name)
+      })
+      .then(response => response.json())
       .then(responseJson => {
-        let pls = this.props.pryceLists;
+        let pls = this.state.tableData;
         console.log("response: " + responseJson + ", pls arr: " + pls);
         pls.push(responseJson);
-        //ugly hack. must call a function passed into component at render in order to set state in DOM parent
-        this.props.setParentState({ pryceLists: pls });
+        this.setState({ pryceLists: pls });
       })
       .catch(error => console.error(error));
-
-      this.listName = null;
   }
 
-  async deleteList(plid){
-    console.log(JSON.stringify(this.props))
-    let user = await AsyncStorage.getItem('user');
-    let authToken = JSON.parse(user).authToken;
-    
-    //let listArr = this.state.tableData
-    console.log("In deleteList. authToken: " + JSON.stringify(authToken) );
-    console.log("In deleteList. plid: " + plid );
-    let url = this.props.baseApiUrl + '/pryce_lists/' + plid;
+  deleteList = async (plid) => {
+    let url = this.state.baseApiUrl + '/pryce_lists/' + plid;
+    console.log("delete url: " + url);
     fetch(url, { 
       method: 'DELETE',
       headers: {
 				'Content-Type': 'application/json',
 				'Accept': 'application/json',
-        'Authorization': "Bearer " + authToken
+        'Authorization': "Bearer " + this.state.userObj.authToken
       }
     }).then(res => console.log(res), err => {console.log(err)})
 
-    let listObjs = this.props.pryceLists;
+    let listObjs = this.state.tableData;
     for(let i = 0; i < listObjs.length; i++)
     {
       //delete relevant list 
@@ -77,166 +138,75 @@ class PryceList extends Component {
         listObjs.splice(i, 1);
     }
     console.log(listObjs);
-    //ugh. must call a function passed into component at render in order to set state in DOM parent
-    this.props.setParentState({pryceLists: listObjs});
-  }
-
-  render() {
-    let modal = function(){ 
-      return (<ListNameModal /> )
-    };
-
-    return (
-        <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'center', marginWidth: 50, borderWidth: 1, borderColor: 'red'}}>
-          <Button title={this.props.pryceListName} onPress={() => this.onPress(this.props.pryceListId, this.props.pryceListName)} />
-          <Button title='DELETE' onPress={() => this.deleteList(this.props.pryceListId)} 
-              style={{borderWidth: 1, borderColor: 'black', borderStyle: 'solid' }} />
-          <Button title='COPY' onPress={() => { Alert.prompt('Copied List Name', 
-              'Please provide a name for your copied list.', (name) => {this.copyList(this.props.pryceListId, name)})}} />
-        </View>
-    );
-  }
-}
-
-
-export default class UserLists extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      pryceLists: [],
-      listStale: true,
-      readyToRender: false,
-      //baseApiUrl: 'http://192.168.1.100:5000'
-      baseApiUrl: 'https://pryce-cs467.appspot.com',
-    };
-    this.setFlatListState = this.setFlatListState.bind(this);
-  }
-
-  _setToken = async () => {
-    const token = await AsyncStorage.getItem('user').then((res) => {
-      console.log("result of getItem: " + res);
-      const parsed = JSON.parse(res);
-      console.log("parsed.authToken: " + parsed.authToken);
-      return { authToken: parsed.authToken };
-    });
-
-    console.log("token value: " + token.authToken);
-    if (token.authToken) {
-      this.setState(token);
-      this.setState({ readyToRender: true });
-    }
-    else {
-      this.setState({ readyToRender: false });
-    }
-  }
-
-  componentDidMount() {
-    console.log("Did Mount");
-    if (!this.state.readyToRender) {
-      console.log("Calling setToken");
-      this._setToken();
-    }
-  }
-
-  componentDidUpdate() {
-    if (this.state.readyToRender && this.state.listStale) {
-      console.log("Calling _getPryceLists()");
-      this._getPryceLists();
-      if (this.state.pryceLists)
-        this.setState({ listStale: false });
-    }
-    else if (this.state.readyToRender & !this.state.listStale) {
-      return;
-    }
-    else {
-      console.log("calling set token");
-      this._setToken();
-    }
-  }
-
-  componentWillUnmount() {
-    console.log("Will Unmount");
-  }
-
-  _postNewList = async (listName) => {
-    let url = this.state.baseApiUrl + '/pryce_lists/';
-    fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': "Bearer " + this.state.authToken
-      },
-      body: JSON.stringify(listName),
-    })
-      .then(response => response.json())
-      .then(responseJson => {
-        let pls = Array.from(this.state.pryceLists)
-        console.log("response: " + responseJson + ", pls arr: " + pls);
-        pls.push(responseJson);
-        this.setState({ pryceLists: pls });
-      })
-      .catch(error => console.error(error));
-  };
-
-  _getPryceLists = async () => {
-    console.log("authToken in getPryceLists: " + this.state.authToken);
-    let url = this.state.baseApiUrl + '/pryce_lists/';
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': "Bearer " + this.state.authToken,
-      }
-    })
-      .then(response => response.json())
-      .then(responseJson => { this.setState({ pryceLists: responseJson }); })
-      .catch(error => console.error(error));
-  };
-
-  setFlatListState(newStateVal)
-  {
-    console.log("foo");
-    this.setState(newStateVal);
+    this.setState({tableData: listObjs});
   }
 
   render() {
     if (!this.state.readyToRender) {
       return (<ActivityIndicator size="large" color="#0000ff" />);
     }
-    const listData = Object.keys(this.state.pryceLists).map(key => ({ key, ...this.state.pryceLists[key] }));
-    console.log(listData);
     return (
-      <SafeAreaView>
-        <FlatList
-          data={listData}
-          renderItem={({ item }) => <PryceList baseApiUrl={this.state.baseApiUrl}
-            pryceListNav={this.props.navigation}
-            pryceListId={item.pryce_list_id}
-            pryceLists={this.state.pryceLists}
-            setParentState={this.setFlatListState}
-            pryceListName={item.name} />
-          }
-          keyExtractor={item => item.key}
-          extraData={listData}
-        />
-        <View>
-          <View style={styles.newList}>
-            <TextInput style={styles.newListForm}
-              placeholderTextColor="#CCCCCC"
-              editable={true}
-              placeholder="New List Name"
-              autoCapitalize="none"
-              onChangeText={(text) => this.setState({ newListName: text })}
+      <SafeAreaView style={{ flex: 9, flexDirection: 'column' }}>
+        <Card radius={1} shadow={4} style={{ maxWidth: 400, width: '100%', flex: 8 }}>
+          <CardHeader title={this.state.userObj.name + "'s Lists"} />
+          <DataTable>
+            <DataTable.Header>
+              <DataTable.Title style={styles.listNameColumn}>List Name</DataTable.Title>
+              <DataTable.Title style={styles.listCopyColumn}></DataTable.Title>
+              <DataTable.Title style={styles.listTrashColumn}></DataTable.Title>
+            </DataTable.Header>
+            {this.state.tableData
+            .slice(
+                this.state.page * this.state.perPage,
+                this.state.page * this.state.perPage + this.state.perPage
+              )
+              .map((item, index) => (
+                <DataTable.Row key={item.pryce_list_id} >
+                  <DataTable.Cell style={styles.listNameColumn} onPress={
+                      () => this.props.navigation.push('ListDetails', {
+                        pryceListId: item.pryce_list_id, pryceListName: item.name })}>
+                          {item.name}
+                  </DataTable.Cell>
+                  <DataTable.Cell style={styles.listCopyColumn}>
+                    <FeatherIcon name='copy' style={styles.button} 
+                      onPress={() => { 
+                        Alert.prompt('Copied List Name', 'Please provide a name for your copied list.', (name) => {
+                          this.copyList(item.pryce_list_id, name)})}} />
+                  </DataTable.Cell>
+                  <DataTable.Cell numeric style={styles.listTrashColumn}>
+                    <FeatherIcon name='trash' style={styles.button} 
+                      onPress={() => this.deleteList(item.pryce_list_id)} />
+                  </DataTable.Cell>
+                </DataTable.Row>
+              ))}
+            <Text />
+            <DataTablePagination style={{
+              flex: 1,
+              alignContent: 'center',
+              alignItems: 'center',
+            }}
+              page={this.state.page}
+              numberOfPages={this.state.tableData.length / this.state.perPage}
+              numberOfRows={this.state.tableData.length}
+              perPage={this.state.perPage}
+              onChangePage={page => this.setState({ page: page })}
             />
-            <Button title="New List" onPress={() => { this._postNewList(this.state.newListName); }} />
-          <TouchableOpacity onPress={() => this.props.navigation.goBack()} style={styles.generalButtonTO}>
-            <Text style={styles.generalButtonText}>Back</Text>
+          </DataTable>
+        </Card>
+        <View style={{ flex: 2, flexDirection: 'row', justifyContent: 'center' }}> 
+          <TouchableOpacity style={styles.generalButtonTO} onPress={ () => {
+              Alert.prompt('New List Name', 'Please provide a name for your new list.', (name) => {
+                        this.postNewList(name) 
+                  } ) } 
+          }>
+            <Text style={styles.generalButtonText}>New List</Text>
           </TouchableOpacity>
-          </View>
+          {/*<TouchableOpacity onPress={() => this.props.navigation.goBack()} style={styles.generalButtonTO} >
+            <Text style={styles.generalButtonText}>Back</Text>
+        </TouchableOpacity>*/}
         </View>
       </SafeAreaView>
+
     );
   }
 }

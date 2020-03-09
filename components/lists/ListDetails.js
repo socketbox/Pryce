@@ -17,6 +17,8 @@ class ListDetails extends Component {
     this.state = {
       baseApiUrl: 'https://pryce-cs467.appspot.com',
       tableData: null,
+      page: 0,
+      perPage: 8,
       listStale: true,
       pryceListId: this.props.navigation.state.params.pryceListId,
       pryceListName: this.props.navigation.state.params.pryceListName,
@@ -178,8 +180,8 @@ _getListItemDetails = async () => {
     else
     {
       return (
-        <SafeAreaView style={{flex: 4, flexDirection: 'column'}}>
-          <Card radius={1} shadow={4} style={{ maxWidth: 400, width: '100%', flex: 3}}>
+        <SafeAreaView style={{flex: 9, flexDirection: 'column'}}>
+          <Card radius={1} shadow={1} style={{ maxWidth: 400, width: '100%', flex: 8}}>
             <CardHeader title={this.state.pryceListName} />
             <DataTable>
               <DataTable.Header>
@@ -189,22 +191,22 @@ _getListItemDetails = async () => {
                 <DataTable.Title style={{flex: 1}}></DataTable.Title>
               </DataTable.Header>
               {this.state.tableData
-                /*.slice(
+                .slice(
                   this.state.page * this.state.perPage,
                   this.state.page * this.state.perPage + this.state.perPage
-                )*/
+                )
                 .map((item, index) => (
-                  <DataTable.Row >
+                  <DataTable.Row key={item.item_id} >
                     <DataTable.Cell style={styles.listDetailsNameColumn}>{item.item_name}</DataTable.Cell>
                     <DataTable.Cell style={styles.listDetailsPriceColumn} numeric>{item.price}</DataTable.Cell>
                     <DataTable.Cell style={styles.listDetailsStoreColumn}>{item.store_name}</DataTable.Cell>
-                    <DataTable.Cell numeric style={styles.listDetailsTrashColumn}>
+                    <DataTable.Cell numeric style={styles.listDetailsIconColumn}>
                         <FeatherIcon name='trash' style={styles.button} onPress={() => this.deleteItem(item.item_id, index)} />
                     </DataTable.Cell>
                   </DataTable.Row>
                 ))}
               <Text />
-              {/*<DataTablePagination style={{
+              <DataTablePagination style={{
                   flex: 1,
                   alignContent: 'center',
                   alignItems: 'center',
@@ -214,11 +216,10 @@ _getListItemDetails = async () => {
                 numberOfRows={this.state.tableData.length}
                 perPage={this.state.perPage}
                 onChangePage={page => this.setState({ page: page })}
-              />*/}
+              />
             </DataTable>
           </Card>
-          <View style={{flex: 2, flexDirection: 'row'}}>
-          {/*<View style={styles.childView}>*/}
+          <View style={{flex: -1, flexDirection: 'row'}}>
             <TouchableOpacity onPress={
                 () => this.props.navigation.navigate('Search', {
                   listId: this.state.pryceListId, routeName: this.props.navigation.state.routeName 

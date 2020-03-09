@@ -191,13 +191,28 @@ export const styles = StyleSheet.create({
     },
     
     /*
-     * ListDetails
+     * Lists and ListDetails
      */
- 	listDetailsTrashColumn: {
+ 	listTrashColumn: {
+		flex: -1,	
+		width: 50,
+		alignContent: 'center',
+		padding: 10
+	 },
+	listCopyColumn: {
 		flex: 0,	
 		width: 30,
+	},
+	listNameColumn: {
+		flex: 1,	
+		flexShrink: 2,
+	},
+	listDetailsTrashColumn: {
+		flex: 0,	
+		width: 30,
+		paddingRight: 20,
 		alignContent: 'center',
-	},	
+	 },
 	listDetailsPriceColumn: {
 		flex: 0,	
 		width: 50,
