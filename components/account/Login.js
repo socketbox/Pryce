@@ -1,22 +1,23 @@
 import React from 'react';
 import {
 	AsyncStorage,
-	StyleSheet,
 	Text,
 	View,
-	TextInput,
 	TouchableOpacity,
 	Keyboard,
 	Animated
-	} from 'react-native'
-import FeatherIcon from 'react-native-vector-icons/Feather';
-import SimpleLineIconsIcon from 'react-native-vector-icons/SimpleLineIcons';
+} from 'react-native'
 import {styles} from '../Styles'
+import { Button, TextField, Icon } from 'material-bread';
+
 
 class Login extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {}
+		this.state = {
+			username: '',
+			password: ''
+		}
 		this.keyboardHeight = new Animated.Value(0);
 	}
 
@@ -72,59 +73,50 @@ class Login extends React.Component {
 
 	render () {
 		const loginForm = (
-			<View style={styles.loginInfo}>
-				<Animated.View style={{ paddingBottom: this.keyboardHeight }}>
-					<View style={styles.inputRow}>
-						<FeatherIcon name="user" style={styles.inputIcon} />
-						<TextInput
-							placeholderTextColor="#ccc"
-							editable={true}
-							placeholder="Username"
-							defaultValue=""
-							autoCapitalize="none"
-							style={styles.inputField}
-							onChangeText={(text) => this.setState({username:text})}
-						/>
-					</View>
-
-					<View style={styles.inputRow}>
-						<SimpleLineIconsIcon name="lock" style={styles.inputIcon} />
-						<TextInput
-							placeholder="Password"
-							defaultValue=""
-							placeholderTextColor="#ccc"
-							editable={true}
-							secureTextEntry={true}
-							style={styles.inputField}
-							onChangeText={(text) => this.setState({password:text})}
-						/>
-					</View>
-
-					<TouchableOpacity
-						onPress={this.onLogin}
-						style={styles.generalButtonTO}>
-						<Text style={styles.generalButtonText}>Login</Text>
-					</TouchableOpacity>
-				</Animated.View>
-			
-				<View style={styles.createAccount}>
-					<Text style={styles.newText}>New? </Text>
-					<TouchableOpacity onPress={() => this.props.navigation.navigate('Register')}>
-						<Text style={styles.createAccountHere}>Create account here!</Text>
-					</TouchableOpacity>
+			<View>
+				<View style={styles.loginInfo}>
+					<Animated.View style={{ paddingBottom: this.keyboardHeight }}>
+						<View style={styles.inputRow}>
+							<TextField
+								label={'Username'}
+								value={this.state.username}
+								onChangeText={(text) => this.setState({ username: text })}
+								leadingIcon={
+									<Icon name={'account-circle'} size={24} color={'#6e6e6e'} />
+								}
+							/>
+							<TextField
+								label={'Password'}
+								value={this.state.password}
+								secureTextEntry={true}
+								onChangeText={(text) => this.setState({ password: text })}
+								leadingIcon={
+									<Icon name={'lock'} size={24} color={'#6e6e6e'} />
+								}
+							/>
+							<Button 
+								style={styles.button}
+								text={'Login'} 
+								type="outlined" 
+								onPress={() => this.onLogin()} 
+							/>
+						</View>
+					</Animated.View>
 				</View>
-
-				<View style={styles.createAccount} />
-				<TouchableOpacity onPress={() => this.props.navigation.navigate('Application')}>
-					<Text style={styles.continueAsGuest}>Continue as guest</Text>
-				</TouchableOpacity>
+				<View style={{ flex: 1, alignItems: 'center', padding: 30}}>
+					<View style={styles.createAccount}>
+						<Text style={styles.newText}>New? </Text>
+						<TouchableOpacity onPress={() => this.props.navigation.navigate('Register')}>
+							<Text style={styles.createAccountHere}>Create account here!</Text>
+						</TouchableOpacity>
+					</View>
+				</View>
 			</View>
 		);	
 
 		return (
 			<View style={styles.container}>
 				<Text style={styles.pryce}>PRYCE</Text>
-
 				{ loginForm }
 			</View>
 		);
