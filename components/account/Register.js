@@ -12,7 +12,11 @@ import { Button, TextField, Icon } from 'material-bread';
 export default class Register extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {}
+		this.state = {
+			username: '',
+			password: '',
+			passwordConfirmation: ''
+		}
 	}
 
 	submitForm = async () => {
@@ -21,9 +25,9 @@ export default class Register extends React.Component {
 			return;
 		}
 		
-		const username = this.state.username;
-		const password = this.state.password;
-		const passwordConfirmation = this.state.passwordConfirmation;
+		let username = this.state.username;
+		let password = this.state.password;
+		let passwordConfirmation = this.state.passwordConfirmation;
 
 
 		if (this.state.password !== passwordConfirmation) {
@@ -68,7 +72,7 @@ export default class Register extends React.Component {
 					<View style={styles.inputRow}>
 						<TextField
 							label={'Username'}
-							value={this.username}
+							value={this.state.username}
 							onChangeText={(text) => this.setState({ username: text })}
 							leadingIcon={
 								<Icon name={'account-circle'} size={24} color={'#6e6e6e'} />
@@ -76,7 +80,7 @@ export default class Register extends React.Component {
 						/>
 						<TextField
 							label={'Password'}
-							value={this.password}
+							value={this.state.password}
 							secureTextEntry={true}
 							onChangeText={(text) => this.setState({ password: text })}
 							leadingIcon={
@@ -85,7 +89,7 @@ export default class Register extends React.Component {
 						/>
 						<TextField
 							label={'Confirm Password'}
-							value={this.passwordConfirmation}
+							value={this.state.passwordConfirmation}
 							secureTextEntry={true}
 							onChangeText={(text) => this.setState({passwordConfirmation:text})}
 							leadingIcon={
