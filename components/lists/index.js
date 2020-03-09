@@ -4,6 +4,7 @@ import { createStackNavigator } from 'react-navigation-stack';
 import UserLists from './UserLists.js';
 import ListDetails from './ListDetails.js';
 import Search from '../search/Search.js';
+import Items from '../item/index.js';
 
 const ListScreen = createStackNavigator({
     UserLists: {
@@ -23,6 +24,12 @@ const ListScreen = createStackNavigator({
         navigationOptions: {
             headerShown: false
         } 
+    },
+    Items: {
+        screen: Items,
+        navigationOptions: {
+            headerShown: false
+        }
     }
 });
 

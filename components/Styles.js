@@ -223,7 +223,7 @@ export const styles = StyleSheet.create({
 	loginInfo: {
 		alignItems: 'center',
 		justifyContent: 'center',
-		flex: 1
+		flex: 3
 	
 	},
 	inputRow: {

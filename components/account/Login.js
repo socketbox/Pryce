@@ -102,7 +102,7 @@ class Login extends React.Component {
 						</View>
 					</Animated.View>
 				</View>
-				<View style={{ flex: 1, alignItems: 'center', padding: 30}}>
+				<View style={{ flex: 1, alignItems: 'center'}}>
 					<View style={styles.createAccount}>
 						<Text style={styles.newText}>New? </Text>
 						<TouchableOpacity onPress={() => this.props.navigation.navigate('Register')}>
@@ -110,6 +110,7 @@ class Login extends React.Component {
 						</TouchableOpacity>
 					</View>
 				</View>
+
 			</View>
 		);	
 
