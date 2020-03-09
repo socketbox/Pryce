@@ -53,12 +53,12 @@ class Search extends Component {
 
 
 	selectedItem(itemInstance) {
-		let navParams = this.props.navigation.getParam('routeName', null);
+		let navParams = this.props.navigation.getParam('routeFrom', null);
 		if (navParams === 'ListDetails') {
 			let listId = this.props.navigation.getParam('listId', null);
-			this.props.navigation.navigate(navParams, {
-				addedItem: itemInstance,
-				pryceListId: listId,
+			this.props.navigation.navigate('ItemInfo', { 
+					pryceListId: listId,
+					itemCode: itemInstance.code
 			});
 		} //default to std search
 		else {
@@ -146,4 +146,3 @@ class Search extends Component {
 }
 
 export default withNavigation(Search);
-

@@ -2,26 +2,6 @@ import { StyleSheet } from 'react-native';
 import Constants from 'expo-constants'
 
 export const styles = StyleSheet.create({
-	generalButtonText: {
-		color: "#121212",
-		textAlign: "center",
-		paddingTop: 5,
-	},	
-	generalButtonTO: {
-		width: 220,
-		height: 40,
-		alignItems: 'center',
-		justifyContent: 'center',
-		borderRadius: 6,
-		borderWidth: 1,
-		borderStyle: 'solid',
-		marginBottom: 30,
-		flexDirection: 'row',
-		backgroundColor: 'white',
-		borderColor: 'white',
-		marginTop: 10,
-		alignSelf: 'stretch',
-	},
 	mainContainer: {
 		flex: 1,
 		padding: 30,
@@ -168,11 +148,16 @@ export const styles = StyleSheet.create({
 		textAlign: 'center',
 		alignSelf: 'center',
 	},
-
-	/*
-     * UserLists
+    /*
+     * Lists and ListDetails
      */
-    newList: {
+	activityIndicator: {
+		flex: 1,
+		justifyContent: 'center',
+		flexDirection: 'column',
+		padding: 10
+	}, 
+	newList: {
         width: '65%',
         borderWidth: 1,
         marginTop: 1,
@@ -189,11 +174,7 @@ export const styles = StyleSheet.create({
         fontSize: 18,
         textAlign: 'center',
     },
-    
-    /*
-     * Lists and ListDetails
-     */
- 	listTrashColumn: {
+	listTrashColumn: {
 		flex: -1,	
 		width: 50,
 		alignContent: 'center',

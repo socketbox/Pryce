@@ -93,12 +93,7 @@ export default class Register extends React.Component {
 								<Icon name={'check'} size={24} color={'#6e6e6e'} />
 							}
 						/>
-						<TouchableOpacity
-							onPress={this.submitForm}
-							style={styles.generalButtonTO}
-							>
-							<Text style={styles.generalButtonText}>Submit</Text>
-						</TouchableOpacity>
+						<Button text={'Submit'} type='outlined' onPress={this.submitForm} style={styles.button}/> 
 					</View>
 				</View>
 		);

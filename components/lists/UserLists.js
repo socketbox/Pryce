@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 //https://github.com/shimohq/react-native-prompt-android/issues/45
-import { Alert, ActivityIndicator, AsyncStorage, Button, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, ActivityIndicator, AsyncStorage, Text, View } from 'react-native';
 import { DataTable } from 'react-native-paper';
 import { DataTablePagination } from 'material-bread';
 import { withNavigation } from 'react-navigation';
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { styles } from '../Styles'
-import { Card, CardHeader } from 'material-bread';
+import { Button, Card, CardHeader } from 'material-bread';
 
 
 export default class UserLists extends Component {
@@ -143,7 +143,11 @@ export default class UserLists extends Component {
 
   render() {
     if (!this.state.readyToRender) {
-      return (<ActivityIndicator size="large" color="#0000ff" />);
+      return (
+      <SafeAreaView style={styles.activityIndicator}>
+        <ActivityIndicator style={{alignSelf: 'center'}} size="large" color="#d3d3d3" />
+      </SafeAreaView>
+      )
     }
     return (
       <SafeAreaView style={{ flex: 9, flexDirection: 'column' }}>
@@ -193,17 +197,13 @@ export default class UserLists extends Component {
             />
           </DataTable>
         </Card>
-        <View style={{ flex: 2, flexDirection: 'row', justifyContent: 'center' }}> 
-          <TouchableOpacity style={styles.generalButtonTO} onPress={ () => {
+        <View style={{ flex: 2, flexDirection: 'row', justifyContent: 'space-around' }}> 
+          
+         <Button text={'New List'} style={styles.button} onPress={ () => {
               Alert.prompt('New List Name', 'Please provide a name for your new list.', (name) => {
                         this.postNewList(name) 
                   } ) } 
-          }>
-            <Text style={styles.generalButtonText}>New List</Text>
-          </TouchableOpacity>
-          {/*<TouchableOpacity onPress={() => this.props.navigation.goBack()} style={styles.generalButtonTO} >
-            <Text style={styles.generalButtonText}>Back</Text>
-        </TouchableOpacity>*/}
+          } type="outlined" />
         </View>
       </SafeAreaView>
 

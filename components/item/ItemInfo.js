@@ -11,28 +11,35 @@ import { Button } from 'material-bread'
 
 export default class ItemInfo extends React.Component {
 	state = {
-		data: [],
-		priceList: [],
-		selectedStore: null,
-		currency: 'USD',
-		currentTime: null,
-		itemName: null,
-		itemCode: this.props.navigation.getParam('itemCode', 'null'),
-		itemBrand: null,
-		itemQuantity: null,
-		itemQuantUnit: null,
-		itemDescription: null,
-		itemData: [],
-		sortAscending: false,
-	};
+			data: [],
+			priceList: [],
+			selectedStore: null,
+			currency: 'USD',
+			currentTime: null,
+			itemName: null,
+			itemCode: this.props.navigation.getParam('itemCode', 'null'),
+			pryceListId: this.props.navigation.getParam('pryceListId', 'null'),
+			itemBrand: null,
+			itemQuantity: null,
+			itemQuantUnit: null,
+			itemDescription: null,
+			itemData: [],
+			sortAscending: false,
+		};
 
 	componentDidMount() {
 		this._searchItem();
 		this._getItemInfo();
 	}
 
+	componentWillUnmount() {
+		console.log("WillUnmount");
+	}
+
+
 	/**NEED TO REFACTOR THIS INTO FUNCTION SERVICE */
 	_searchItem = async () => {
+		console.log("searchItem");
 		const url = `http://pryce-cs467.appspot.com/items/${
 		this.state.itemCode
 		}/prices`;
@@ -55,17 +62,19 @@ export default class ItemInfo extends React.Component {
 
 	/**NEED TO REFACTOR THIS INTO FUNCTION SERVICE */
 	_getItemInfo = async () => {
+		console.log("getItemInfo");
 		let itemCode = this.props.navigation.getParam('itemCode', 'null');
 		let tempData = [];
 		let data = {
-		currency: this.state.currency,
-		reported: this.state.currentTime,
-		code: this.state.itemCode, //this.props.navigation.state.params.data,
-		brand: this.state.itemBrand,
-		name: this.state.itemName,
-		quantity: this.state.itemQuantity,
-		quant_unit: this.state.itemQuantUnit,
-		description: this.state.itemDescription,
+			item_id: this.state.itemId,	
+			currency: this.state.currency,
+			reported: this.state.currentTime,
+			code: this.state.itemCode, //this.props.navigation.state.params.data,
+			brand: this.state.itemBrand,
+			name: this.state.itemName,
+			quantity: this.state.itemQuantity,
+			quant_unit: this.state.itemQuantUnit,
+			description: this.state.itemDescription,
 		};
 
 		const url = `http://pryce-cs467.appspot.com/items/${this.state.itemCode}`;
@@ -82,6 +91,7 @@ export default class ItemInfo extends React.Component {
 		})
 		.catch(error => console.error(error));
 
+		data.item_id = this.state.tempData.item_id;
 		data.brand = this.state.tempData.brand;
 		data.description = this.state.tempData.description;
 		data.image = this.state.tempData.image;
@@ -117,9 +127,11 @@ export default class ItemInfo extends React.Component {
 	}
 
 	_selectItem(item){
-		let price_id = item.price_id;
-		let itemData = this.state.itemData;
-		this.props.navigation.navigate('ItemDetail', { item, itemData })
+		let itemData = this.state.itemData
+		let pryceListId = this.state.pryceListId
+		if(!pryceListId )	
+			throw new Error('No pryceListId before navigate to ItemDetail')
+		this.props.navigation.navigate('ItemDetail', { item, itemData, pryceListId })
 	}
 
 	render() {

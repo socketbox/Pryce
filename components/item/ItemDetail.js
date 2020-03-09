@@ -14,14 +14,25 @@ export default class ItemDetail extends React.Component {
     state = {
         priceID: this.props.navigation.getParam('item', 'null'),
         itemData: this.props.navigation.getParam('itemData', 'null'),
+        pryceListId: this.props.navigation.getParam('pryceListId', 'null'),
     }
 
     _goToStore(storeId) {
         this.props.navigation.navigate('Store', { storeId: storeId });
     }
 
-    _addToList(){
-
+    _addToList(itemData, priceID, plid){
+        this.props.navigation.navigate('ListDetails', {
+            routeFrom: 'ItemDetail',
+            pryceListId: plid, 
+            addedItem: {
+                item_name: itemData.name,
+                price: priceID.price,
+                store_name: priceID.store.name,
+                reported: itemData.reported,
+                item_id: itemData.item_id
+            }
+        })
     }
 
     render() {
@@ -66,7 +77,7 @@ export default class ItemDetail extends React.Component {
                         style={styles.button}
                         text={'Add item to list'} 
                         type="outlined" 
-                        onPress={() => this._addToList()} 
+                        onPress={() => this._addToList(this.state.itemData, this.state.priceID, this.state.pryceListId)} 
                     />
                 </View>
             </View>
