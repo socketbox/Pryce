@@ -12,11 +12,7 @@ import { Button, TextField, Icon } from 'material-bread';
 export default class Register extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {
-			username: '',
-			password: '',
-			passwordConfirmation: '',
-		}
+		this.state = {}
 	}
 
 	submitForm = async () => {
@@ -25,7 +21,8 @@ export default class Register extends React.Component {
 			return;
 		}
 		
-		const {username, password} = this.state;
+		const {username, password, passwordConfirmation} = this.state;
+
 
 		if (this.state.password !== passwordConfirmation) {
 			alert("Passwords don't match.");
@@ -69,7 +66,7 @@ export default class Register extends React.Component {
 					<View style={styles.inputRow}>
 						<TextField
 							label={'Username'}
-							value={this.state.username}
+							
 							onChangeText={(text) => this.setState({ username: text })}
 							leadingIcon={
 								<Icon name={'account-circle'} size={24} color={'#6e6e6e'} />
@@ -77,7 +74,7 @@ export default class Register extends React.Component {
 						/>
 						<TextField
 							label={'Password'}
-							value={this.state.password}
+							
 							secureTextEntry={true}
 							onChangeText={(text) => this.setState({ password: text })}
 							leadingIcon={
@@ -86,9 +83,9 @@ export default class Register extends React.Component {
 						/>
 						<TextField
 							label={'Confirm Password'}
-							value={this.state.password}
+							
 							secureTextEntry={true}
-							onChangeText={(text) => this.setState({ password: text })}
+							onChangeText={(text) => this.setState({passwordConfirmation:text})}
 							leadingIcon={
 								<Icon name={'check'} size={24} color={'#6e6e6e'} />
 							}
