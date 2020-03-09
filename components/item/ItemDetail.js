@@ -15,9 +15,8 @@ export default class ItemDetail extends React.Component {
         itemData: this.props.navigation.getParam('itemData', 'null'),
     }
 
-    _goToStore(storeInfo) {
-        // add store to search stack index for this to work!
-        this.props.navigation.navigate('Store', { storeInfo })
+    _goToStore(storeId) {
+        this.props.navigation.navigate('Store', { storeId: storeId });
     }
 
     _addToList(){
@@ -27,7 +26,8 @@ export default class ItemDetail extends React.Component {
     render() {
         let title = this.state.itemData.brand;
         let subtitle = this.state.itemData.name;
-        let storeInfo = this.state.priceID.store;
+        let storeId = this.state.priceID.store.store_id;
+        console.log(JSON.stringify(this.state.priceID));
         return (
             <View style={styles.mainContainer}>
                 <Card>
@@ -42,7 +42,7 @@ export default class ItemDetail extends React.Component {
                         <Text>${this.state.priceID.price}</Text>
                         <Divider marginVertical={5} subheader="Located at:" />
                         <TouchableOpacity 
-                            onPress={() => this._goToStore(storeInfo)} >
+                            onPress={() => this._goToStore(storeId)} >
                             <Text style={{fontSize: 20}}>{this.state.priceID.store.name}</Text>
                         </TouchableOpacity>
                     </Card.Content>
