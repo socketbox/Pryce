@@ -9,7 +9,7 @@ import {
     Alert
 } from 'react-native';
 import {styles} from '../Styles'
-import { Button, TextField, Icon } from 'material-bread';
+import { Button } from 'material-bread';
 
 
 export default class Rating extends Component {
@@ -132,7 +132,11 @@ export default class Rating extends Component {
                     style={styles.button}
                     text={'Go to Item Page'} 
                     type="outlined" 
-                    onPress={() => this.props.navigation.navigate('ItemInfo', this.state.addedPrice.item)}
+                    onPress={        
+                        () => 
+                        this.props.navigation.navigate('ItemInfo', 
+                        {itemCode: this.state.addedPrice.item.code}
+                    )}
                 />
 
             </View>
