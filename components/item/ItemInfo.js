@@ -2,12 +2,12 @@ import * as React from 'react';
 import {
 	Text,
 	View,
-	Alert,
 	TouchableOpacity,
 } from 'react-native';
 import { Card, DataTable } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { styles } from '../Styles';
+import { Button } from 'material-bread'
 
 export default class ItemInfo extends React.Component {
 	state = {
@@ -23,6 +23,7 @@ export default class ItemInfo extends React.Component {
 		itemQuantUnit: null,
 		itemDescription: null,
 		itemData: [],
+		sortAscending: false,
 	};
 
 	componentDidMount() {
@@ -103,14 +104,14 @@ export default class ItemInfo extends React.Component {
 		let tempArr = [];
 
 		for (i = 0; i < this.state.data.length; i++) {
-		tempStore = this.state.data[i].store;
-		tempPriceID = this.state.data[i].price_id;
-		tempPrice = this.state.data[i].price;
-		tempArr.push({
-			price_id: tempPriceID,
-			price: tempPrice,
-			store: tempStore,
-		});
+			tempStore = this.state.data[i].store;
+			tempPriceID = this.state.data[i].price_id;
+			tempPrice = this.state.data[i].price;
+			tempArr.push({
+				price_id: tempPriceID,
+				price: tempPrice,
+				store: tempStore,
+			});
 		}
 		this.setState({ priceList: tempArr });
 	}
@@ -125,7 +126,7 @@ export default class ItemInfo extends React.Component {
 		let title = this.state.itemData.brand + ' - ' + this.state.itemData.name;
 		let description = this.state.itemData.description;
 		return (
-			<View style={styles.mainContainer}>
+			<View style={styles.searchContainer}>
 				{/*<Text style={styles.title}>Information</Text>*/}
 				<Card>
 					<Card.Title
@@ -135,7 +136,7 @@ export default class ItemInfo extends React.Component {
 						subtitle={description}
 					/>
 					<Card.Content>
-						<Text style={{ fontSize: 18 }}>Select item for details</Text>
+						<Text style={{ fontSize: 16 }}>Select item for details</Text>
 						<DataTable>
 							<DataTable.Header>
 								<DataTable.Title>Store</DataTable.Title>
@@ -157,16 +158,30 @@ export default class ItemInfo extends React.Component {
 						</DataTable>
 					</Card.Content>
 				</Card>
-				<TouchableOpacity
-				style={styles.button}
-				underlayColor="white"
-				onPress={() =>
-					this.props.navigation.navigate('NewPrice', {
-					item: this.state.itemData,
-					})
-				}>
-				<Text style={styles.buttonText}>Add New Price</Text>
-				</TouchableOpacity>
+				<View 
+					style={{
+						flexDirection: 'row', 
+						alignItems: 'center', 
+						justifyContent: 'space-evenly', 
+						flexWrap: 'wrap'
+					}}>
+					<Button 
+						style={styles.button}
+						text={'Back'} 
+						type="text" 
+						onPress={() => this.props.navigation.navigate('Search')} 
+					/>
+					<Button 
+						style={styles.button}
+						text={'add new price'} 
+						type="outlined" 
+						onPress={() =>
+							this.props.navigation.navigate('NewPrice', {
+								item: this.state.itemData,
+							})
+						}
+					/>
+				</View>
 			</View>
 		);
 	}

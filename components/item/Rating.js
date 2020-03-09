@@ -9,6 +9,7 @@ import {
     Alert
 } from 'react-native';
 import {styles} from '../Styles'
+import { Button, TextField, Icon } from 'material-bread';
 
 
 export default class Rating extends Component {
@@ -51,7 +52,6 @@ export default class Rating extends Component {
 			headers: {
 				Accept: 'application/json',
                 'Content-Type': 'application/json',
-                // todo: get token from state
                 'Authorization': 'Bearer ' + this.state.authToken
 			},
 			body: JSON.stringify(requestData),
@@ -107,13 +107,12 @@ export default class Rating extends Component {
                     onChangeText={(comments) => this.setState({ comments })}
                     maxLength={140}
                 />
-
-                <TouchableOpacity
-                    activeOpacity={0.7}
-                    style={styles.ratingsButton}
-                    onPress={() => this.submitInfo()}>
-                    <Text>Submit</Text>
-                </TouchableOpacity>
+                <Button 
+                    style={styles.button}
+                    text={'Submit'} 
+                    type="outlined" 
+                    onPress={() => this.submitInfo()}
+                />
             </View>
         );
 
@@ -122,19 +121,20 @@ export default class Rating extends Component {
                 <Text style={{fontSize: 24, fontWeight: "bold"}}>Price added!</Text>
 
                 {this.state.submitted ? <Text style={styles.italic}>Thanks for submitting your comments</Text> : commentsForm }
-                <TouchableOpacity
-                    activeOpacity={0.7}
-                    style={styles.ratingsButton}
-                    onPress={() => this.props.navigation.navigate('ItemInfo', this.state.addedPrice.item)}>
-                    <Text>Go to Item Page</Text>
-                </TouchableOpacity>
 
-                <TouchableOpacity
-                    activeOpacity={0.7}
-                    style={styles.ratingsButton}
-                    onPress={() => this.props.navigation.navigate('Scanner')}>
-                    <Text>Scan More Items</Text>
-                </TouchableOpacity>
+                <Button 
+                    style={styles.button}
+                    text={'Scan More Items'} 
+                    type="outlined" 
+                    onPress={() => this.props.navigation.navigate('Scanner')}
+                />
+                <Button 
+                    style={styles.button}
+                    text={'Go to Item Page'} 
+                    type="outlined" 
+                    onPress={() => this.props.navigation.navigate('ItemInfo', this.state.addedPrice.item)}
+                />
+
             </View>
         );
     }

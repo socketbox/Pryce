@@ -1,8 +1,8 @@
 import React from 'react';
-import { Text, StyleSheet, AsyncStorage, View} from 'react-native';
+import { Text, AsyncStorage } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import {styles} from '../Styles'
+import { Button } from 'material-bread';
 
 class User extends React.Component {
     constructor(props) {
@@ -30,15 +30,21 @@ class User extends React.Component {
         
     render () {
         const logoutButton = (
-            <TouchableOpacity style={styles.userButton} onPress={this.doLogout}>
-                <Text style={styles.buttonText}>Logout</Text>
-            </TouchableOpacity>
+            <Button 
+                style={styles.button}
+                text={'Logout'} 
+                type="outlined" 
+                onPress={() => this.doLogout()}
+            />
         );
 
         const loginButton = (
-            <TouchableOpacity style={styles.userButton} onPress={() => this.props.navigation.navigate('Login')}>
-                <Text>Login</Text>
-            </TouchableOpacity>
+            <Button 
+                style={styles.button}
+                text={'Login'} 
+                type="outlined" 
+                onPress={() => this.props.navigation.navigate('Login')}
+            />
         );
     
         return (

@@ -3,9 +3,11 @@ import { createStackNavigator } from 'react-navigation-stack';
 
 import stackDEBUG from '../stackDEBUG';
 import NewItem from './NewItem';
-import ItemInfo from './ItemInfo'
-import ItemDetail from './ItemDetail'
-import NewPrice from './NewPrice'
+import ItemInfo from './ItemInfo';
+import ItemDetail from './ItemDetail';
+import NewPrice from './NewPrice';
+import Store from './Store';
+import Rating from './Rating';
 
 const ItemScreen = createStackNavigator({
     NewItem: {
@@ -31,7 +33,20 @@ const ItemScreen = createStackNavigator({
         navigationOptions: {
             headerShown: false
         }
-    }
+    },
+    Store: {
+        screen: Store,
+        navigationOptions: {
+            headerShown: true,
+            headerTitle: 'Store Reviews'
+        }
+    },
+    Rating: {
+        screen: Rating,
+        navigationOptions: {
+            headerShown: false
+        }
+    },
 });
 
 export default createAppContainer(ItemScreen);

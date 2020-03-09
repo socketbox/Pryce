@@ -2,17 +2,15 @@ import React from 'react';
 import { 
 	View, 
 	Text, 
-	TextInput, 
-	TouchableOpacity,
 	Keyboard,
 	Animated, 
 	Alert
 } from 'react-native';
-import FeatherIcon from 'react-native-vector-icons/Feather';
 import RNPickerSelect from 'react-native-picker-select';
 import { Card } from 'react-native-paper';
 import * as Location from 'expo-location';
 import { styles } from '../Styles';
+import { Divider, Button, TextField } from 'material-bread';
 
 class NewPrice extends React.Component {
 	state = {
@@ -70,37 +68,37 @@ class NewPrice extends React.Component {
 	/**--------------------------------------------------------------*/
 	submitInfo = () => {
 		this.setState({
-		currentTime: new Date(),
+			currentTime: new Date(),
 		});
 
 		let data = {
-		price: this.state.price,
-		currency: this.state.currency,
-		reported: this.state.currentTime,
-		store: {
-			place_id: this.state.storePID,
-			lat: this.state.storeLat,
-			lng: this.state.storeLng,
-			name: this.state.storeName,
-		},
-		item: {
-			code: this.state.item.code,
-			brand: this.state.item.brand,
-			name: this.state.item.name,
-			quantity: this.state.item.quantity,
-			quant_unit: this.state.item.quant_unit,
-			description: this.state.item.description,
-		},
+			price: this.state.prices,
+			currency: this.state.currency,
+			reported: this.state.currentTime,
+			store: {
+				place_id: this.state.storePID,
+				lat: this.state.storeLat,
+				lng: this.state.storeLng,
+				name: this.state.storeName,
+			},
+			item: {
+				code: this.state.item.code,
+				brand: this.state.item.brand,
+				name: this.state.item.name,
+				quantity: this.state.item.quantity,
+				quant_unit: this.state.item.quant_unit,
+				description: this.state.item.description,
+			},
 		};
 
 		fetch('http://pryce-cs467.appspot.com/prices', {
-		method: 'POST',
-		headers: {
-			Accept: 'application/json',
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify(data),
-		})
+			method: 'POST',
+			headers: {
+				Accept: 'application/json',
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(data),
+			})
 		.then(async (response) => {
 			return {
 				status: response.status,
@@ -140,7 +138,7 @@ class NewPrice extends React.Component {
 		.then(response => response.json())
 		.then(responseJson => {
 			this.setState({
-			data: responseJson,
+				data: responseJson,
 			});
 		})
 		.catch(error => console.error(error));
@@ -158,10 +156,10 @@ class NewPrice extends React.Component {
 		let tempLng = '';
 
 		for (i = 0; i < this.state.data.results.length; i++) {
-		tempName = this.state.data.results[i].name;
-		tempPlaceID = this.state.data.results[i].place_id;
-		tempLat = this.state.data.results[i].geometry.location.lat;
-		tempLng = this.state.data.results[i].geometry.location.lng;
+			tempName = this.state.data.results[i].name;
+			tempPlaceID = this.state.data.results[i].place_id;
+			tempLat = this.state.data.results[i].geometry.location.lat;
+			tempLng = this.state.data.results[i].geometry.location.lng;
 		// console.log(tempName + " " + tempPlaceID)
 		tempArr.push({
 			name: tempName,
@@ -185,83 +183,98 @@ class NewPrice extends React.Component {
 
 	render() {
 		const placeholder = {
-		label: 'Select a store...',
-		value: '',
+			label: 'Select a store...',
+			value: '',
 		};
+
+		let subtitle = "Provide a new price for " + 
+			this.state.item.brand + " " + 
+			this.state.item.name + "!"
+
 		return (
-		<View style={styles.mainContainer}>
-			<Card>
-			<Card.Title
-				titleStyle={{ fontSize: 25 }}
-				wrapperStyle={true}
-				title="New price!"
-				subtitle="Provide a new price for the item. "
-			/>
-			<Card.Content>
-				<View style={styles.inputRow}>
-				<FeatherIcon name="box" style={styles.icon} />
-				<TextInput
-					placeholderTextColor="#3d3d3d"
-					editable={false}
-					style={styles.inputField}
-					name="name"
-					value={this.state.itemName}
-					placeholder={this.state.item.name}
-				/>
-				</View>
-				<View style={styles.inputRow}>
-				<FeatherIcon name="dollar-sign" style={styles.icon} />
-				<TextInput
-					placeholderTextColor="#e6e6e6"
-					editable={true}
-					style={styles.inputField}
-					name="price"
-					value={this.state.price}
-					placeholder="New Price"
-					keyboardType="decimal-pad"
-					onChangeText={price => this.setState({ price })}
-				/>
-				</View>
+			<View style={styles.searchContainer}>
+				<Card>
+					<Card.Title
+						titleStyle={{ fontSize: 25 }}
+						wrapperStyle={true}
+						title="New price!"
+						subtitle={subtitle}
+					/>
+					<Card.Content>
+					
+						<Divider marginVertical={-5} subheader="Product:" />
+						<TextField
+							style={{ width: '90%'}}
+							label={this.state.item.name}
+							focusedLabelColor={'#3d3d3d'}
+							value={this.state.itemName}
+							editable={false}
+						/>
 
-				<View style={styles.inputRow}>
-				<FeatherIcon name="zap" style={styles.icon} />
-				<TextInput
-					placeholderTextColor="#3d3d3d"
-					editable={false}
-					style={styles.inputField}
-					name="brand"
-					value={this.state.itemBrand}
-					placeholder={this.state.item.brand}
-				/>
-				</View>
+						<Divider marginVertical={-2} subheader="Brand:" />
+						<TextField
+							style={{ width: '90%'}}
+							label={this.state.item.brand}
+							focusedLabelColor={'#3d3d3d'}
+							value={this.state.itemBrand}
+							editable={false}
+						/>
 
-				<View style={styles.inputRow}>
-				<RNPickerSelect
-					placeholder={placeholder}
-					items={this.state.stores.map(obj => ({
-					label: obj.name,
-					value: obj.name,
-					color: 'rgba(77,38,22,1)',
-					}))}
-					onValueChange={(name, index) => {
-					this.setState({
-						selectedStore: name,
-						selectedStorePID: index,
-					});
-					this.setStoreInfo(index - 1);
-					}}
-					style={styles.storeSelect}
-					value={this.state.selectedStore}
-					useNativeAndroidPickerStyle={false}
-					textInputProps={{ underlineColor: 'red' }}
-				/>
+						<Divider marginVertical={-2} subheader="Enter a new item price!:" />
+						<TextField
+							style={{ width: '90%'}}
+							focusedLabelColor={'#3d3d3d'}
+							value={this.state.price}
+							onChangeText={value => this.setState({ prices: value })}
+							keyboardType="decimal-pad"
+						/>
+						
+						<Divider marginVertical={-2} subheader="Select a store!" />
+						<Text />
+						<RNPickerSelect
+							placeholder={placeholder}
+							items={this.state.stores.map(obj => ({
+								label: obj.name,
+								value: obj.name,
+								color: 'rgba(77,38,22,1)',
+							}))}
+							onValueChange={(name, index) => {
+							this.setState({
+								selectedStore: name,
+								selectedStorePID: index,
+							});
+								this.setStoreInfo(index - 1);
+							}}
+							style={styles.storeSelect}
+							value={this.state.selectedStore}
+							useNativeAndroidPickerStyle={false}
+							textInputProps={{ underlineColor: 'red', fontSize: 16 }}
+						/>
+
+					</Card.Content>
+				</Card>
+
+				<View 
+					style={{
+						flexDirection: 'row', 
+						alignItems: 'center', 
+						justifyContent: 'space-evenly', 
+						flexWrap: 'wrap'
+					}}>
+					<Button 
+						style={styles.button}
+						text={'Back'} 
+						type="text" 
+						onPress={() => this.props.navigation.goBack()} 
+					/>
+					<Button 
+						style={styles.button}
+						text={'Add item to list'} 
+						type="outlined" 
+						onPress={this.submitInfo} 
+					/>
 				</View>
-			</Card.Content>
-			</Card>
-			<TouchableOpacity onPress={this.submitInfo} style={styles.button}>
-			<Text style={styles.buttonText}>Submit</Text>
-			</TouchableOpacity>
-		</View>
+			</View>
 		);
 	}
 }

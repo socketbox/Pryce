@@ -235,21 +235,19 @@ export const styles = StyleSheet.create({
 		alignItems: 'center',
 	},
 	pryce: {
-		flex: 1,
 		fontSize: 70,
 		textAlign: 'center',
-		paddingTop: 60,
+		paddingTop: "1%",
 	},
 	loginInfo: {
 		alignItems: 'center',
 		justifyContent: 'center',
-		flex: 2
+		flex: 1
+	
 	},
 	inputRow: {
 		width: 220,
 		height: 30,
-		marginBottom: 10,
-		flexDirection: 'row'
 	},
 	inputIcon: {
 		fontSize: 30,
@@ -269,9 +267,8 @@ export const styles = StyleSheet.create({
 	createAccount: {
 		width: 168,
 		height: 16,
-		flexDirection: 'row',
 		flex: 1,
-		alignSelf: 'center',
+		flexDirection: 'row',
 	},
 	newText: {
 		color: '#121212',
@@ -367,12 +364,12 @@ export const styles = StyleSheet.create({
 		color: '#121212',
 		alignContent: 'flex-start',
 		textAlign: 'left',
-		width: '100%',
+		width: '90%',
 		borderRadius: 2,
 		borderColor: '#ccc',
 		borderWidth: 1,
 		marginBottom: 30,
-		height: 140,
+		height: 50,
 	},
 	/* seems to have no effect on store selector */
 	storeSelect: {
@@ -403,7 +400,6 @@ export const styles = StyleSheet.create({
 		justifyContent: 'center',
 	},
 	title: {
-		flex: 1,
 		fontSize: 25,
 		textAlign: 'center',
 		paddingTop: 60,
@@ -416,26 +412,26 @@ export const styles = StyleSheet.create({
 		borderRadius: 4,
 	},
 	buttonText: {
-		fontSize: 20,
+		fontSize: 14,
 		color: '#111',
 		alignSelf: 'center',
 	},
 	button: {
-		flexDirection: 'row',
+		height: 25,
 		backgroundColor: 'white',
-		borderColor: 'white',
+		borderColor: '#d3d3d3',
 		borderWidth: 1,
 		borderRadius: 8,
 		marginBottom: 10,
 		marginTop: 10,
-		alignSelf: 'stretch',
 		justifyContent: 'center',
 	},
 	/*
 	 * User
 	 */
 	userContainer: {
-		marginLeft: 5
+		marginLeft: 5,
+		marginRight: 5,
 	},
 	username: {
 		fontSize: 30,
@@ -499,7 +495,20 @@ export const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'space-between',
-	}
+	},
+	/*
+	* Store
+	*/
+	storeContainer: {
+        flex: 1,
+        width: '100%',
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start',
+        paddingTop: Platform.OS === 'ios' ? 20 : 0,
+    },
+		/*
+	 * ItemDetails
+	 */
 });
 
 

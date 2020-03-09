@@ -4,16 +4,11 @@ import {
 	View,
 	TouchableOpacity,
 } from 'react-native';
-import { Card, DataTable } from 'react-native-paper';
+import { Card } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { styles } from '../Styles';
-import {
-	DataTablePagination,
-	TextField,
-	Icon,
-	IconButton,
-	CardHeader,
-} from 'material-bread';
+import { Divider, Button } from 'material-bread';
+import Store from './Store';
 
 export default class ItemDetail extends React.Component {
     state = {
@@ -21,10 +16,8 @@ export default class ItemDetail extends React.Component {
         itemData: this.props.navigation.getParam('itemData', 'null'),
     }
 
-    _goToStore(storeInfo) {
-        // add store to search stack index for this to work!
-        console.log("pressed");
-        this.props.navigation.navigate('Store', { storeInfo })
+    _goToStore(storeId) {
+        this.props.navigation.navigate('Store', { storeId: storeId });
     }
 
     _addToList(){
@@ -34,7 +27,8 @@ export default class ItemDetail extends React.Component {
     render() {
         let title = this.state.itemData.brand;
         let subtitle = this.state.itemData.name;
-        let storeInfo = this.state.priceID.store;
+        let storeId = this.state.priceID.store.store_id;
+        console.log(JSON.stringify(this.state.priceID));
         return (
             <View style={styles.mainContainer}>
                 <Card>
@@ -45,16 +39,36 @@ export default class ItemDetail extends React.Component {
                         subtitle={title}
                     />
                     <Card.Content>
-                        <Text style={styles.textStyleSmall}>Located at: </Text>
-                        <TouchableOpacity onPress={() => this._goToStore(storeInfo)} style={styles.button}>
-                            <Text style={styles.buttonText, {fontSize: 25}}>{this.state.priceID.store.name}</Text>
+                        <Divider marginVertical={5} subheader="Price:" />
+                        <Text>${this.state.priceID.price}</Text>
+                        <Divider marginVertical={5} subheader="Located at:" />
+                        <Store storeId={storeId} detailsOnly />
+                        <TouchableOpacity 
+                            onPress={() => this._goToStore(storeId)} >
+                            <Text style={{fontSize: 14, color: '#147efb'}}>See all shopping experience reviews...</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={this._addToList} style={styles.button}>
-                            <Text style={styles.buttonText, {fontSize: 25}}>Add item to list!</Text>
-                        </TouchableOpacity>
-                        <Text style={styles.textStyleSmall}>Price: {this.state.priceID.price}</Text>
                     </Card.Content>
                 </Card>
+                <View 
+                    style={{
+                        flexDirection: 'row', 
+                        alignItems: 'center', 
+                        justifyContent: 'space-around', 
+                        flexWrap: 'wrap'
+                    }}>
+                    <Button 
+                        style={styles.button}
+                        text={'Back'} 
+                        type="text" 
+                        onPress={() => this.props.navigation.goBack()} 
+                    />
+                    <Button 
+                        style={styles.button}
+                        text={'Add item to list'} 
+                        type="outlined" 
+                        onPress={() => this._addToList()} 
+                    />
+                </View>
             </View>
         );
     }

@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, StyleSheet, Button, TouchableOpacity, Image, Alert } from 'react-native';
+import { Text, View, Button, } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import {styles} from '../Styles'
 
 function Scanner(props) {
-
 
     const [hasPermission, setHasPermission] = useState(null);
     const [scanned, setScanned] = useState(false);
@@ -18,11 +17,12 @@ function Scanner(props) {
     }, []);
 
     // Handle scanned item - need to review
-    const handleBarCodeScanned = ({ item }) => {
+    const handleBarCodeScanned = ({ data }) => {
         setScanned(true);
+        console.log(data);
 
         // TODO: Handle request separate function
-        const url = `https://pryce-cs467.appspot.com/items/${item}`;
+        const url = `https://pryce-cs467.appspot.com/items/${data}`;
         fetch(url, {
             method: 'GET',
             headers: { 
@@ -33,7 +33,7 @@ function Scanner(props) {
         .then(response => {
             if (response.ok === false) {
                 props.navigation.navigate(
-                    "NewItem", { item } 
+                    "NewItem", { data } 
                 );
             } else if (response.ok === true) {
                 // Alert.alert(
@@ -41,7 +41,7 @@ function Scanner(props) {
                 //     `ADD OPTIONS TO ADD HERE`
                 // );
                 props.navigation.navigate(
-                    "ItemInfo", { item } 
+                    "ItemInfo", { itemCode: data } 
                 );
             }
             // console.log(JSON.stringify(response.ok));
