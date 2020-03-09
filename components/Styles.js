@@ -220,21 +220,19 @@ export const styles = StyleSheet.create({
 		alignItems: 'center',
 	},
 	pryce: {
-		flex: 1,
 		fontSize: 70,
 		textAlign: 'center',
-		paddingTop: 60,
+		paddingTop: "1%",
 	},
 	loginInfo: {
 		alignItems: 'center',
 		justifyContent: 'center',
-		flex: 2
+		flex: 1
+	
 	},
 	inputRow: {
 		width: 220,
 		height: 30,
-		marginBottom: 10,
-		flexDirection: 'row'
 	},
 	inputIcon: {
 		fontSize: 30,
@@ -254,9 +252,8 @@ export const styles = StyleSheet.create({
 	createAccount: {
 		width: 168,
 		height: 16,
-		flexDirection: 'row',
 		flex: 1,
-		alignSelf: 'center',
+		flexDirection: 'row',
 	},
 	newText: {
 		color: '#121212',
@@ -357,7 +354,7 @@ export const styles = StyleSheet.create({
 		borderColor: '#ccc',
 		borderWidth: 1,
 		marginBottom: 30,
-		height: 140,
+		height: 50,
 	},
 	/* seems to have no effect on store selector */
 	storeSelect: {
@@ -388,7 +385,6 @@ export const styles = StyleSheet.create({
 		justifyContent: 'center',
 	},
 	title: {
-		flex: 1,
 		fontSize: 25,
 		textAlign: 'center',
 		paddingTop: 60,
@@ -419,7 +415,8 @@ export const styles = StyleSheet.create({
 	 * User
 	 */
 	userContainer: {
-		marginLeft: 5
+		marginLeft: 5,
+		marginRight: 5,
 	},
 	username: {
 		fontSize: 30,

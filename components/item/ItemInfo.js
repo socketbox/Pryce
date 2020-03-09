@@ -23,6 +23,7 @@ export default class ItemInfo extends React.Component {
 		itemQuantUnit: null,
 		itemDescription: null,
 		itemData: [],
+		sortAscending: false,
 	};
 
 	componentDidMount() {
@@ -103,14 +104,14 @@ export default class ItemInfo extends React.Component {
 		let tempArr = [];
 
 		for (i = 0; i < this.state.data.length; i++) {
-		tempStore = this.state.data[i].store;
-		tempPriceID = this.state.data[i].price_id;
-		tempPrice = this.state.data[i].price;
-		tempArr.push({
-			price_id: tempPriceID,
-			price: tempPrice,
-			store: tempStore,
-		});
+			tempStore = this.state.data[i].store;
+			tempPriceID = this.state.data[i].price_id;
+			tempPrice = this.state.data[i].price;
+			tempArr.push({
+				price_id: tempPriceID,
+				price: tempPrice,
+				store: tempStore,
+			});
 		}
 		this.setState({ priceList: tempArr });
 	}
@@ -135,7 +136,7 @@ export default class ItemInfo extends React.Component {
 						subtitle={description}
 					/>
 					<Card.Content>
-						<Text style={{ fontSize: 18 }}>Select item for details</Text>
+						<Text style={{ fontSize: 16 }}>Select item for details</Text>
 						<DataTable>
 							<DataTable.Header>
 								<DataTable.Title>Store</DataTable.Title>
@@ -157,16 +158,30 @@ export default class ItemInfo extends React.Component {
 						</DataTable>
 					</Card.Content>
 				</Card>
-				<Button 
-					style={styles.button}
-					text={'add new price'} 
-					type="outlined" 
-					onPress={() =>
-						this.props.navigation.navigate('NewPrice', {
-							item: this.state.itemData,
-						})
-					}
-				/>
+				<View 
+					style={{
+						flexDirection: 'row', 
+						alignItems: 'center', 
+						justifyContent: 'space-evenly', 
+						flexWrap: 'wrap'
+					}}>
+					<Button 
+						style={styles.button}
+						text={'Back'} 
+						type="text" 
+						onPress={() => this.props.navigation.navigate('Search')} 
+					/>
+					<Button 
+						style={styles.button}
+						text={'add new price'} 
+						type="outlined" 
+						onPress={() =>
+							this.props.navigation.navigate('NewPrice', {
+								item: this.state.itemData,
+							})
+						}
+					/>
+				</View>
 			</View>
 		);
 	}

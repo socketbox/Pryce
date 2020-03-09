@@ -253,12 +253,27 @@ class NewPrice extends React.Component {
 
 					</Card.Content>
 				</Card>
-				<Button 
-					style={styles.button}
-					text={'submit'} 
-					type="outlined" 
-					onPress={this.submitInfo}
-				/>
+
+				<View 
+					style={{
+						flexDirection: 'row', 
+						alignItems: 'center', 
+						justifyContent: 'space-evenly', 
+						flexWrap: 'wrap'
+					}}>
+					<Button 
+						style={styles.button}
+						text={'Back'} 
+						type="text" 
+						onPress={() => this.props.navigation.goBack()} 
+					/>
+					<Button 
+						style={styles.button}
+						text={'Add item to list'} 
+						type="outlined" 
+						onPress={this.submitInfo} 
+					/>
+				</View>
 			</View>
 		);
 	}
