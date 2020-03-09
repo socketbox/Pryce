@@ -38,7 +38,7 @@ const ItemScreen = createStackNavigator({
         screen: Store,
         navigationOptions: {
             headerShown: true,
-            headerTitle: 'Store Details'
+            headerTitle: 'Store Reviews'
         }
     },
     Rating: {

@@ -17,7 +17,8 @@ import mapStyle from '../../assets/mapStyle.json'
 
 export default class Store extends Component {
     state = {
-        storeId: this.props.navigation.state.params.storeId,
+        storeId: this.props.navigation ? this.props.navigation.state.params.storeId : this.props.storeId,
+        detailsOnly: this.props.detailsOnly ? true : false,
         storeDetails: {
             name: '',
             place_id: '',
@@ -101,47 +102,53 @@ export default class Store extends Component {
     
     render() {
         return (
-            <View style={styles.storeContainer}>
-                <View style={{marginBottom: 10}}>
-                    <Text style={{fontSize: 26}}>{this.state.storeDetails.name}</Text>
-                    <Text>{this.state.storeComments.length == 0 ? 'No ratings yet.' : 'Average Rating: ' + this.state.storeRating.toFixed(2) + ' out of 5'}</Text>
-                    <Text>Address: {this.state.storeDetails.address}</Text>
+            <View>
+                {this.state.detailsOnly ?
+                    <View style={{marginBottom: 10}}>
+                        <Text style={{fontSize: 20}}>{this.state.storeDetails.name}</Text>
+                        <Text>
+                            {this.state.storeComments.length == 0 ? 'Not yet rated.' : 'Rating: ' + this.state.storeRating.toFixed(2) + ' out of 5'}
+                            {this.state.detailsOnly && this.state.storeComments.length > 0 ? ' (' + this.state.storeComments.length + ' reviews)' : ''}
+                        </Text>
+                        <Text>Address:</Text>
+                        <Text>{this.state.storeDetails.address}</Text>
 
-                </View>
+                        <Text></Text>
 
-                <MapView
-                provider={PROVIDER_GOOGLE}
-                style={{width:'100%', height: 150}}
-                showsUserLocation={true}
-                followUserLocation={false}
-                showsMyLocationButton={true}
-                zoomEnabled={true}
-                zoomControlEnabled={true}
-                scrollEnabled={true}
-                region={{
-                    latitude: this.state.storeLocation.latitude,
-                    longitude: this.state.storeLocation.longitude,
-                    latitudeDelta: 0.02,
-                    longitudeDelta: 0.02,
-                }}>
-                    <Marker coordinate={this.state.storeLocation} title={this.state.storeDetails.name} />
-                </MapView>
-                <Text></Text>
-                <Text style={{fontWeight: 'bold', marginBottom: 5}}>Reviews ({this.state.storeComments.length}):</Text>
- 
-                <ScrollView style={{width: '95%', marginLeft: 5, flex: 2}}>
-                    {this.state.storeComments.map(comment => {
-                        return (
-                            <View key={comment.comment_id} style={{}}>
-                                <Card radius={1} shadow={4} style={{ marginBottom: 10 }}>
-                                    <Text><Text style={{fontWeight: 'bold'}}>User:</Text> {comment.appuser.username}</Text>
-                                    <Text><Text style={{fontWeight: 'bold'}}>Rating:</Text> {comment.rating}</Text>
-                                    <Text><Text style={{fontWeight: 'bold'}}>Comment:</Text> {comment.content}</Text>
-                                </Card>
-                            </View>
-                        )
-                    })}
-                </ScrollView>
+                        <MapView
+                        provider={PROVIDER_GOOGLE}
+                        style={{width:'100%', height: 150}}
+                        showsUserLocation={true}
+                        followUserLocation={false}
+                        showsMyLocationButton={true}
+                        zoomEnabled={true}
+                        zoomControlEnabled={true}
+                        scrollEnabled={true}
+                        region={{
+                            latitude: this.state.storeLocation.latitude,
+                            longitude: this.state.storeLocation.longitude,
+                            latitudeDelta: 0.02,
+                            longitudeDelta: 0.02,
+                        }}>
+                            <Marker coordinate={this.state.storeLocation} title={this.state.storeDetails.name} />
+                        </MapView>
+                    </View>
+                  : 
+                    <ScrollView style={{width: '100%', padding: 10}}>
+                        <Text style={{fontWeight: 'bold', marginBottom: 5}}>Reviews for {this.state.storeDetails.name} ({this.state.storeComments.length}):</Text>
+                        {this.state.storeComments.map(comment => {
+                            return (
+                                <View key={comment.comment_id} style={{}}>
+                                    <Card radius={1} shadow={4} style={{ marginBottom: 10, width:500, padding: 5}}>
+                                        <Text><Text style={{fontWeight: 'bold'}}>User:</Text> {comment.appuser.username}</Text>
+                                        <Text><Text style={{fontWeight: 'bold'}}>Rating:</Text> {comment.rating}</Text>
+                                        <Text><Text style={{fontWeight: 'bold'}}>Comment:</Text> {comment.content}</Text>
+                                    </Card>
+                                </View>
+                            )
+                        })}
+                    </ScrollView>
+                }
             </View>
         );
     }

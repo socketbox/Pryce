@@ -8,6 +8,7 @@ import { Card } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { styles } from '../Styles';
 import { Divider, Button } from 'material-bread';
+import Store from './Store';
 
 export default class ItemDetail extends React.Component {
     state = {
@@ -41,9 +42,10 @@ export default class ItemDetail extends React.Component {
                         <Divider marginVertical={5} subheader="Price:" />
                         <Text>${this.state.priceID.price}</Text>
                         <Divider marginVertical={5} subheader="Located at:" />
+                        <Store storeId={storeId} detailsOnly />
                         <TouchableOpacity 
                             onPress={() => this._goToStore(storeId)} >
-                            <Text style={{fontSize: 20}}>{this.state.priceID.store.name}</Text>
+                            <Text style={{fontSize: 14, color: '#147efb'}}>See all shopping experience reviews...</Text>
                         </TouchableOpacity>
                     </Card.Content>
                 </Card>
