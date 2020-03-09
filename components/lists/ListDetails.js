@@ -6,7 +6,7 @@ import { DataTablePagination } from 'material-bread';
 import { withNavigation } from 'react-navigation';
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { styles } from '../Styles'
-import { Card, CardHeader } from 'material-bread';
+import { Button, Card, CardHeader } from 'material-bread';
 
 class ListDetails extends Component {
   _mounted = null;
@@ -43,23 +43,49 @@ class ListDetails extends Component {
     }
   }
 
-  _addItemFromSearch()
+  addItemFromSearch()
   {
-    /*if we're coming back from Search, check for added item*/
-    let addedItem = this.props.navigation.getParam('addedItem', null);
-    if(addedItem)
+    /*if we're coming back from Search->ItemInfo->ItemDetail, check for added item*/
+    if(this.props.navigation.getParam('routeFrom') === 'ItemDetail')
     {
-      let backingArray = this.state.tableData;
+      let addedItem = this.props.navigation.getParam('addedItem', null);
+      if(addedItem)
+      {
+        let backingArray = this.state.tableData;
 
-      backingArray.push(
-        Array.of(addedItem.item_name, addedItem.price, addedItem.store_name, addedItem.reported, addedItem.item_id));
-      this.setState({ tableData: backingArray });
+        backingArray.push(addedItem);
+          //Array.of(addedItem.item_name, addedItem.price, addedItem.store_name, addedItem.reported, addedItem.item_id));
+        this.setState({ tableData: backingArray });
 
-      //clear addedItem and add item to db
-      this.props.navigation.setParams({addedItem: null});
-      this.addItemToList(addedItem, this.props.navigation.state.params.pryceListId);
+        //clear addedItem and add item to db
+        this.props.navigation.setParams({addedItem: null});
+        this.addItemToList(addedItem, this.props.navigation.state.params.pryceListId);
+      }
     }
+    else
+      console.log("Info: in ListDetails.addItemFromSearch(); no 'routeFrom' in navigation params");
   }
+
+  addItemToList = async(itemObj, plid) => {
+    let token = this.state.authToken;
+    console.log("authToken in addItemToList: " + token);
+    let url = this.state.baseApiUrl + '/pryce_lists/' + plid;
+    console.log("url in addItemToList: " + url);
+		const response = await fetch(url, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json',
+				'Accept': 'application/json',
+        'Authorization': "Bearer " + token
+      },
+      body: JSON.stringify(itemObj),
+    })
+    .then(response => response.json())
+    .then(responseJson => { 
+      console.log("response: " + JSON.stringify(responseJson));
+    })
+    .catch(error => {console.log("in add item to list"); console.error(error);});
+  };
 
   componentDidMount() {
     //this.storeNavigationParams();
@@ -70,7 +96,7 @@ class ListDetails extends Component {
     }
     this._mounted = true;
     this._unsubscribe = this.props.navigation.addListener('didFocus', () =>
-      { this._addItemFromSearch() }
+      { this.addItemFromSearch() }
     );
   }
 
@@ -109,26 +135,7 @@ class ListDetails extends Component {
     this._unsubscribe.remove();
   }
 
-  addItemToList = async(itemObj, plid) => {
-    let token = this.state.authToken;
-    console.log("authToken in addItemToList: " + token);
-    let url = this.state.baseApiUrl + '/pryce_lists/' + plid;
-		const response = await fetch(url, {
-			method: 'PUT',
-			headers: {
-				'Content-Type': 'application/json',
-				'Accept': 'application/json',
-        'Authorization': "Bearer " + token
-      },
-      body: JSON.stringify(itemObj),
-    })
-    .then(response => response.json())
-    .then(responseJson => { 
-      console.log("response: " + JSON.stringify(responseJson));
-    })
-    .catch(error => {console.log("in add item to list"); console.error(error);});
-  };
- 
+   
   deleteItem(itemId, rowIndex){
   
     let authToken = this.state.authToken;
@@ -156,7 +163,7 @@ _getListItemDetails = async () => {
     let result = true; 
 		let url = this.state.baseApiUrl + '/pryce_lists/details/' + this.state.pryceListId;
     console.log("url in _getListItemDetails: " + url);
-		const response = await fetch(url, {
+		fetch(url, {
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
@@ -165,17 +172,24 @@ _getListItemDetails = async () => {
 			}, 
     })
     .then(response => response.json())
-    .then(jsonResp => this.setState({tableData: jsonResp}))
-    .catch(error => {console.log("error in _getListItemDetails"); console.error(error); result = false;})
-    console.log("after _getList..." );
-    
-    return result;
-	};
+    .then(jsonResp => {
+      this.setState({tableData: jsonResp});
+      this.setState({listStale: false})
+    })
+    .catch(error => {
+      console.log("error in _getListItemDetails"); 
+      console.error(error);
+      this.setState({listStale: true})})
+	}
 
 	render(){
     if( !this.state.tableData || !this._mounted )
     {
-      return (<ActivityIndicator size="large" color="#0000ff" />);
+      return (
+        <SafeAreaView style={styles.activityIndicator}>
+          <ActivityIndicator style={{ alignSelf: 'center' }} size="large" color="#d3d3d3" />
+        </SafeAreaView>
+      )
     } 
     else
     {
@@ -219,19 +233,13 @@ _getListItemDetails = async () => {
               />
             </DataTable>
           </Card>
-          <View style={{flex: -1, flexDirection: 'row'}}>
-            <TouchableOpacity onPress={
+          <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-around' }}>
+            <Button text={'Add Item'} onPress={
                 () => this.props.navigation.navigate('Search', {
-                  listId: this.state.pryceListId, routeName: this.props.navigation.state.routeName 
+                  listId: this.state.pryceListId, routeFrom: this.props.navigation.state.routeName
                 })
-              }
-              style={styles.generalButtonTO}
-            >
-              <Text style={styles.generalButtonText}>Add Item</Text>
-            </TouchableOpacity>
-			      <TouchableOpacity onPress={() => this.props.navigation.goBack()} style={styles.generalButtonTO} >
-              <Text style={styles.generalButtonText}>Back</Text>
-            </TouchableOpacity>
+              } style={styles.button} type='outlined' />
+			      <Button type='outlined' text={'Back'} onPress={() => this.props.navigation.goBack()} style={styles.button} />
           </View>
         </SafeAreaView>
       );
