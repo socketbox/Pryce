@@ -269,7 +269,7 @@ class NewPrice extends React.Component {
 					/>
 					<Button 
 						style={styles.button}
-						text={'Add item to list'} 
+						text={'Submit'} 
 						type="outlined" 
 						onPress={this.submitInfo} 
 					/>
