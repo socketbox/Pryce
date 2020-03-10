@@ -418,7 +418,8 @@ export const styles = StyleSheet.create({
 		fontSize: 30,
 		fontWeight: 'bold',
 		textDecorationLine: 'underline',
-		marginBottom: 30
+		marginBottom: 30,
+		marginLeft: 10,
 	},
 	userButton: {
 		width: '50%',

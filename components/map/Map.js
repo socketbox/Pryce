@@ -60,6 +60,7 @@ class Map extends React.Component {
             });
         })
         .catch(error => console.error(error));
+
         this._getStores();
     };
     
@@ -70,32 +71,32 @@ class Map extends React.Component {
         let tempArr = [];
         let tempLat = '';
         let tempLng = '';
+        let tempAddress = '';
     
         for (i = 0; i < this.state.data.results.length; i++) {
             tempName = this.state.data.results[i].name;
+            tempAddress = this.state.data.results[i].vicinity;
             tempLat = this.state.data.results[i].geometry.location.lat;
             tempLng = this.state.data.results[i].geometry.location.lng;
             // console.log(tempName + " " + tempPlaceID)
             tempArr.push({
-            name: tempName,
-            coordinates: {
-                latitude: tempLat,
-                longitude: tempLng,
-            }
+                name: tempName,
+                address: tempAddress,
+                coordinates: {
+                    latitude: tempLat,
+                    longitude: tempLng,
+                }
             });
         }
         this.setState({ stores: tempArr });
 
-        //console.log(this.state.stores);
+        console.log(this.state.stores);
         this._setMarkers();
 
     }
 
     _setMarkers() {
-        let i = 0;
-        for (i = 0; i < this.state.stores.length; i++) {
-            
-        }
+
     }
         /**--------------------------------------------------------------*/
 
@@ -124,7 +125,7 @@ class Map extends React.Component {
                             key={index}
                             coordinate={store.coordinates}
                             title={store.name}
-                            //image={require('../../assets/marker.png')}
+                            description={store.address}
                         />
                     ))}
                 </MapView>

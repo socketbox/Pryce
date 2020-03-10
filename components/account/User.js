@@ -50,6 +50,10 @@ class User extends React.Component {
         return (
             <SafeAreaView style={styles.userContainer}>
                 <Text style={styles.username}>{this.state.loggedInUser ? this.state.loggedInUser.name : 'Guest' }</Text>
+                <Button text={'My Scans'} type="text" />
+                <Button text={'My Reviews'} type="text" />
+                <Button text={'Account'} type="text" />
+                <Button text={'Settings'} type="text" />
 
                 {this.state.loggedInUser ? logoutButton : loginButton}
             </SafeAreaView>
