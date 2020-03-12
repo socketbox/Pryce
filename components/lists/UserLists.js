@@ -8,10 +8,12 @@ import { withNavigation } from 'react-navigation';
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { styles } from '../Styles'
 import { Button, Card, CardHeader } from 'material-bread';
+import Dialog from "react-native-dialog";
 
 
 export default class UserLists extends Component {
   state = {
+    newListName: '',
     page: 0,
     perPage: 8,
     tableData: null,
@@ -19,6 +21,7 @@ export default class UserLists extends Component {
     readyToFetch: false,
     readyToRender: false,
     baseApiUrl: 'https://pryce-cs467.appspot.com',
+    dialogVisible: false,
   };
 
   setUser(){
@@ -57,6 +60,7 @@ export default class UserLists extends Component {
   }
 
   postNewList = async (listName) => {
+    this.setState({ dialogVisible: false })
     let url = this.state.baseApiUrl + '/pryce_lists/';
     fetch(url, {
       method: 'POST',
@@ -65,7 +69,7 @@ export default class UserLists extends Component {
         'Accept': 'application/json',
         'Authorization': "Bearer " + this.state.userObj.authToken
       },
-      body: JSON.stringify(listName),
+      body: JSON.stringify(this.state.newListName),
     })
       .then(response => response.json())
       .then(responseJson => {
@@ -141,6 +145,15 @@ export default class UserLists extends Component {
     this.setState({tableData: listObjs});
   }
 
+  showDialog = () => {
+    this.setState({ dialogVisible: true });
+    this.setState({ newListName: '' });
+  };
+
+  handleCancel = () => {
+    this.setState({ dialogVisible: false });
+  };
+
   render() {
     if (!this.state.readyToRender) {
       return (
@@ -199,11 +212,19 @@ export default class UserLists extends Component {
         </Card>
         <View style={{ flex: 2, flexDirection: 'row', justifyContent: 'space-around' }}> 
           
-         <Button text={'New List'} style={styles.button} onPress={ () => {
-              Alert.prompt('New List Name', 'Please provide a name for your new list.', (name) => {
-                        this.postNewList(name) 
-                  } ) } 
-          } type="outlined" />
+        <Button text={'New List'} style={styles.button} onPress={this.showDialog} type="outlined" />
+          <Dialog.Container visible={this.state.dialogVisible}>
+            <Dialog.Title>New List Name</Dialog.Title>
+            <Dialog.Description>
+              Please provide a name for your new list.
+            </Dialog.Description>
+            <Dialog.Input onChangeText={(text) => this.setState({ newListName: text })} value={this.state.newListName}>
+            </Dialog.Input>
+            <Dialog.Button label="Cancel" onPress={this.handleCancel} />
+            <Dialog.Button label="Add" onPress={this.postNewList} />
+          </Dialog.Container>
+
+          
         </View>
       </SafeAreaView>
 
