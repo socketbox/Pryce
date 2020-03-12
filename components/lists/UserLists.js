@@ -236,6 +236,7 @@ export default class UserLists extends Component {
               Please provide a name for your new list.
             </Dialog.Description>
             <Dialog.Input 
+              style={{ color: "black" }}
               label="Enter a new list name."
               onChangeText={(text) => this.setState({ 
                 newListName: text }
@@ -252,8 +253,9 @@ export default class UserLists extends Component {
             <Dialog.Description>
               Please provide a name for your copied list.
             </Dialog.Description>
-            <Dialog.Input 
+            <Dialog.Input
               label="Enter a new list name."
+              style={{ color: "black" }}
               onChangeText={(text) => this.setState({ 
                 cloneListName: text }
               )} 
