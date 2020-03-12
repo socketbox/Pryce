@@ -113,7 +113,7 @@ class ListDetails extends Component {
         }
         catch(err)
         {
-          console.log("error in cDU: " + err);
+          //console.log("error in cDU: " + err);
         }
       })();
     }
@@ -123,7 +123,7 @@ class ListDetails extends Component {
     }
     else if(!this.state.authToken)
     {
-      console.log("Token not set with cDM; calling settoken");
+      //console.log("Token not set with cDM; calling settoken");
       this._setToken();
     }
 
