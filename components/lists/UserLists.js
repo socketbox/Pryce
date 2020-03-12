@@ -14,6 +14,7 @@ import Dialog from "react-native-dialog";
 export default class UserLists extends Component {
   state = {
     newListName: '',
+    cloneListName: '',
     page: 0,
     perPage: 8,
     tableData: null,
@@ -21,7 +22,9 @@ export default class UserLists extends Component {
     readyToFetch: false,
     readyToRender: false,
     baseApiUrl: 'https://pryce-cs467.appspot.com',
-    dialogVisible: false,
+    addDialogVis: false,
+    cloneDialogVis: false,
+    activeListID: ''
   };
 
   setUser(){
@@ -60,7 +63,7 @@ export default class UserLists extends Component {
   }
 
   postNewList = async (listName) => {
-    this.setState({ dialogVisible: false })
+    this.setState({ addDialogVis: false })
     let url = this.state.baseApiUrl + '/pryce_lists/';
     fetch(url, {
       method: 'POST',
@@ -100,8 +103,9 @@ export default class UserLists extends Component {
       this.setState({readyToRender: true});
   };
 
-  copyList = async(plid, name) => {
-    
+  copyList = async() => {
+    this.setState({ cloneDialogVis: false })
+    let plid = this.state.activeListID;
     let url = this.state.baseApiUrl + '/pryce_lists/duplicate/' + plid;
     fetch(url, { 
         method: 'POST',
@@ -110,7 +114,7 @@ export default class UserLists extends Component {
           'Accept': 'application/json',
           'Authorization': "Bearer " + this.state.userObj.authToken
         },
-        body: JSON.stringify(name)
+        body: JSON.stringify(this.state.cloneListName)
       })
       .then(response => response.json())
       .then(responseJson => {
@@ -145,13 +149,28 @@ export default class UserLists extends Component {
     this.setState({tableData: listObjs});
   }
 
-  showDialog = () => {
-    this.setState({ dialogVisible: true });
+  getActiveListID (id) {
+    this.showCloneDialog();
+    this.setState( {activeListID: id } );
+  }
+
+  showCloneDialog = () => {
+    this.setState({ cloneDialogVis: true });
+    this.setState({ cloneListName: '' });
+  };
+
+  handleCloneCancel = () => {
+    this.setState({ cloneDialogVis: false });
+    console.log(this.state.cloneListName);
+  };
+
+  showAddDialog = () => {
+    this.setState({ addDialogVis: true });
     this.setState({ newListName: '' });
   };
 
-  handleCancel = () => {
-    this.setState({ dialogVisible: false });
+  handleAddCancel = () => {
+    this.setState({ addDialogVis: false });
   };
 
   render() {
@@ -185,10 +204,7 @@ export default class UserLists extends Component {
                           {item.name}
                   </DataTable.Cell>
                   <DataTable.Cell style={styles.listCopyColumn}>
-                    <FeatherIcon name='copy' style={styles.button} 
-                      onPress={() => { 
-                        Alert.prompt('Copied List Name', 'Please provide a name for your copied list.', (name) => {
-                          this.copyList(item.pryce_list_id, name)})}} />
+                    <FeatherIcon name='copy' style={styles.button} onPress={() => this.getActiveListID(item.pryce_list_id)} />
                   </DataTable.Cell>
                   <DataTable.Cell numeric style={styles.listTrashColumn}>
                     <FeatherIcon name='trash' style={styles.button} 
@@ -212,19 +228,42 @@ export default class UserLists extends Component {
         </Card>
         <View style={{ flex: 2, flexDirection: 'row', justifyContent: 'space-around' }}> 
           
-        <Button text={'New List'} style={styles.button} onPress={this.showDialog} type="outlined" />
-          <Dialog.Container visible={this.state.dialogVisible}>
+        <Button text={'New List'} style={styles.button} onPress={this.showAddDialog} type="outlined" />
+          <Dialog.Container visible={this.state.addDialogVis}>
             <Dialog.Title>New List Name</Dialog.Title>
             <Dialog.Description>
               Please provide a name for your new list.
             </Dialog.Description>
-            <Dialog.Input onChangeText={(text) => this.setState({ newListName: text })} value={this.state.newListName}>
+            <Dialog.Input 
+              label="Enter a new list name."
+              onChangeText={(text) => this.setState({ 
+                newListName: text }
+              )} 
+              value={this.state.newListName}>
             </Dialog.Input>
-            <Dialog.Button label="Cancel" onPress={this.handleCancel} />
+            <Dialog.Button label="Cancel" onPress={this.handleAddCancel} />
             <Dialog.Button label="Add" onPress={this.postNewList} />
           </Dialog.Container>
 
           
+          <Dialog.Container visible={this.state.cloneDialogVis}>
+            <Dialog.Title>Copied List Name</Dialog.Title>
+            <Dialog.Description>
+              Please provide a name for your copied list.
+            </Dialog.Description>
+            <Dialog.Input 
+              label="Enter a new list name."
+              onChangeText={(text) => this.setState({ 
+                cloneListName: text }
+              )} 
+              value={this.state.cloneListName}>
+            </Dialog.Input>
+            <Dialog.Button label="Cancel" onPress={this.handleCloneCancel} />
+            <Dialog.Button label="Add" onPress={this.copyList} />
+          </Dialog.Container>
+
+
+        
         </View>
       </SafeAreaView>
 
