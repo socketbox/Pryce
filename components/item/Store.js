@@ -139,7 +139,7 @@ export default class Store extends Component {
                         {this.state.storeComments.map(comment => {
                             return (
                                 <View key={comment.comment_id} style={{}}>
-                                    <Card radius={1} shadow={4} style={{ marginBottom: 10, width:500, padding: 5}}>
+                                    <Card radius={1} shadow={4} style={{ marginBottom: 10, padding: 5}}>
                                         <Text><Text style={{fontWeight: 'bold'}}>User:</Text> {comment.appuser.username}</Text>
                                         <Text><Text style={{fontWeight: 'bold'}}>Rating:</Text> {comment.rating}</Text>
                                         <Text><Text style={{fontWeight: 'bold'}}>Comment:</Text> {comment.content}</Text>
