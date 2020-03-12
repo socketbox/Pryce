@@ -31,10 +31,10 @@ class ListDetails extends Component {
         return {authToken: parsed.authToken};
       });
 
-    console.log("ListDetails: token value: " + token.authToken);
+    //console.log("ListDetails: token value: " + token.authToken);
     if( token.authToken )
     {
-      console.log("ListDetails: setToken: " + token.authToken);
+      //console.log("ListDetails: setToken: " + token.authToken);
       this.setState( token );
     }
     else
@@ -68,9 +68,9 @@ class ListDetails extends Component {
 
   addItemToList = async(itemObj, plid) => {
     let token = this.state.authToken;
-    console.log("authToken in addItemToList: " + token);
+    //console.log("authToken in addItemToList: " + token);
     let url = this.state.baseApiUrl + '/pryce_lists/' + plid;
-    console.log("url in addItemToList: " + url);
+    //console.log("url in addItemToList: " + url);
 		const response = await fetch(url, {
 			method: 'PUT',
 			headers: {
@@ -82,16 +82,17 @@ class ListDetails extends Component {
     })
     .then(response => response.json())
     .then(responseJson => { 
-      console.log("response: " + JSON.stringify(responseJson));
+      //console.log("response: " + JSON.stringify(responseJson));
     })
-    .catch(error => {console.log("in add item to list"); console.error(error);});
+    .catch(); 
+    //error => {console.log("in add item to list"); console.error(error);});
   };
 
   componentDidMount() {
     //this.storeNavigationParams();
-    console.log("Did Mount");
+    //console.log("Did Mount");
     if(!this.state.authToken) { 
-      console.log("ListDetails: calling _setToken()");
+      //console.log("ListDetails: calling _setToken()");
       this._setToken();
     }
     this._mounted = true;
@@ -162,7 +163,7 @@ class ListDetails extends Component {
 _getListItemDetails = async () => {
     let result = true; 
 		let url = this.state.baseApiUrl + '/pryce_lists/details/' + this.state.pryceListId;
-    console.log("url in _getListItemDetails: " + url);
+    //console.log("url in _getListItemDetails: " + url);
 		fetch(url, {
 			method: 'GET',
 			headers: {
@@ -177,8 +178,8 @@ _getListItemDetails = async () => {
       this.setState({listStale: false})
     })
     .catch(error => {
-      console.log("error in _getListItemDetails"); 
-      console.error(error);
+      //console.log("error in _getListItemDetails"); 
+      //console.error(error);
       this.setState({listStale: true})})
 	}
 
