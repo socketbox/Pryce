@@ -128,7 +128,7 @@ export default class UserLists extends Component {
 
   deleteList = async (plid) => {
     let url = this.state.baseApiUrl + '/pryce_lists/' + plid;
-    console.log("delete url: " + url);
+    //console.log("delete url: " + url);
     fetch(url, { 
       method: 'DELETE',
       headers: {
@@ -136,7 +136,9 @@ export default class UserLists extends Component {
 				'Accept': 'application/json',
         'Authorization': "Bearer " + this.state.userObj.authToken
       }
-    }).then(res => console.log(res), err => {console.log(err)})
+    })
+    .then(res => { return })
+    .catch(error => console.error(error));
 
     let listObjs = this.state.tableData;
     for(let i = 0; i < listObjs.length; i++)
@@ -161,7 +163,6 @@ export default class UserLists extends Component {
 
   handleCloneCancel = () => {
     this.setState({ cloneDialogVis: false });
-    console.log(this.state.cloneListName);
   };
 
   showAddDialog = () => {
