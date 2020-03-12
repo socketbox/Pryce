@@ -25,7 +25,10 @@ class User extends React.Component {
     }
 
     doLogout = async () => {
-		return await AsyncStorage.removeItem('user').then(this.setState({loggedInUser: null}));
+		await AsyncStorage.removeItem('user').then(() => {
+            this.setState({loggedInUser: null});
+            this.props.navigation.navigate('Login');
+        });
 	}
         
     render () {
