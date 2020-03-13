@@ -62,8 +62,8 @@ class ListDetails extends Component {
         this.addItemToList(addedItem, this.props.navigation.state.params.pryceListId);
       }
     }
-    else
-      console.log("Info: in ListDetails.addItemFromSearch(); no 'routeFrom' in navigation params");
+    //else
+      //console.log("Info: in ListDetails.addItemFromSearch(); no 'routeFrom' in navigation params");
   }
 
   addItemToList = async(itemObj, plid) => {
@@ -104,7 +104,7 @@ class ListDetails extends Component {
   componentDidUpdate() {
     if(this.state.authToken && this.state.listStale)
     { 
-      console.log("Fetching...");
+      //console.log("Fetching...");
       (async ()=>{
         try{
           result = await this._getListItemDetails();
@@ -127,11 +127,11 @@ class ListDetails extends Component {
       this._setToken();
     }
 
-    console.log("at end of cDU");
+    //console.log("at end of cDU");
   }
 
   componentWillUnmount() {
-    console.log("Will Unmount");
+    //console.log("Will Unmount");
     this._mounted = false;
     this._unsubscribe.remove();
   }
@@ -152,7 +152,8 @@ class ListDetails extends Component {
 				'Accept': 'application/json',
         'Authorization': "Bearer " + authToken
       }
-    }).then(res => console.log(res), err => {console.log(err)})
+    });
+    //.then(res => console.log(res), err => {console.log(err)})
 
     let backingArray = this.state.tableData;
     //delete row that corresponds to item
