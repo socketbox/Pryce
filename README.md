@@ -1,6 +1,4 @@
 # Pryce
-CS467-Capston Project
+CS467-Capstone Project
 
 Installation:
-(For app testing only)
-Install Expo application 

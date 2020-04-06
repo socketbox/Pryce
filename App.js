@@ -1,13 +1,21 @@
-import * as React from 'react';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import React from 'react';
+import { createStore } from 'redux'
+import { Provider } from 'react-redux';
+import reducers from './components/account/reducers/index'
+import { NavigationContainer } from '@react-navigation/native';
 
-import TabNavigation from './app/nav/AppNavigator';
-import AppContainer from './app/nav/index.js'
+import Container from './components/account/containers/container'
 
+const store = createStore(reducers);
 
-import { createAppContainer } from 'react-navigation';
-import { createBottomTabNavigator } from 'react-navigation-tabs';
-
-export default function App() {
-  return <AppContainer />
+export default class App extends React.Component {
+	render() {
+		return (
+		<Provider store={store}>
+			<NavigationContainer>
+				<Container />
+			</NavigationContainer>
+		</Provider>
+		);
+	}
 }

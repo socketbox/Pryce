@@ -1,7 +1,8 @@
 {
   "expo": {
-    "name": "Blank Template",
+    "name": "Pryce",
     "slug": "Pryce",
+    "description": "A crowd-sourced shopping application.",
     "privacy": "public",
     "sdkVersion": "36.0.0",
     "platforms": [
